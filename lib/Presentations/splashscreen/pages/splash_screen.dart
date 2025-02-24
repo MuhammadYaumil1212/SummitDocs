@@ -1,3 +1,4 @@
+import 'package:berkas_conference/Presentations/signin/pages/signin_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/helper/navigation/app_navigation.dart';
@@ -15,7 +16,7 @@ class SplashScreen extends StatelessWidget {
           AppNavigator.pushReplacement(
             context,
             transitionType: TransitionType.fade,
-            HomeScreen(),
+            SigninScreen(),
           );
         }
         if (state is Authenticated) {
