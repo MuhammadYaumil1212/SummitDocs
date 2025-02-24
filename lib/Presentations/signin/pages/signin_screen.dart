@@ -1,5 +1,6 @@
 import 'package:berkas_conference/Presentations/signin/bloc/signin_bloc.dart';
 import 'package:berkas_conference/commons/widgets/app_scaffold.dart';
+import 'package:berkas_conference/commons/widgets/app_text.dart';
 import 'package:flutter/material.dart';
 
 class SigninScreen extends StatelessWidget {
@@ -15,7 +16,9 @@ class SigninScreen extends StatelessWidget {
 
       /// Use bloc builder if you wanna used the state
       appWidget: Column(
-        children: [Text("Signin Screen")],
+        children: [
+          AppText(text: "Signin"),
+        ],
       ),
     );
   }

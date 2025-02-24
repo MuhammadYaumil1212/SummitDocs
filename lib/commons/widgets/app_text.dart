@@ -6,23 +6,31 @@ class AppText extends StatelessWidget {
   final FontWeight? fontWeight;
   final double? fontSize;
   final Color? fontColor;
+  final TextStyle? fontFamily;
+
   const AppText({
     super.key,
     required this.text,
     this.fontWeight = FontWeight.normal,
     this.fontSize = 16.0,
-    this.fontColor = Colors.black12,
+    this.fontColor = Colors.black,
+    this.fontFamily,
   });
 
   @override
   Widget build(BuildContext context) {
     return Text(
       text,
-      style: GoogleFonts.roboto(
-        fontWeight: fontWeight,
-        fontSize: fontSize,
-        color: fontColor,
-      ),
+      style: fontFamily?.copyWith(
+            fontWeight: fontWeight,
+            fontSize: fontSize,
+            color: fontColor,
+          ) ??
+          GoogleFonts.roboto(
+            fontWeight: fontWeight,
+            fontSize: fontSize,
+            color: fontColor,
+          ),
     );
   }
 }

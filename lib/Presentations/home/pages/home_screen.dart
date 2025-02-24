@@ -1,4 +1,5 @@
 import 'package:berkas_conference/commons/widgets/app_scaffold.dart';
+import 'package:berkas_conference/commons/widgets/app_text.dart';
 import 'package:berkas_conference/commons/widgets/reactive_button/app_button.dart';
 import 'package:berkas_conference/core/helper/message/message.dart';
 import 'package:flutter/material.dart';
@@ -41,12 +42,18 @@ class _HomeScreenState extends State<HomeScreen> {
           if (state is NetworkAvailable) {
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [Center(child: Text("Available"))],
+              children: [
+                Center(
+                    child: AppText(
+                  text: "Available",
+                  fontColor: Colors.red,
+                ))
+              ],
             );
           } else {
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [Center(child: Text("Unavailable"))],
+              children: [Center(child: AppText(text: "Unavailable"))],
             );
           }
         },

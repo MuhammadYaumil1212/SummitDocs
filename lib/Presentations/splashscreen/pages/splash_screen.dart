@@ -1,6 +1,8 @@
 import 'package:berkas_conference/Presentations/signin/pages/signin_screen.dart';
+import 'package:berkas_conference/commons/widgets/app_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../../core/helper/navigation/app_navigation.dart';
 import '../../home/pages/home_screen.dart';
 import '../bloc/splashscreen_cubit.dart';
@@ -35,6 +37,15 @@ class SplashScreen extends StatelessWidget {
               children: [
                 const Center(
                   child: FlutterLogo(size: 100),
+                ),
+                const SizedBox(height: 20),
+                Center(
+                  child: AppText(
+                    text: "Splash Screen",
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: GoogleFonts.poppins(),
+                  ),
                 )
               ],
             );
