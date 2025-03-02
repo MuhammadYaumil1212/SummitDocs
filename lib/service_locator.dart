@@ -1,3 +1,5 @@
+import 'package:SummitDocs/Domain/signin/usecases/signin_usecase.dart';
+
 import 'Data/signin/repositories/signin_repository.dart';
 import 'Data/signin/sources/signin_service.dart';
 import 'Domain/signin/repositories/signin_repository.dart';
@@ -12,4 +14,5 @@ void setupServiceLocator() {
   //repositories
   sl.registerSingleton<SigninRepository>(SigninRepositoryImpl());
   //usecases
+  sl.registerSingleton<SigninUsecase>(SigninUsecase());
 }
