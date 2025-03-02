@@ -1,4 +1,5 @@
 import 'package:berkas_conference/Presentations/signin/pages/signin_screen.dart';
+import 'package:berkas_conference/commons/constants/string.dart';
 import 'package:berkas_conference/commons/widgets/app_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -41,7 +42,7 @@ class SplashScreen extends StatelessWidget {
                 const SizedBox(height: 20),
                 Center(
                   child: AppText(
-                    text: "Splash Screen",
+                    text: AppString.ApplicationName,
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                     fontFamily: GoogleFonts.poppins(),

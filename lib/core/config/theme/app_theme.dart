@@ -7,6 +7,11 @@ class AppTheme {
     primaryColor: AppColors.primary,
     scaffoldBackgroundColor: AppColors.background,
     brightness: Brightness.light,
+    cardColor: Colors.white,
+    cardTheme: CardTheme(
+      color: Colors.white,
+      elevation: 0,
+    ),
     snackBarTheme: const SnackBarThemeData(
       backgroundColor: AppColors.background,
       contentTextStyle: TextStyle(color: Colors.white),

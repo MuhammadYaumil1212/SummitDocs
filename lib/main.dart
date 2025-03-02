@@ -1,5 +1,6 @@
 import 'package:berkas_conference/Presentations/splashscreen/bloc/splashscreen_cubit.dart';
 import 'package:berkas_conference/Presentations/splashscreen/pages/splash_screen.dart';
+import 'package:berkas_conference/commons/constants/string.dart';
 import 'package:berkas_conference/core/network/network_cubit.dart';
 import 'package:berkas_conference/service_locator.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   setupServiceLocator();
   await AppStorage.init();
+  final AppStorage storage = AppStorage.instance;
+  storage.put(AppString.TOKEN_KEY, "123");
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(const MyApp());
 }
