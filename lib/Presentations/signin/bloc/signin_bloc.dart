@@ -1,8 +1,8 @@
-import 'package:berkas_conference/Data/signin/models/signinParams.dart';
-import 'package:berkas_conference/Domain/signin/usecases/signin_usecase.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
+import '../../../Data/signin/models/signinParams.dart';
+import '../../../Domain/signin/usecases/signin_usecase.dart';
 import '../../../service_locator.dart';
 
 part 'signin_event.dart';

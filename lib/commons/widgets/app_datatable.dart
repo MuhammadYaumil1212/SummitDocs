@@ -1,4 +1,4 @@
-import 'package:berkas_conference/commons/widgets/app_text.dart';
+import 'package:SummitDocs/commons/widgets/app_text.dart';
 import 'package:flutter/material.dart';
 
 class AppDataTable<T> extends StatelessWidget {

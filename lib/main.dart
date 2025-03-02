@@ -1,14 +1,14 @@
-import 'package:berkas_conference/Presentations/splashscreen/bloc/splashscreen_cubit.dart';
-import 'package:berkas_conference/Presentations/splashscreen/pages/splash_screen.dart';
-import 'package:berkas_conference/commons/constants/string.dart';
-import 'package:berkas_conference/core/network/network_cubit.dart';
-import 'package:berkas_conference/service_locator.dart';
+import 'package:SummitDocs/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'Presentations/splashscreen/bloc/splashscreen_cubit.dart';
+import 'Presentations/splashscreen/pages/splash_screen.dart';
+import 'commons/constants/string.dart';
 import 'core/config/theme/app_theme.dart';
 import 'core/helper/storage/AppStorage.dart';
+import 'core/network/network_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -1,7 +1,5 @@
-import 'package:berkas_conference/core/network/network_cubit.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:meta/meta.dart';
 
 import '../../../commons/constants/string.dart';

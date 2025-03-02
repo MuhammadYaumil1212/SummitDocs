@@ -1,4 +1,4 @@
-import 'package:berkas_conference/core/usecase/usecase.dart';
+import 'package:SummitDocs/core/usecase/usecase.dart';
 import 'package:dartz/dartz.dart';
 
 import '../../../Data/signin/models/signinParams.dart';

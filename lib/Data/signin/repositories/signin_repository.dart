@@ -1,11 +1,11 @@
-import 'package:berkas_conference/Data/signin/models/signinParams.dart';
-import 'package:berkas_conference/Data/signin/sources/signin_service.dart';
-import 'package:berkas_conference/Domain/signin/repositories/signin_repository.dart';
-import 'package:berkas_conference/commons/constants/string.dart';
 import 'package:dartz/dartz.dart';
 
+import '../../../Domain/signin/repositories/signin_repository.dart';
+import '../../../commons/constants/string.dart';
 import '../../../core/helper/storage/AppStorage.dart';
 import '../../../service_locator.dart';
+import '../models/signinParams.dart';
+import '../sources/signin_service.dart';
 
 class SigninRepositoryImpl extends SigninRepository {
   final storage = AppStorage.instance;

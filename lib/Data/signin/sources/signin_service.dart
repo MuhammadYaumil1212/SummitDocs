@@ -1,6 +1,6 @@
-import 'package:berkas_conference/Data/signin/models/signinParams.dart';
-import 'package:berkas_conference/commons/constants/api_url.dart';
-import 'package:berkas_conference/core/network/dio_client.dart';
+import 'package:SummitDocs/Data/signin/models/signinParams.dart';
+import 'package:SummitDocs/commons/constants/api_url.dart';
+import 'package:SummitDocs/core/network/dio_client.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 

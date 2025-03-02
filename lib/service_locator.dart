@@ -1,7 +1,6 @@
-import 'package:berkas_conference/Data/signin/repositories/signin_repository.dart';
-import 'package:berkas_conference/Data/signin/sources/signin_service.dart';
-import 'package:berkas_conference/Domain/signin/repositories/signin_repository.dart';
-
+import 'Data/signin/repositories/signin_repository.dart';
+import 'Data/signin/sources/signin_service.dart';
+import 'Domain/signin/repositories/signin_repository.dart';
 import 'core/network/dio_client.dart';
 import 'package:get_it/get_it.dart';
 
