@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../commons/constants/string.dart';
 import '../../../commons/widgets/app_text.dart';
@@ -36,8 +37,12 @@ class SplashScreen extends StatelessWidget {
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Center(
-                  child: FlutterLogo(size: 100),
+                Center(
+                  child: Image.asset(
+                    AppString.logoApp,
+                    width: 200,
+                    height: 200,
+                  ),
                 ),
                 const SizedBox(height: 20),
                 Center(
