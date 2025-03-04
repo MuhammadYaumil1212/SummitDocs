@@ -129,7 +129,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildNavItem(
-      String icon, String iconOutlined, String label, int index) {
+    String icon,
+    String iconOutlined,
+    String label,
+    int index,
+  ) {
     bool isActive = _selectedIndex == index;
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
