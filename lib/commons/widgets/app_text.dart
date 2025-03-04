@@ -7,6 +7,7 @@ class AppText extends StatelessWidget {
   final double? fontSize;
   final Color? fontColor;
   final TextStyle? fontFamily;
+  final TextAlign? textAlign;
 
   const AppText({
     super.key,
@@ -15,12 +16,14 @@ class AppText extends StatelessWidget {
     this.fontSize = 16.0,
     this.fontColor = Colors.black,
     this.fontFamily,
+    this.textAlign = TextAlign.start,
   });
 
   @override
   Widget build(BuildContext context) {
     return Text(
       text,
+      textAlign: textAlign,
       style: fontFamily?.copyWith(
             fontWeight: fontWeight,
             fontSize: fontSize,
