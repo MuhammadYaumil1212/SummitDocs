@@ -74,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
             physics: const NeverScrollableScrollPhysics(),
             controller: pageController,
             children: [
-              const DashboardScreen(),
+              DashboardScreen(),
               const FilesScreen(),
               const SettingsScreen(),
             ],

@@ -3,15 +3,11 @@ import 'package:SummitDocs/commons/widgets/app_text.dart';
 import 'package:SummitDocs/commons/widgets/title.dart';
 import 'package:flutter/material.dart';
 
-class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({super.key});
+class DashboardScreen extends StatelessWidget {
+  DashboardScreen({super.key});
 
-  @override
-  State<DashboardScreen> createState() => _DashboardScreenState();
-}
-
-class _DashboardScreenState extends State<DashboardScreen> {
   final ValueNotifier<bool> _isExpandedIcodsa = ValueNotifier(true);
+
   final ValueNotifier<bool> _isExpandedIcicyta = ValueNotifier(true);
 
   @override
