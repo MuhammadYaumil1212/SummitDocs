@@ -31,16 +31,24 @@ class AppTheme {
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
+        surfaceTintColor: Colors.transparent,
+        shadowColor: Colors.transparent,
+        splashFactory: NoSplash.splashFactory,
         backgroundColor: AppColors.primary,
         elevation: 0,
         textStyle: const TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.w400,
         ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(100),
+        shape: ContinuousRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
         ),
       ),
+    ),
+    expansionTileTheme: ExpansionTileThemeData(
+      tilePadding: EdgeInsets.zero,
+      shape: Border.all(color: Colors.transparent),
+      childrenPadding: EdgeInsets.zero,
     ),
   );
 }

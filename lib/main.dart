@@ -14,7 +14,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   setupServiceLocator();
   await AppStorage.init();
-  final AppStorage storage = AppStorage.instance;
+  final storage = AppStorage.instance;
   storage.put(AppString.TOKEN_KEY, "123");
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(const MyApp());

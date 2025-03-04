@@ -13,3 +13,18 @@ class Signin extends SigninEvent {
   @override
   List<Object> get props => [email, password];
 }
+
+class CheckNetwork extends SigninEvent {
+  @override
+  // TODO: implement props
+  List<Object?> get props => [];
+}
+
+class NetworkStatusChanged extends SigninEvent {
+  final bool connected;
+
+  const NetworkStatusChanged({required this.connected});
+
+  @override
+  List<Object> get props => [connected];
+}

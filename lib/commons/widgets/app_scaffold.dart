@@ -1,14 +1,16 @@
+import 'package:SummitDocs/core/config/theme/app_colors.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AppScaffold<BlocState extends Equatable, BlocEvent extends Equatable,
     BlocName extends Bloc<BlocEvent, BlocState>> extends StatelessWidget {
-  final Widget appWidget;
-  final PreferredSizeWidget? appBar;
-  final Color? backgroundColor;
   final Function(BuildContext context, BlocState state) listener;
   final BlocName bloc;
+  final Widget appWidget;
+  final Widget? bottomAppbar;
+  final PreferredSizeWidget? appBar;
+  final Color? backgroundColor;
 
   const AppScaffold({
     super.key,
@@ -17,6 +19,7 @@ class AppScaffold<BlocState extends Equatable, BlocEvent extends Equatable,
     this.backgroundColor,
     required this.listener,
     required this.bloc,
+    this.bottomAppbar,
   });
 
   @override
@@ -28,7 +31,8 @@ class AppScaffold<BlocState extends Equatable, BlocEvent extends Equatable,
         bloc: bloc,
         child: Scaffold(
           appBar: appBar,
-          backgroundColor: backgroundColor,
+          bottomNavigationBar: bottomAppbar,
+          backgroundColor: backgroundColor ?? AppColors.secondaryBackground,
           body: SafeArea(
             child: appWidget,
           ),

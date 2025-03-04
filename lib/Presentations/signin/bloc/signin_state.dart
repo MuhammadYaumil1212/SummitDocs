@@ -29,3 +29,17 @@ final class OnSuccess extends SigninState {
   // TODO: implement props
   List<Object?> get props => [];
 }
+
+class NetworkAvailable extends SigninState {
+  @override
+  List<Object> get props => [];
+}
+
+class NetworkUnavailable extends SigninState {
+  final String message;
+
+  const NetworkUnavailable({required this.message});
+
+  @override
+  List<Object> get props => [message];
+}
