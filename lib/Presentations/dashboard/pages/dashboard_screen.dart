@@ -1,31 +1,47 @@
+import 'package:SummitDocs/Presentations/dashboard/bloc/dashboard_bloc.dart';
 import 'package:SummitDocs/Presentations/dashboard/widgets/dashboard_card.dart';
+import 'package:SummitDocs/commons/widgets/app_scaffold.dart';
 import 'package:SummitDocs/commons/widgets/app_text.dart';
 import 'package:SummitDocs/commons/widgets/title.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class DashboardScreen extends StatelessWidget {
+class DashboardScreen extends StatefulWidget {
   DashboardScreen({super.key});
 
+  @override
+  State<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends State<DashboardScreen> {
+  final _bloc = DashboardBloc();
   final ValueNotifier<bool> _isExpandedIcodsa = ValueNotifier(true);
 
   final ValueNotifier<bool> _isExpandedIcicyta = ValueNotifier(true);
-
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const HomeTitle(
-              title: "Selamat Datang",
-              description: "Di Dashboard",
+    return AppScaffold(
+      bloc: _bloc,
+      listener: (BuildContext context, DashboardState state) {},
+      appWidget: BlocBuilder<DashboardBloc, DashboardState>(
+        builder: (context, state) {
+          return SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const HomeTitle(
+                    title: "Selamat Datang",
+                    description: "Di Dashboard",
+                  ),
+                  _buildExpansionTile("ICODSA", _isExpandedIcodsa),
+                  _buildExpansionTile("ICICYTA", _isExpandedIcicyta),
+                ],
+              ),
             ),
-            _buildExpansionTile("ICODSA", _isExpandedIcodsa),
-            _buildExpansionTile("ICICYTA", _isExpandedIcicyta),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
