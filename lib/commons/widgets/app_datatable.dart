@@ -1,4 +1,4 @@
-import 'package:SummitDocs/commons/widgets/app_text.dart';
+import 'package:SummitDocs/core/config/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class AppDataTable<T> extends StatelessWidget {
@@ -17,37 +17,41 @@ class AppDataTable<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        const double rowHeight = 56.0;
-        const double headerHeight = 64.0;
-        const double footerHeight = 56.0;
-        final availableHeight =
-            constraints.maxHeight - headerHeight - footerHeight;
-        final int maxRowsPerPage = (availableHeight / rowHeight).floor();
-        final int dynamicRowsPerPage =
-            data.isEmpty ? 1 : data.length.clamp(1, maxRowsPerPage);
+    return LayoutBuilder(builder: (context, constraints) {
+      const double rowHeight = 56.0;
+      const double headerHeight = 64.0;
+      const double footerHeight = 56.0;
 
-        return SizedBox(
-          height: constraints.maxHeight,
-          child: SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            child: PaginatedDataTable(
-              header: AppText(
-                text: "LoA",
-                fontWeight: FontWeight.w700,
-                fontSize: 30,
-              ),
-              columnSpacing: MediaQuery.of(context).size.width * 0.32,
-              showFirstLastButtons: false,
-              columns: columns,
-              source: _CustomDataTableSource<T>(data, rowBuilder),
-              rowsPerPage: dynamicRowsPerPage, // Jumlah baris dinamis
+      // Pastikan nilai height valid
+      final double availableHeight = constraints.maxHeight.isFinite
+          ? constraints.maxHeight - headerHeight - footerHeight
+          : 0;
+
+      // Pastikan jumlah baris minimal 1 dan tidak negatif
+      final int maxRowsPerPage = availableHeight.isFinite
+          ? (availableHeight / rowHeight).floor().clamp(8, data.length)
+          : rowsPerPage;
+
+      return Expanded(
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          physics: BouncingScrollPhysics(),
+          child: PaginatedDataTable(
+            headingRowColor: WidgetStateProperty.resolveWith<Color?>(
+              (Set<WidgetState> states) {
+                return AppColors.grayBackground2;
+              },
             ),
+            horizontalMargin: 20,
+            showEmptyRows: false,
+            showFirstLastButtons: false,
+            columns: columns,
+            source: _CustomDataTableSource<T>(data, rowBuilder),
+            rowsPerPage: maxRowsPerPage,
           ),
-        );
-      },
-    );
+        ),
+      );
+    });
   }
 }
 

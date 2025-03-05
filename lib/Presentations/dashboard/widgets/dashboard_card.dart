@@ -63,14 +63,17 @@ class _DashboardCardState extends State<DashboardCard> {
           ),
           const SizedBox(height: 8),
           if (widget.historyItems.length > widget.initialItemsToShow)
-            AppButton(
-              action: _toggleList,
-              text: itemsToShow >= widget.historyItems.length
-                  ? "Show Less"
-                  : "View More",
-              borderColor: AppColors.grayBackground2,
-              backgroundColor: AppColors.secondaryBackground,
-              fontColor: Colors.black,
+            SizedBox(
+              width: MediaQuery.of(context).size.width,
+              child: AppButton(
+                action: _toggleList,
+                text: itemsToShow >= widget.historyItems.length
+                    ? "Show Less"
+                    : "View More",
+                borderColor: AppColors.grayBackground2,
+                backgroundColor: AppColors.secondaryBackground,
+                fontColor: Colors.black,
+              ),
             ),
         ],
       ),

@@ -18,4 +18,11 @@ class AppString {
 
   static const icSuccess = "${appIcons}success_icon.svg";
   static const icfailed = "${appIcons}failed_icon.svg";
+
+  static const loaIcon = "${appIcons}loa_icon.svg";
+  static const overviewIcon = "${appIcons}overview_icon.svg";
+  static const receiptIcon = "${appIcons}receipt_icon.svg";
+
+  static const infoIcon = "${appIcons}info_icon.svg";
+  static const downloadIcon = "${appIcons}download_icon.svg";
 }
