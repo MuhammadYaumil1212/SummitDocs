@@ -1,13 +1,13 @@
+import 'package:flutter/material.dart';
+import 'package:SummitDocs/commons/widgets/app_button.dart';
+import 'package:SummitDocs/commons/widgets/app_text.dart';
+import 'package:SummitDocs/core/config/theme/app_colors.dart';
 import 'package:SummitDocs/Presentations/LoA/bloc/loa_bloc.dart';
 import 'package:SummitDocs/Presentations/LoA/pages/loa_entity.dart';
-import 'package:SummitDocs/commons/widgets/app_button.dart';
-import 'package:SummitDocs/commons/widgets/app_datatable.dart';
-import 'package:SummitDocs/commons/widgets/app_scaffold.dart';
-import 'package:SummitDocs/commons/widgets/app_text.dart';
-import 'package:flutter/material.dart';
 
 import '../../../commons/constants/string.dart';
-import '../../../core/config/theme/app_colors.dart';
+import '../../../commons/widgets/app_datatable.dart';
+import '../../../commons/widgets/app_scaffold.dart';
 
 class FilesLoaScreen extends StatefulWidget {
   const FilesLoaScreen({super.key});
@@ -18,6 +18,12 @@ class FilesLoaScreen extends StatefulWidget {
 
 class _FilesLoaScreenState extends State<FilesLoaScreen> {
   final LoaBloc _bloc = LoaBloc();
+  TextEditingController paperIdController = TextEditingController();
+  TextEditingController titleController = TextEditingController();
+  TextEditingController conferenceTitleController = TextEditingController();
+  TextEditingController writerController = TextEditingController();
+  TextEditingController timeController = TextEditingController();
+  TextEditingController datePlaceController = TextEditingController();
   final List<LOAEntity> conferences = List.generate(
     15,
     (index) => LOAEntity(
@@ -64,6 +70,23 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
     );
   }
 
+  Widget _buildHeader() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        const AppText(
+          text: "LoA ICODSA",
+          fontWeight: FontWeight.w700,
+          fontSize: 30,
+        ),
+        AppButton(
+          text: "Tambah Data",
+          action: () => _showAddDataDialog(context),
+        ),
+      ],
+    );
+  }
+
   Widget _buildTable(String title) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -78,23 +101,6 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
           columns: _buildColumns(),
           data: conferences,
           rowBuilder: _buildRow,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildHeader() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        const AppText(
-          text: "LoA ICODSA",
-          fontWeight: FontWeight.w700,
-          fontSize: 30,
-        ),
-        AppButton(
-          text: "Tambah Data",
-          action: () {},
         ),
       ],
     );
@@ -144,6 +150,82 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
           ),
         ),
       ],
+    );
+  }
+
+  void _showAddDataDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          backgroundColor: Colors.white,
+          title: AppText(
+            text: "Tambah Data",
+            fontSize: 21,
+            fontWeight: FontWeight.w700,
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _buildTextField("Paper ID", paperIdController),
+                _buildTextField("Judul Paper", titleController),
+                _buildTextField("Judul Conference", conferenceTitleController),
+                _buildTextField("Penulis", writerController),
+                _buildTextField("Waktu", timeController),
+                _buildTextField("Tanggal dan Tempat", datePlaceController),
+                const SizedBox(height: 10),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  child: AppButton(text: "Masukkan", action: () {}),
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  child: AppButton(
+                    action: () {
+                      Navigator.of(context).pop();
+                    },
+                    text: "Batalkan",
+                    borderColor: AppColors.grayBackground2,
+                    backgroundColor: AppColors.secondaryBackground,
+                    fontColor: Colors.red,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildTextField(String hint, TextEditingController controller) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5),
+      child: TextField(
+        controller: controller,
+        style: TextStyle(color: Colors.black),
+        decoration: InputDecoration(
+          filled: true,
+          fillColor: Colors.white, // Background putih
+          hintStyle: TextStyle(color: Colors.grey),
+          hintText: hint,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10)),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.grey),
+            borderRadius: BorderRadius.all(Radius.circular(10)),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.grey, width: 2),
+            borderRadius: BorderRadius.all(Radius.circular(10)),
+          ),
+        ),
+      ),
     );
   }
 }
