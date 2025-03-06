@@ -1,6 +1,6 @@
 import 'package:SummitDocs/Presentations/LoA/pages/files_loa_screen.dart';
 import 'package:SummitDocs/Presentations/files/pages/FeatureItem.dart';
-import 'package:SummitDocs/Presentations/files/widgets/featureCard.dart';
+import 'package:SummitDocs/Presentations/files/widgets/feature_card.dart';
 import 'package:SummitDocs/commons/constants/string.dart';
 import 'package:SummitDocs/commons/widgets/app_text.dart';
 import 'package:SummitDocs/core/helper/navigation/app_navigation.dart';
