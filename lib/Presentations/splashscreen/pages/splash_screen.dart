@@ -50,7 +50,6 @@ class SplashScreen extends StatelessWidget {
                     text: AppString.ApplicationName,
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    fontFamily: GoogleFonts.poppins(),
                   ),
                 )
               ],

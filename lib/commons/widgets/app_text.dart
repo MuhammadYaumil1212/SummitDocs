@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class AppText extends StatelessWidget {
   final String text;
   final FontWeight? fontWeight;
   final double? fontSize;
   final Color? fontColor;
-  final TextStyle? fontFamily;
+  final String? fontFamily;
   final TextAlign? textAlign;
 
   const AppText({
@@ -15,7 +14,7 @@ class AppText extends StatelessWidget {
     this.fontWeight = FontWeight.normal,
     this.fontSize = 16.0,
     this.fontColor = Colors.black,
-    this.fontFamily,
+    this.fontFamily = "Geist",
     this.textAlign = TextAlign.start,
   });
 
@@ -24,16 +23,12 @@ class AppText extends StatelessWidget {
     return Text(
       text,
       textAlign: textAlign,
-      style: fontFamily?.copyWith(
-            fontWeight: fontWeight,
-            fontSize: fontSize,
-            color: fontColor,
-          ) ??
-          GoogleFonts.roboto(
-            fontWeight: fontWeight,
-            fontSize: fontSize,
-            color: fontColor,
-          ),
+      style: TextStyle(
+        fontFamily: fontFamily,
+        fontWeight: fontWeight,
+        fontSize: fontSize,
+        color: fontColor,
+      ),
     );
   }
 }
