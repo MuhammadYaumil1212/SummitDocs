@@ -10,17 +10,20 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          AppText(
-            text: "Pengaturan",
-            fontSize: 28,
-            fontWeight: FontWeight.w700,
-          ),
-          const SizedBox(height: 20),
-          ProfileCard()
-        ],
+      child: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AppText(
+              text: "Pengaturan",
+              fontSize: 28,
+              fontWeight: FontWeight.w700,
+            ),
+            const SizedBox(height: 20),
+            ProfileCard()
+          ],
+        ),
       ),
     );
   }
