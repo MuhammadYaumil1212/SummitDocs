@@ -78,7 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
           if (state is NetworkUnavailable) {
             return ErrorScreen(
               imageString: AppString.errorImages,
-              errorMessage: "Halaman tidak ditemukan",
+              errorMessage: "Halaman Tidak Ditemukan",
             );
           }
           return PageView(
@@ -101,7 +101,12 @@ class _HomeScreenState extends State<HomeScreen> {
           currentIndex: _selectedIndex,
           onTap: _onItemTapped,
           selectedItemColor: Colors.black,
-          unselectedItemColor: Colors.black.withOpacity(0.5),
+          unselectedItemColor: Colors.black.withValues(
+            alpha: 0.5,
+            blue: 0.5,
+            green: 0.5,
+            red: 0.5,
+          ),
           backgroundColor: Colors.white,
           elevation: 0.0,
           type: BottomNavigationBarType.fixed,
