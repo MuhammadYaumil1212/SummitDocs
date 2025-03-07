@@ -1,3 +1,4 @@
+import 'package:SummitDocs/Presentations/signin/widgets/login_card.dart';
 import 'package:SummitDocs/commons/widgets/app_button.dart';
 import 'package:SummitDocs/core/helper/message/message.dart';
 import 'package:flutter/material.dart';
@@ -37,12 +38,15 @@ class _SigninScreenState extends State<SigninScreen> {
 
       /// Use bloc builder if you wanna used the state
       appWidget: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          AppButton(
-              text: "Login",
-              action: () {
-                print("Clicked");
-              })
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Center(
+              child: LoginCard(),
+            ),
+          )
         ],
       ),
     );
