@@ -19,8 +19,8 @@ class Featurecard extends StatelessWidget {
     return GestureDetector(
       onTap: onClick,
       child: Container(
-        width: 103,
-        height: 80,
+        width: MediaQuery.of(context).size.width * 0.25,
+        height: MediaQuery.of(context).size.height * 0.1,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.all(
               Radius.circular(10),
