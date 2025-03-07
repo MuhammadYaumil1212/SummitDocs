@@ -28,4 +28,6 @@ class AppString {
   static const downloadIcon = "${appIcons}download_icon.svg";
 
   static const lockIcon = "${appIcons}lock_icon.svg";
+
+  static const errorImages = "${appImages}404_image.png";
 }

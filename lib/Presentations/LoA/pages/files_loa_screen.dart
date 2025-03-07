@@ -5,6 +5,7 @@ import 'package:SummitDocs/commons/widgets/app_text.dart';
 import 'package:SummitDocs/core/config/theme/app_colors.dart';
 import 'package:SummitDocs/Presentations/LoA/bloc/loa_bloc.dart';
 import 'package:SummitDocs/Presentations/LoA/pages/loa_entity.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../commons/constants/string.dart';
 import '../../../commons/widgets/app_datatable.dart';
@@ -46,7 +47,11 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
       appBar: AppBar(
         surfaceTintColor: Colors.transparent,
         centerTitle: true,
-        title: Image.asset(AppString.logoApp),
+        title: SvgPicture.asset(
+          AppString.logoApp,
+          width: 45,
+          height: 45,
+        ),
         backgroundColor: AppColors.background,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(4.0),

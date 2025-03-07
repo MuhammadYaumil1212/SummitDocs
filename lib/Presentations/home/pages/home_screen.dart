@@ -1,4 +1,5 @@
 import 'package:SummitDocs/Presentations/dashboard/pages/dashboard_screen.dart';
+import 'package:SummitDocs/Presentations/error/error_screen.dart';
 import 'package:SummitDocs/Presentations/files/pages/files_screen.dart';
 import 'package:SummitDocs/Presentations/settings/pages/settings_screen.dart';
 import 'package:SummitDocs/commons/constants/string.dart';
@@ -74,6 +75,12 @@ class _HomeScreenState extends State<HomeScreen> {
       /// Use bloc builder if you wanna used the state
       appWidget: BlocBuilder<HomeBloc, HomeState>(
         builder: (context, state) {
+          if (state is NetworkUnavailable) {
+            return ErrorScreen(
+              imageString: AppString.errorImages,
+              errorMessage: "Halaman tidak ditemukan",
+            );
+          }
           return PageView(
             physics: const NeverScrollableScrollPhysics(),
             controller: pageController,
