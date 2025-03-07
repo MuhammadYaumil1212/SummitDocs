@@ -10,16 +10,19 @@ class AppButton extends StatelessWidget {
   final Color? backgroundColor;
   final Color? borderColor;
   final FontWeight? fontWeight;
+  final IconData? icon;
+  final Color? iconColor;
 
-  const AppButton({
-    super.key,
-    required this.text,
-    required this.action,
-    this.fontColor,
-    this.backgroundColor,
-    this.borderColor,
-    this.fontWeight,
-  });
+  const AppButton(
+      {super.key,
+      required this.text,
+      required this.action,
+      this.fontColor,
+      this.backgroundColor,
+      this.borderColor,
+      this.fontWeight,
+      this.iconColor,
+      this.icon});
 
   @override
   Widget build(BuildContext context) {
@@ -32,11 +35,27 @@ class AppButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
         ),
       ),
-      child: AppText(
-        text: text,
-        fontWeight: fontWeight ?? FontWeight.w700,
-        fontColor: fontColor ?? Colors.white,
-      ),
+      child: icon != ""
+          ? Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  icon,
+                  color: iconColor,
+                ),
+                const SizedBox(width: 5),
+                AppText(
+                  text: text,
+                  fontWeight: fontWeight ?? FontWeight.w700,
+                  fontColor: fontColor ?? Colors.white,
+                ),
+              ],
+            )
+          : AppText(
+              text: text,
+              fontWeight: fontWeight ?? FontWeight.w700,
+              fontColor: fontColor ?? Colors.white,
+            ),
     );
   }
 }
