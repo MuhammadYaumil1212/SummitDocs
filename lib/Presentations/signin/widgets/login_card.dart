@@ -1,7 +1,9 @@
+import 'package:SummitDocs/Presentations/signup/pages/signup_screen.dart';
 import 'package:SummitDocs/commons/constants/string.dart';
 import 'package:SummitDocs/commons/widgets/app_button.dart';
 import 'package:SummitDocs/commons/widgets/app_text.dart';
 import 'package:SummitDocs/commons/widgets/app_textfield.dart';
+import 'package:SummitDocs/core/helper/navigation/app_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -75,7 +77,17 @@ class _ProfileCardState extends State<LoginCard> {
             ],
           ),
           const SizedBox(height: 20),
-          AppButton(text: "Login", action: () {})
+          AppButton(text: "Login", action: () {}),
+          AppButton(
+            action: () {
+              AppNavigator.push(context, SignupScreen());
+            },
+            text: "atau Register",
+            backgroundColor: AppColors.background,
+            fontColor: Colors.black,
+            fontWeight: FontWeight.w400,
+            borderColor: AppColors.grayBackground3,
+          )
         ],
       ),
     );
