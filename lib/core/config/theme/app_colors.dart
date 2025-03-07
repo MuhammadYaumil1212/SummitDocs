@@ -7,6 +7,7 @@ class AppColors {
 
   static const grayBackground = Color(0xffF4F4F5);
   static const grayBackground2 = Color(0xffE4E4E7);
+  static const grayBackground3 = Color(0xff71717A);
 
   static const greenSuccess = Color(0xff00C01A);
   static const redFailed = Color(0xffFF0000);

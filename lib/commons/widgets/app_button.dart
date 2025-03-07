@@ -9,6 +9,7 @@ class AppButton extends StatelessWidget {
   final Color? fontColor;
   final Color? backgroundColor;
   final Color? borderColor;
+  final FontWeight? fontWeight;
 
   const AppButton({
     super.key,
@@ -17,6 +18,7 @@ class AppButton extends StatelessWidget {
     this.fontColor,
     this.backgroundColor,
     this.borderColor,
+    this.fontWeight,
   });
 
   @override
@@ -32,7 +34,7 @@ class AppButton extends StatelessWidget {
       ),
       child: AppText(
         text: text,
-        fontWeight: FontWeight.w700,
+        fontWeight: fontWeight ?? FontWeight.w700,
         fontColor: fontColor ?? Colors.white,
       ),
     );

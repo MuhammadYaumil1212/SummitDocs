@@ -1,3 +1,4 @@
+import 'package:SummitDocs/commons/widgets/app_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:SummitDocs/commons/widgets/app_button.dart';
 import 'package:SummitDocs/commons/widgets/app_text.dart';
@@ -171,12 +172,30 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                _buildTextField("Paper ID", paperIdController),
-                _buildTextField("Judul Paper", titleController),
-                _buildTextField("Judul Conference", conferenceTitleController),
-                _buildTextField("Penulis", writerController),
-                _buildTextField("Waktu", timeController),
-                _buildTextField("Tanggal dan Tempat", datePlaceController),
+                AppTextfield(
+                  hint: "Paper ID",
+                  controller: paperIdController,
+                ),
+                AppTextfield(
+                  hint: "Judul Paper",
+                  controller: titleController,
+                ),
+                AppTextfield(
+                  hint: "Judul Conference",
+                  controller: conferenceTitleController,
+                ),
+                AppTextfield(
+                  hint: "Penulis",
+                  controller: writerController,
+                ),
+                AppTextfield(
+                  hint: "Waktu",
+                  controller: timeController,
+                ),
+                AppTextfield(
+                  hint: "Tanggal dan Tempat",
+                  controller: datePlaceController,
+                ),
                 const SizedBox(height: 10),
                 SizedBox(
                   width: MediaQuery.of(context).size.width,
@@ -199,33 +218,6 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
           ),
         );
       },
-    );
-  }
-
-  Widget _buildTextField(String hint, TextEditingController controller) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5),
-      child: TextField(
-        controller: controller,
-        style: TextStyle(color: Colors.black),
-        decoration: InputDecoration(
-          filled: true,
-          fillColor: Colors.white, // Background putih
-          hintStyle: TextStyle(color: Colors.grey),
-          hintText: hint,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10)),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.grey),
-            borderRadius: BorderRadius.all(Radius.circular(10)),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.grey, width: 2),
-            borderRadius: BorderRadius.all(Radius.circular(10)),
-          ),
-        ),
-      ),
     );
   }
 }

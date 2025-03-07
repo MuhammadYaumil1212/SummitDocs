@@ -25,4 +25,6 @@ class AppString {
 
   static const infoIcon = "${appIcons}info_icon.svg";
   static const downloadIcon = "${appIcons}download_icon.svg";
+
+  static const lockIcon = "${appIcons}lock_icon.svg";
 }
