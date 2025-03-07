@@ -173,26 +173,50 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 AppTextfield(
+                  prefixIcon: Icon(
+                    Icons.pin_outlined,
+                    color: AppColors.grayBackground3,
+                  ),
                   hint: "Paper ID",
                   controller: paperIdController,
                 ),
                 AppTextfield(
+                  prefixIcon: Icon(
+                    Icons.title,
+                    color: AppColors.grayBackground3,
+                  ),
                   hint: "Judul Paper",
                   controller: titleController,
                 ),
                 AppTextfield(
+                  prefixIcon: Icon(
+                    Icons.title,
+                    color: AppColors.grayBackground3,
+                  ),
                   hint: "Judul Conference",
                   controller: conferenceTitleController,
                 ),
                 AppTextfield(
+                  prefixIcon: Icon(
+                    Icons.person_outline,
+                    color: AppColors.grayBackground3,
+                  ),
                   hint: "Penulis",
                   controller: writerController,
                 ),
                 AppTextfield(
+                  prefixIcon: Icon(
+                    Icons.access_time_outlined,
+                    color: AppColors.grayBackground3,
+                  ),
                   hint: "Waktu",
                   controller: timeController,
                 ),
                 AppTextfield(
+                  prefixIcon: Icon(
+                    Icons.calendar_today_outlined,
+                    color: AppColors.grayBackground3,
+                  ),
                   hint: "Tanggal dan Tempat",
                   controller: datePlaceController,
                 ),
