@@ -38,20 +38,23 @@ class SplashScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Center(
-                  child: Image.asset(
-                    AppString.logoApp,
-                    width: 200,
-                    height: 200,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SvgPicture.asset(
+                        AppString.logoApp,
+                        width: 45,
+                        height: 45,
+                      ),
+                      const SizedBox(width: 10),
+                      SvgPicture.asset(
+                        AppString.logoTextApp,
+                        width: 35,
+                        height: 35,
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 20),
-                Center(
-                  child: AppText(
-                    text: AppString.ApplicationName,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                )
               ],
             );
           },

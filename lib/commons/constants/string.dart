@@ -5,7 +5,8 @@ class AppString {
 
   static const appImages = "assets/images/";
   static const appIcons = "assets/icons/";
-  static const logoApp = "${appImages}logo_1.png";
+  static const logoApp = "${appImages}logo_1.svg";
+  static const logoTextApp = "${appImages}logo_2.svg";
 
   static const icFilesOutlined = "${appIcons}file_outlined.svg";
   static const icFilesSolid = "${appIcons}file_solid.svg";

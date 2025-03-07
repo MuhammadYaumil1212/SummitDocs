@@ -49,7 +49,11 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         surfaceTintColor: Colors.transparent,
         centerTitle: true,
-        title: Image.asset(AppString.logoApp),
+        title: SvgPicture.asset(
+          AppString.logoApp,
+          width: 45,
+          height: 45,
+        ),
         backgroundColor: AppColors.background,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(4.0),
