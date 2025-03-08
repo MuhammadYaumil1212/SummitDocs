@@ -15,7 +15,7 @@ void main() async {
   setupServiceLocator();
   await AppStorage.init();
   final storage = AppStorage.instance;
-  // storage.put(AppString.TOKEN_KEY, "123");
+  storage.put(AppString.TOKEN_KEY, "123");
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(const MyApp());
 }

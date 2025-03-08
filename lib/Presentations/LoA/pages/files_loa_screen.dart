@@ -85,10 +85,11 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
           fontWeight: FontWeight.w700,
           fontSize: 30,
         ),
-        AppButton(
+        FileAddButton(
+          onTap: () => _showAddDataDialog(context),
+          color: AppColors.primary,
           text: "Tambah Data",
-          action: () => _showAddDataDialog(context),
-        ),
+        )
       ],
     );
   }

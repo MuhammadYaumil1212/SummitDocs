@@ -1,3 +1,4 @@
+import 'package:SummitDocs/Presentations/home/pages/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:SummitDocs/Presentations/signup/pages/signup_screen.dart';
 import 'package:SummitDocs/commons/widgets/app_button.dart';
@@ -35,6 +36,7 @@ class _LoginCardState extends State<LoginCard> {
   void _validateAndLogin() {
     if (_formKey.currentState!.validate()) {
       print("Login berhasil");
+      AppNavigator.pushAndRemove(context, HomeScreen());
     } else {
       print("Validasi gagal");
       FocusScope.of(context).requestFocus(FocusNode());

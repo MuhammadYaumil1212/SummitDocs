@@ -29,6 +29,7 @@ class AppButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: action,
       style: ElevatedButton.styleFrom(
+        padding: EdgeInsets.zero,
         backgroundColor: backgroundColor ?? Theme.of(context).primaryColor,
         side: BorderSide(color: borderColor ?? Colors.transparent),
         shape: RoundedRectangleBorder(
@@ -51,10 +52,12 @@ class AppButton extends StatelessWidget {
                 ),
               ],
             )
-          : AppText(
-              text: text,
-              fontWeight: fontWeight ?? FontWeight.w700,
-              fontColor: fontColor ?? Colors.white,
+          : Center(
+              child: AppText(
+                text: text,
+                fontWeight: fontWeight ?? FontWeight.w700,
+                fontColor: fontColor ?? Colors.white,
+              ),
             ),
     );
   }
@@ -93,6 +96,46 @@ class ActionButton extends StatelessWidget {
             icon,
             width: 20,
             height: 20,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class FileAddButton extends StatelessWidget {
+  final String text;
+  final VoidCallback onTap;
+  final Color color;
+
+  const FileAddButton({
+    Key? key,
+    this.text = "Tambah Data",
+    required this.onTap,
+    this.color = Colors.blue,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width * 0.35,
+        height: MediaQuery.of(context).size.width * 0.10,
+        child: Container(
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          padding: const EdgeInsets.all(8.0),
+          child: Center(
+            child: Text(
+              text,
+              style: const TextStyle(
+                fontWeight: FontWeight.w700,
+                color: Colors.white,
+              ),
+            ),
           ),
         ),
       ),
