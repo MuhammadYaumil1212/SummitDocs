@@ -1,15 +1,10 @@
+import 'package:flutter/material.dart';
 import 'package:SummitDocs/Presentations/signin/pages/signin_screen.dart';
-import 'package:SummitDocs/Presentations/signup/pages/signup_screen.dart';
-import 'package:SummitDocs/commons/constants/string.dart';
 import 'package:SummitDocs/commons/widgets/app_button.dart';
 import 'package:SummitDocs/commons/widgets/app_text.dart';
 import 'package:SummitDocs/commons/widgets/app_textfield.dart';
 import 'package:SummitDocs/core/helper/navigation/app_navigation.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-
 import '../../../core/config/theme/app_colors.dart';
-import 'bullet_text.dart';
 
 class RegisterCard extends StatefulWidget {
   const RegisterCard({super.key});
@@ -19,8 +14,42 @@ class RegisterCard extends StatefulWidget {
 }
 
 class _RegisterCardState extends State<RegisterCard> {
-  TextEditingController paperIdController = TextEditingController();
-  TextEditingController titleController = TextEditingController();
+  late final TextEditingController _email;
+  late final TextEditingController _confirmEmail;
+  late final TextEditingController _username;
+  late final TextEditingController _password;
+  late final TextEditingController _confirmPassword;
+
+  @override
+  void initState() {
+    super.initState();
+    _email = TextEditingController();
+    _confirmEmail = TextEditingController();
+    _username = TextEditingController();
+    _password = TextEditingController();
+    _confirmPassword = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _email.dispose();
+    _confirmEmail.dispose();
+    _username.dispose();
+    _password.dispose();
+    _confirmPassword.dispose();
+    super.dispose();
+  }
+
+  Widget _buildTextField(
+      String hint, TextEditingController controller, IconData icon,
+      {bool obscureText = false}) {
+    return AppTextfield(
+      hint: hint,
+      controller: controller,
+      obscureText: obscureText,
+      prefixIcon: Icon(icon, color: AppColors.grayBackground3),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,97 +71,20 @@ class _RegisterCardState extends State<RegisterCard> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const AppText(
-            text: "Register",
-            fontWeight: FontWeight.w700,
-            fontSize: 18,
-          ),
+              text: "Register", fontWeight: FontWeight.w700, fontSize: 18),
           const AppText(
-            text: "Daftar Akun",
-            fontWeight: FontWeight.w400,
-            fontSize: 16,
-          ),
+              text: "Daftar Akun", fontWeight: FontWeight.w400, fontSize: 16),
           const SizedBox(height: 20),
-          AppTextfield(
-            hint: "Masukkan Email",
-            controller: TextEditingController(),
-            prefixIcon: Icon(
-              Icons.person_outline,
-              color: AppColors.grayBackground3,
-            ),
-          ),
-          AppTextfield(
-            hint: "Konfirmasi ulang Email",
-            controller: TextEditingController(),
-            prefixIcon: Icon(
-              Icons.person_outline,
-              color: AppColors.grayBackground3,
-            ),
-          ),
-          AppTextfield(
-            hint: "Masukkan username",
-            controller: TextEditingController(),
-            prefixIcon: Icon(
-              Icons.person_outline,
-              color: AppColors.grayBackground3,
-            ),
-          ),
-          AppTextfield(
-            hint: "Kata Sandi Baru",
-            controller: TextEditingController(),
-            obscureText: true,
-            prefixIcon: Icon(
+          _buildTextField("Masukkan Email", _email, Icons.person_outline),
+          _buildTextField(
+              "Konfirmasi ulang Email", _confirmEmail, Icons.person_outline),
+          _buildTextField("Masukkan username", _username, Icons.person_outline),
+          _buildTextField("Kata Sandi Baru", _password, Icons.lock_outline,
+              obscureText: true),
+          const PasswordRulesWidget(),
+          _buildTextField("Konfirmasi Kata Sandi Baru", _confirmPassword,
               Icons.lock_outline,
-              color: AppColors.grayBackground3,
-            ),
-          ),
-          RichText(
-            text: TextSpan(
-              style: TextStyle(
-                fontSize: 15,
-                color: AppColors.grayBackground4,
-              ),
-              children: [
-                const TextSpan(
-                  text: '*',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                const TextSpan(
-                  text: 'Syarat kata sandi:\n',
-                ),
-                WidgetSpan(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 10, top: 2),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
-                        AppText(
-                          text: '• Minimal 8 karakter',
-                          fontColor: AppColors.grayBackground4,
-                        ),
-                        AppText(
-                          text: '• Setidaknya satu huruf besar',
-                          fontColor: AppColors.grayBackground4,
-                        ),
-                        AppText(
-                          text: '• Setidaknya satu angka',
-                          fontColor: AppColors.grayBackground4,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          AppTextfield(
-            hint: "Konfirmasi Kata Sandi Baru",
-            controller: TextEditingController(),
-            obscureText: true,
-            prefixIcon: Icon(
-              Icons.lock_outline,
-              color: AppColors.grayBackground3,
-            ),
-          ),
+              obscureText: true),
           const SizedBox(height: 20),
           AppButton(text: "Register", action: () {}),
           AppButton(
@@ -148,8 +100,32 @@ class _RegisterCardState extends State<RegisterCard> {
             fontColor: Colors.black,
             fontWeight: FontWeight.w400,
             borderColor: AppColors.grayBackground3,
-          )
+          ),
         ],
+      ),
+    );
+  }
+}
+
+class PasswordRulesWidget extends StatelessWidget {
+  const PasswordRulesWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final rules = [
+      '• Minimal 8 karakter',
+      '• Setidaknya satu huruf besar',
+      '• Setidaknya satu angka',
+    ];
+
+    return Padding(
+      padding: const EdgeInsets.only(left: 10, top: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: rules
+            .map((rule) =>
+                AppText(text: rule, fontColor: AppColors.grayBackground4))
+            .toList(),
       ),
     );
   }

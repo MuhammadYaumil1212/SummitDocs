@@ -1,24 +1,46 @@
+import 'package:flutter/material.dart';
 import 'package:SummitDocs/Presentations/signup/pages/signup_screen.dart';
-import 'package:SummitDocs/commons/constants/string.dart';
 import 'package:SummitDocs/commons/widgets/app_button.dart';
 import 'package:SummitDocs/commons/widgets/app_text.dart';
 import 'package:SummitDocs/commons/widgets/app_textfield.dart';
 import 'package:SummitDocs/core/helper/navigation/app_navigation.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-
 import '../../../core/config/theme/app_colors.dart';
 
 class LoginCard extends StatefulWidget {
   const LoginCard({super.key});
 
   @override
-  State<LoginCard> createState() => _ProfileCardState();
+  State<LoginCard> createState() => _LoginCardState();
 }
 
-class _ProfileCardState extends State<LoginCard> {
-  TextEditingController paperIdController = TextEditingController();
-  TextEditingController titleController = TextEditingController();
+class _LoginCardState extends State<LoginCard> {
+  late final TextEditingController _username;
+  late final TextEditingController _password;
+
+  @override
+  void initState() {
+    super.initState();
+    _username = TextEditingController();
+    _password = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _username.dispose();
+    _password.dispose();
+    super.dispose();
+  }
+
+  Widget _buildTextField(
+      String hint, TextEditingController controller, IconData icon,
+      {bool obscureText = false}) {
+    return AppTextfield(
+      hint: hint,
+      controller: controller,
+      obscureText: obscureText,
+      prefixIcon: Icon(icon, color: AppColors.grayBackground3),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,41 +62,20 @@ class _ProfileCardState extends State<LoginCard> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const AppText(
-            text: "Login",
-            fontWeight: FontWeight.w700,
-            fontSize: 18,
-          ),
+              text: "Login", fontWeight: FontWeight.w700, fontSize: 18),
           const AppText(
-            text: "Login dengan akun yang ada",
-            fontWeight: FontWeight.w400,
-            fontSize: 16,
-          ),
+              text: "Login dengan akun yang ada",
+              fontWeight: FontWeight.w400,
+              fontSize: 16),
           const SizedBox(height: 20),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              AppTextfield(
-                hint: "username",
-                controller: TextEditingController(),
-                prefixIcon: Icon(
-                  Icons.person_outline,
-                  color: AppColors.grayBackground3,
-                ),
-              ),
-              AppTextfield(
-                hint: "Password",
-                controller: TextEditingController(),
-                obscureText: true,
-                prefixIcon: Icon(
-                  Icons.lock_outline,
-                  color: AppColors.grayBackground3,
-                ),
-              ),
-              AppText(
+          _buildTextField("Username", _username, Icons.person_outline),
+          _buildTextField("Password", _password, Icons.lock_outline,
+              obscureText: true),
+          Align(
+            alignment: Alignment.centerRight,
+            child: AppText(
                 text: "Lupa Kata Sandi ?",
-                fontColor: AppColors.grayBackground3,
-              )
-            ],
+                fontColor: AppColors.grayBackground3),
           ),
           const SizedBox(height: 20),
           AppButton(text: "Login", action: () {}),
@@ -87,7 +88,7 @@ class _ProfileCardState extends State<LoginCard> {
             fontColor: Colors.black,
             fontWeight: FontWeight.w400,
             borderColor: AppColors.grayBackground3,
-          )
+          ),
         ],
       ),
     );
