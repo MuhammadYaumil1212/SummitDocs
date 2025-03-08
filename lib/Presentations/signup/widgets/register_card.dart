@@ -92,7 +92,7 @@ class _RegisterCardState extends State<RegisterCard> {
               AppNavigator.pushAndRemove(
                 context,
                 SigninScreen(),
-                transitionType: TransitionType.fade,
+                slideType: SlideType.left,
               );
             },
             text: "atau Login",

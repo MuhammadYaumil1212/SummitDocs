@@ -9,6 +9,7 @@ class AppTextfield extends StatefulWidget {
   final Function(String)? onChanged;
   final Function()? onTap;
   final bool readOnly;
+  final String? Function(String?)? validator;
 
   const AppTextfield({
     Key? key,
@@ -20,6 +21,7 @@ class AppTextfield extends StatefulWidget {
     this.onChanged,
     this.onTap,
     this.readOnly = false,
+    this.validator,
   }) : super(key: key);
 
   @override
@@ -39,13 +41,14 @@ class _AppTextfieldState extends State<AppTextfield> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5),
-      child: TextField(
+      child: TextFormField(
         controller: widget.controller,
         keyboardType: widget.keyboardType,
         obscureText: _obscureText,
         onChanged: widget.onChanged,
         onTap: widget.onTap,
         readOnly: widget.readOnly,
+        validator: widget.validator,
         style: const TextStyle(color: Colors.black),
         decoration: InputDecoration(
           filled: true,
@@ -61,6 +64,14 @@ class _AppTextfieldState extends State<AppTextfield> {
           ),
           focusedBorder: const OutlineInputBorder(
             borderSide: BorderSide(color: Colors.grey, width: 2),
+            borderRadius: BorderRadius.all(Radius.circular(10)),
+          ),
+          errorBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.red, width: 2),
+            borderRadius: BorderRadius.all(Radius.circular(10)),
+          ),
+          focusedErrorBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.red, width: 2),
             borderRadius: BorderRadius.all(Radius.circular(10)),
           ),
           prefixIcon: widget.prefixIcon,

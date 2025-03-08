@@ -7,43 +7,54 @@ enum TransitionType {
   slideAndFade,
 }
 
+enum SlideType {
+  left,
+  right,
+}
+
 /// if you wanna change the transition,
 /// just add new transition type and add it to _buildTransition
 class AppNavigator {
-  static void pushReplacement(BuildContext context, Widget widget,
-      {TransitionType transitionType = TransitionType.slide}) {
+  static void pushReplacement(
+    BuildContext context,
+    Widget widget, {
+    TransitionType transitionType = TransitionType.slide,
+    SlideType slideType = SlideType.right,
+  }) {
     Navigator.of(context).pushReplacement(
       PageRouteBuilder(
         transitionDuration: Duration(milliseconds: 300),
         pageBuilder: (context, animation, secondaryAnimation) => widget,
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return _buildTransition(animation, child, transitionType);
+          return _buildTransition(animation, child, transitionType, slideType);
         },
       ),
     );
   }
 
   static void push(BuildContext context, Widget widget,
-      {TransitionType transitionType = TransitionType.slide}) {
+      {TransitionType transitionType = TransitionType.slide,
+      SlideType slideType = SlideType.right}) {
     Navigator.of(context).push(
       PageRouteBuilder(
         transitionDuration: Duration(milliseconds: 300),
         pageBuilder: (context, animation, secondaryAnimation) => widget,
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return _buildTransition(animation, child, transitionType);
+          return _buildTransition(animation, child, transitionType, slideType);
         },
       ),
     );
   }
 
   static void pushAndRemove(BuildContext context, Widget widget,
-      {TransitionType transitionType = TransitionType.slide}) {
+      {TransitionType transitionType = TransitionType.slide,
+      SlideType slideType = SlideType.right}) {
     Navigator.of(context).pushAndRemoveUntil(
       PageRouteBuilder(
         transitionDuration: Duration(milliseconds: 300),
         pageBuilder: (context, animation, secondaryAnimation) => widget,
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return _buildTransition(animation, child, transitionType);
+          return _buildTransition(animation, child, transitionType, slideType);
         },
       ),
       (Route<dynamic> route) => false,
@@ -51,9 +62,12 @@ class AppNavigator {
   }
 
   static Widget _buildTransition(Animation<double> animation, Widget child,
-      TransitionType transitionType) {
-    const begin = Offset(1.0, 0.0); // Mulai dari kanan layar
-    const end = Offset.zero; // Berakhir di posisi normal
+      TransitionType transitionType, SlideType slideType) {
+    Offset begin = slideType == SlideType.right
+        ? const Offset(1.0, 0.0) // Dari kanan ke kiri (default)
+        : const Offset(-1.0, 0.0); // Dari kiri ke kanan
+
+    const end = Offset.zero;
     const curve = Curves.easeInOut;
 
     var slideTween =

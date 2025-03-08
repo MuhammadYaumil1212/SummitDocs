@@ -55,17 +55,20 @@ class _SigninScreenState extends State<SigninScreen> {
       ),
 
       /// Use bloc builder if you wanna used the state
-      appWidget: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Center(
-              child: LoginCard(),
-            ),
-          )
-        ],
+      appWidget: Center(
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: LoginCard(),
+              )
+            ],
+          ),
+        ),
       ),
     );
   }

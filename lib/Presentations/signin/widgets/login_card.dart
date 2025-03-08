@@ -16,6 +16,7 @@ class LoginCard extends StatefulWidget {
 class _LoginCardState extends State<LoginCard> {
   late final TextEditingController _username;
   late final TextEditingController _password;
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -31,6 +32,15 @@ class _LoginCardState extends State<LoginCard> {
     super.dispose();
   }
 
+  void _validateAndLogin() {
+    if (_formKey.currentState!.validate()) {
+      print("Login berhasil");
+    } else {
+      print("Validasi gagal");
+      FocusScope.of(context).requestFocus(FocusNode());
+    }
+  }
+
   Widget _buildTextField(
       String hint, TextEditingController controller, IconData icon,
       {bool obscureText = false}) {
@@ -39,6 +49,26 @@ class _LoginCardState extends State<LoginCard> {
       controller: controller,
       obscureText: obscureText,
       prefixIcon: Icon(icon, color: AppColors.grayBackground3),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return '$hint tidak boleh kosong';
+        }
+        if (hint == "Username" && value.length < 4) {
+          return 'Username minimal 4 karakter';
+        }
+        if (hint == "Password") {
+          if (value.length < 8) {
+            return 'Password minimal 8 karakter';
+          }
+          if (!RegExp(r'(?=.*[A-Z])').hasMatch(value)) {
+            return 'Password harus mengandung setidaknya satu huruf besar';
+          }
+          if (!RegExp(r'(?=.*\d)').hasMatch(value)) {
+            return 'Password harus mengandung setidaknya satu angka';
+          }
+        }
+        return null;
+      },
     );
   }
 
@@ -58,38 +88,53 @@ class _LoginCardState extends State<LoginCard> {
         ],
       ),
       padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const AppText(
-              text: "Login", fontWeight: FontWeight.w700, fontSize: 18),
-          const AppText(
-              text: "Login dengan akun yang ada",
-              fontWeight: FontWeight.w400,
-              fontSize: 16),
-          const SizedBox(height: 20),
-          _buildTextField("Username", _username, Icons.person_outline),
-          _buildTextField("Password", _password, Icons.lock_outline,
-              obscureText: true),
-          Align(
-            alignment: Alignment.centerRight,
-            child: AppText(
+      child: Form(
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const AppText(
+              text: "Login",
+              fontWeight: FontWeight.w700,
+              fontSize: 18,
+            ),
+            const AppText(
+                text: "Login dengan akun yang ada",
+                fontWeight: FontWeight.w400,
+                fontSize: 16),
+            const SizedBox(height: 20),
+            _buildTextField(
+              "Username",
+              _username,
+              Icons.person_outline,
+            ),
+            _buildTextField(
+              "Password",
+              _password,
+              Icons.lock_outline,
+              obscureText: true,
+            ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: AppText(
                 text: "Lupa Kata Sandi ?",
-                fontColor: AppColors.grayBackground3),
-          ),
-          const SizedBox(height: 20),
-          AppButton(text: "Login", action: () {}),
-          AppButton(
-            action: () {
-              AppNavigator.push(context, SignupScreen());
-            },
-            text: "atau Register",
-            backgroundColor: AppColors.background,
-            fontColor: Colors.black,
-            fontWeight: FontWeight.w400,
-            borderColor: AppColors.grayBackground3,
-          ),
-        ],
+                fontColor: AppColors.grayBackground3,
+              ),
+            ),
+            const SizedBox(height: 20),
+            AppButton(text: "Login", action: _validateAndLogin),
+            AppButton(
+              action: () {
+                AppNavigator.push(context, SignupScreen());
+              },
+              text: "atau Register",
+              backgroundColor: AppColors.background,
+              fontColor: Colors.black,
+              fontWeight: FontWeight.w400,
+              borderColor: AppColors.grayBackground3,
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -11,6 +11,7 @@ class AppScaffold<BlocState extends Equatable, BlocEvent extends Equatable,
   final Widget? bottomAppbar;
   final PreferredSizeWidget? appBar;
   final Color? backgroundColor;
+  final bool? resizeToAvoidBottom;
 
   const AppScaffold({
     super.key,
@@ -20,6 +21,7 @@ class AppScaffold<BlocState extends Equatable, BlocEvent extends Equatable,
     required this.listener,
     required this.bloc,
     this.bottomAppbar,
+    this.resizeToAvoidBottom,
   });
 
   @override
@@ -32,6 +34,7 @@ class AppScaffold<BlocState extends Equatable, BlocEvent extends Equatable,
         child: Scaffold(
           appBar: appBar,
           bottomNavigationBar: bottomAppbar,
+          resizeToAvoidBottomInset: resizeToAvoidBottom,
           backgroundColor: backgroundColor ?? AppColors.secondaryBackground,
           body: SafeArea(
             child: appWidget,
