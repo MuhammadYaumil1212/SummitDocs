@@ -19,6 +19,7 @@ class _RegisterCardState extends State<RegisterCard> {
   late final TextEditingController _username;
   late final TextEditingController _password;
   late final TextEditingController _confirmPassword;
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -40,6 +41,15 @@ class _RegisterCardState extends State<RegisterCard> {
     super.dispose();
   }
 
+  void _validateAndRegister() {
+    if (_formKey.currentState!.validate()) {
+      print("Register berhasil");
+    } else {
+      print("Validasi gagal");
+      FocusScope.of(context).requestFocus(FocusNode());
+    }
+  }
+
   Widget _buildTextField(
       String hint, TextEditingController controller, IconData icon,
       {bool obscureText = false}) {
@@ -48,6 +58,26 @@ class _RegisterCardState extends State<RegisterCard> {
       controller: controller,
       obscureText: obscureText,
       prefixIcon: Icon(icon, color: AppColors.grayBackground3),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return '$hint tidak boleh kosong';
+        }
+        if (hint == "Username" && value.length < 4) {
+          return 'Username minimal 4 karakter';
+        }
+        if (hint == "Password") {
+          if (value.length < 8) {
+            return 'Password minimal 8 karakter';
+          }
+          if (!RegExp(r'(?=.*[A-Z])').hasMatch(value)) {
+            return 'Password harus mengandung setidaknya satu huruf besar';
+          }
+          if (!RegExp(r'(?=.*\d)').hasMatch(value)) {
+            return 'Password harus mengandung setidaknya satu angka';
+          }
+        }
+        return null;
+      },
     );
   }
 
@@ -67,41 +97,45 @@ class _RegisterCardState extends State<RegisterCard> {
         ],
       ),
       padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const AppText(
-              text: "Register", fontWeight: FontWeight.w700, fontSize: 18),
-          const AppText(
-              text: "Daftar Akun", fontWeight: FontWeight.w400, fontSize: 16),
-          const SizedBox(height: 20),
-          _buildTextField("Masukkan Email", _email, Icons.person_outline),
-          _buildTextField(
-              "Konfirmasi ulang Email", _confirmEmail, Icons.person_outline),
-          _buildTextField("Masukkan username", _username, Icons.person_outline),
-          _buildTextField("Kata Sandi Baru", _password, Icons.lock_outline,
-              obscureText: true),
-          const PasswordRulesWidget(),
-          _buildTextField("Konfirmasi Kata Sandi Baru", _confirmPassword,
-              Icons.lock_outline,
-              obscureText: true),
-          const SizedBox(height: 20),
-          AppButton(text: "Register", action: () {}),
-          AppButton(
-            action: () {
-              AppNavigator.pushAndRemove(
-                context,
-                SigninScreen(),
-                slideType: SlideType.left,
-              );
-            },
-            text: "atau Login",
-            backgroundColor: AppColors.background,
-            fontColor: Colors.black,
-            fontWeight: FontWeight.w400,
-            borderColor: AppColors.grayBackground3,
-          ),
-        ],
+      child: Form(
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const AppText(
+                text: "Register", fontWeight: FontWeight.w700, fontSize: 18),
+            const AppText(
+                text: "Daftar Akun", fontWeight: FontWeight.w400, fontSize: 16),
+            const SizedBox(height: 20),
+            _buildTextField("Masukkan Email", _email, Icons.person_outline),
+            _buildTextField(
+                "Konfirmasi ulang Email", _confirmEmail, Icons.person_outline),
+            _buildTextField(
+                "Masukkan username", _username, Icons.person_outline),
+            _buildTextField("Kata Sandi Baru", _password, Icons.lock_outline,
+                obscureText: true),
+            const PasswordRulesWidget(),
+            _buildTextField("Konfirmasi Kata Sandi Baru", _confirmPassword,
+                Icons.lock_outline,
+                obscureText: true),
+            const SizedBox(height: 20),
+            AppButton(text: "Register", action: _validateAndRegister),
+            AppButton(
+              action: () {
+                AppNavigator.pushAndRemove(
+                  context,
+                  SigninScreen(),
+                  slideType: SlideType.left,
+                );
+              },
+              text: "atau Login",
+              backgroundColor: AppColors.background,
+              fontColor: Colors.black,
+              fontWeight: FontWeight.w400,
+              borderColor: AppColors.grayBackground3,
+            ),
+          ],
+        ),
       ),
     );
   }
