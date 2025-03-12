@@ -8,3 +8,5 @@ final class SplashscreenInitial extends SplashscreenState {}
 final class Authenticated extends SplashscreenState {}
 
 final class UnAuthenticated extends SplashscreenState {}
+
+final class IsSuperAdmin extends SplashscreenState {}

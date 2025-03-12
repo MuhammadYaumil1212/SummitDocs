@@ -1,6 +1,5 @@
 import 'package:SummitDocs/Presentations/home/pages/home_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:SummitDocs/Presentations/signup/pages/signup_screen.dart';
 import 'package:SummitDocs/commons/widgets/app_button.dart';
 import 'package:SummitDocs/commons/widgets/app_text.dart';
 import 'package:SummitDocs/commons/widgets/app_textfield.dart';
@@ -125,16 +124,6 @@ class _LoginCardState extends State<LoginCard> {
             ),
             const SizedBox(height: 20),
             AppButton(text: "Login", action: _validateAndLogin),
-            AppButton(
-              action: () {
-                AppNavigator.push(context, SignupScreen());
-              },
-              text: "atau Register",
-              backgroundColor: AppColors.background,
-              fontColor: Colors.black,
-              fontWeight: FontWeight.w400,
-              borderColor: AppColors.grayBackground3,
-            ),
           ],
         ),
       ),

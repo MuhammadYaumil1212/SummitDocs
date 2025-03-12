@@ -1,9 +1,8 @@
+import 'package:SummitDocs/Presentations/home_admin/pages/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../../commons/constants/string.dart';
-import '../../../commons/widgets/app_text.dart';
 import '../../../core/helper/navigation/app_navigation.dart';
 import '../../home/pages/home_screen.dart';
 import '../../signin/pages/signin_screen.dart';
@@ -28,6 +27,13 @@ class SplashScreen extends StatelessWidget {
             context,
             transitionType: TransitionType.fade,
             HomeScreen(),
+          );
+        }
+        if (state is IsSuperAdmin) {
+          AppNavigator.pushReplacement(
+            context,
+            transitionType: TransitionType.fade,
+            HomeAdminScreen(),
           );
         }
       },

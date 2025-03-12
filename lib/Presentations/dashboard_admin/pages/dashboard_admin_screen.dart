@@ -1,20 +1,20 @@
-import 'package:SummitDocs/Presentations/dashboard/bloc/dashboard_bloc.dart';
 import 'package:SummitDocs/Presentations/dashboard/widgets/dashboard_card.dart';
+import 'package:SummitDocs/Presentations/dashboard_admin/bloc/dashboard_admin_bloc.dart';
 import 'package:SummitDocs/commons/widgets/app_scaffold.dart';
 import 'package:SummitDocs/commons/widgets/app_text.dart';
 import 'package:SummitDocs/commons/widgets/title.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class DashboardScreen extends StatefulWidget {
-  DashboardScreen({super.key});
+class DashboardAdminScreen extends StatefulWidget {
+  const DashboardAdminScreen({super.key});
 
   @override
-  State<DashboardScreen> createState() => _DashboardScreenState();
+  State<DashboardAdminScreen> createState() => _DashboardAdminScreenState();
 }
 
-class _DashboardScreenState extends State<DashboardScreen> {
-  final _bloc = DashboardBloc();
+class _DashboardAdminScreenState extends State<DashboardAdminScreen> {
+  final DashboardAdminBloc _bloc = DashboardAdminBloc();
   final ValueNotifier<bool> _isExpandedIcodsa = ValueNotifier(true);
 
   final ValueNotifier<bool> _isExpandedIcicyta = ValueNotifier(true);
@@ -22,8 +22,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     return AppScaffold(
       bloc: _bloc,
-      listener: (BuildContext context, DashboardState state) {},
-      appWidget: BlocBuilder<DashboardBloc, DashboardState>(
+      listener: (BuildContext context, DashboardAdminState state) {},
+      appWidget: BlocBuilder<DashboardAdminBloc, DashboardAdminState>(
         builder: (context, state) {
           return SingleChildScrollView(
             child: Padding(
@@ -33,7 +33,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 children: [
                   const HomeTitle(
                     title: "Selamat Datang",
-                    description: "Di Dashboard Super Admin",
+                    description: "Di Dashboard Admin",
                   ),
                   _buildExpansionTile("ICODSA", _isExpandedIcodsa),
                   _buildExpansionTile("ICICYTA", _isExpandedIcicyta),
