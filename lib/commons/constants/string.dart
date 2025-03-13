@@ -34,4 +34,6 @@ class AppString {
 
   static const personSolid = "${appIcons}person_outline.svg";
   static const personOutline = "${appIcons}person_solid.svg";
+
+  static const trashIcon = "${appIcons}trash_icon.svg";
 }

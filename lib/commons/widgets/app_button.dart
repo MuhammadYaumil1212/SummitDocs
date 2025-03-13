@@ -74,7 +74,7 @@ class ActionButton extends StatelessWidget {
     required this.icon,
     required this.action,
     this.fontColor,
-    this.backgroundColor,
+    this.backgroundColor = AppColors.primary,
     this.borderColor,
   });
 
@@ -84,7 +84,7 @@ class ActionButton extends StatelessWidget {
       onTap: action,
       child: Container(
         decoration: BoxDecoration(
-          color: AppColors.primary,
+          color: backgroundColor,
           shape: BoxShape.rectangle,
           borderRadius: BorderRadius.all(
             Radius.circular(6.0),
