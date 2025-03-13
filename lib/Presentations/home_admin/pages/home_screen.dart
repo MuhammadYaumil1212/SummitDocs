@@ -1,7 +1,9 @@
+import 'package:SummitDocs/Presentations/dashboard/pages/dashboard_screen.dart';
 import 'package:SummitDocs/Presentations/dashboard_admin/pages/dashboard_admin_screen.dart';
 import 'package:SummitDocs/Presentations/error/error_screen.dart';
 import 'package:SummitDocs/Presentations/files/pages/files_screen.dart';
 import 'package:SummitDocs/Presentations/home_admin/bloc/home_admin_bloc.dart';
+import 'package:SummitDocs/Presentations/manage_account/pages/manage_account.dart';
 import 'package:SummitDocs/Presentations/settings/pages/settings_screen.dart';
 import 'package:SummitDocs/commons/constants/string.dart';
 import 'package:SummitDocs/commons/widgets/app_text.dart';

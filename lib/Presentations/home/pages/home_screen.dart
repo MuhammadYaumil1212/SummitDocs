@@ -11,6 +11,7 @@ import 'package:flutter_svg/svg.dart';
 
 import '../../../commons/widgets/app_scaffold.dart';
 import '../../../core/helper/message/message.dart';
+import '../../manage_account/pages/manage_account.dart';
 import '../bloc/home_bloc.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -87,6 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               DashboardScreen(),
               const FilesScreen(),
+              const ManageAccount(),
               const SettingsScreen(),
             ],
           );
@@ -132,10 +134,18 @@ class _HomeScreenState extends State<HomeScreen> {
                 label: ''),
             BottomNavigationBarItem(
                 icon: _buildNavItem(
+                  AppString.personOutline,
+                  AppString.personSolid,
+                  "Kelola Akun",
+                  2,
+                ),
+                label: ''),
+            BottomNavigationBarItem(
+                icon: _buildNavItem(
                   AppString.icSettingSolid,
                   AppString.icSettingOutlined,
                   "Pengaturan",
-                  2,
+                  3,
                 ),
                 label: ''),
           ],

@@ -1,8 +1,11 @@
 import 'package:SummitDocs/Presentations/LoA/pages/files_loa_screen.dart';
 import 'package:SummitDocs/Presentations/files/pages/FeatureItem.dart';
 import 'package:SummitDocs/Presentations/files/widgets/feature_card.dart';
+import 'package:SummitDocs/Presentations/invoice/pages/files_invoice_screen.dart';
+import 'package:SummitDocs/Presentations/receipt/files_receipt_screen.dart';
 import 'package:SummitDocs/commons/constants/string.dart';
 import 'package:SummitDocs/commons/widgets/app_text.dart';
+import 'package:SummitDocs/core/helper/message/message.dart';
 import 'package:SummitDocs/core/helper/navigation/app_navigation.dart';
 import 'package:flutter/material.dart';
 
@@ -54,7 +57,19 @@ class FilesScreen extends StatelessWidget {
                 final feature = featuresIcodsa[index];
                 return Featurecard(
                   onClick: () {
-                    AppNavigator.push(context, FilesLoaScreen());
+                    switch (feature.id) {
+                      case 1:
+                        AppNavigator.push(context, FilesLoaScreen());
+                        break;
+                      case 2:
+                        AppNavigator.push(context, FilesInvoiceScreen());
+                        break;
+                      case 3:
+                        AppNavigator.push(context, FilesReceiptScreen());
+                        break;
+                      default:
+                        DisplayMessage.errorMessage("No Features", context);
+                    }
                   },
                   icon: feature.icon,
                   text: feature.text,

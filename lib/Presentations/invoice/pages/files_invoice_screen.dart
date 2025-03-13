@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class FilesReceiptScreen extends StatelessWidget {
-  const FilesReceiptScreen({super.key});
+class FilesInvoiceScreen extends StatelessWidget {
+  const FilesInvoiceScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

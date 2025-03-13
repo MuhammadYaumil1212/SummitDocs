@@ -31,4 +31,7 @@ class AppString {
   static const lockIcon = "${appIcons}lock_icon.svg";
 
   static const errorImages = "${appImages}404_image.png";
+
+  static const personSolid = "${appIcons}person_outline.svg";
+  static const personOutline = "${appIcons}person_solid.svg";
 }

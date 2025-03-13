@@ -26,14 +26,14 @@ class SplashScreen extends StatelessWidget {
           AppNavigator.pushReplacement(
             context,
             transitionType: TransitionType.fade,
-            HomeScreen(),
+            HomeAdminScreen(),
           );
         }
         if (state is IsSuperAdmin) {
           AppNavigator.pushReplacement(
             context,
             transitionType: TransitionType.fade,
-            HomeAdminScreen(),
+            HomeScreen(),
           );
         }
       },
