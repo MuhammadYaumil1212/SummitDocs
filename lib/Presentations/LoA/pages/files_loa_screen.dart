@@ -226,6 +226,13 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
                   hint: "Tanggal dan Tempat",
                   controller: datePlaceController,
                 ),
+                AppDropdown(
+                  label: "Accepted/Rejected",
+                  items: ["Accepted", "Rejected"],
+                  onChanged: (value) {
+                    print("Selected: $value");
+                  },
+                ),
                 const SizedBox(height: 10),
                 SizedBox(
                   width: MediaQuery.of(context).size.width,
