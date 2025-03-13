@@ -1,6 +1,8 @@
 import 'package:SummitDocs/commons/widgets/app_text.dart';
 import 'package:flutter/material.dart';
 
+import '../../core/config/theme/app_colors.dart';
+
 class AppTextfield extends StatefulWidget {
   final String hint;
   final TextEditingController controller;
@@ -55,7 +57,7 @@ class _AppTextfieldState extends State<AppTextfield> {
           filled: true,
           fillColor: Colors.white,
           hintText: widget.hint,
-          hintStyle: const TextStyle(color: Colors.grey),
+          hintStyle: TextStyle(color: AppColors.grayBackground3),
           border: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(10)),
           ),

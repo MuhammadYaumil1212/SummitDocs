@@ -65,7 +65,7 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildHeader(),
+              _buildHeader("ICODSA"),
               const SizedBox(height: 20),
               _buildTable("Peserta"),
               _buildTable("Pengurus"),
@@ -76,12 +76,12 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(String title) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        const AppText(
-          text: "LoA ICODSA",
+        AppText(
+          text: "LoA \n${title}",
           fontWeight: FontWeight.w700,
           fontSize: 30,
         ),
