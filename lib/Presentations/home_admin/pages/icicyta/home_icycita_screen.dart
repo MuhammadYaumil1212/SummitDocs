@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 
+import '../../../../commons/widgets/app_navbar.dart';
 import '../../../../commons/widgets/app_scaffold.dart';
 import '../../../../core/helper/message/message.dart';
 import '../../../dashboard_admin/pages/icycita/dashboard_icycycita_screen.dart';
@@ -97,94 +98,9 @@ class _HomeIcycitaScreenState extends State<HomeIcycitaScreen> {
           );
         },
       ),
-      bottomAppbar: Theme(
-        data: Theme.of(context).copyWith(
-          splashFactory: NoSplash.splashFactory,
-          highlightColor: Colors.transparent,
-        ),
-        child: BottomNavigationBar(
-          currentIndex: _selectedIndex,
-          onTap: _onItemTapped,
-          selectedItemColor: Colors.black,
-          unselectedItemColor: Colors.black.withValues(
-            alpha: 0.5,
-            blue: 0.5,
-            green: 0.5,
-            red: 0.5,
-          ),
-          backgroundColor: Colors.white,
-          elevation: 0.0,
-          type: BottomNavigationBarType.fixed,
-          iconSize: 30,
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
-          items: [
-            BottomNavigationBarItem(
-                icon: _buildNavItem(
-                  AppString.icHomeSolid,
-                  AppString.icHomeOutlined,
-                  "Beranda",
-                  0,
-                ),
-                label: ''),
-            BottomNavigationBarItem(
-                icon: _buildNavItem(
-                  AppString.icFilesSolid,
-                  AppString.icFilesOutlined,
-                  "Berkas",
-                  1,
-                ),
-                label: ''),
-            BottomNavigationBarItem(
-                icon: _buildNavItem(
-                  AppString.icSettingSolid,
-                  AppString.icSettingOutlined,
-                  "Pengaturan",
-                  2,
-                ),
-                label: ''),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildNavItem(
-    String icon,
-    String iconOutlined,
-    String label,
-    int index,
-  ) {
-    bool isActive = _selectedIndex == index;
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-      width: 100,
-      decoration: BoxDecoration(
-        color: !isActive ? Colors.transparent : AppColors.grayBackground,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          isActive
-              ? SvgPicture.asset(
-                  icon,
-                  width: 20,
-                  height: 20,
-                )
-              : SvgPicture.asset(
-                  iconOutlined,
-                  width: 20,
-                  height: 20,
-                ),
-          const SizedBox(height: 4),
-          AppText(
-            text: label,
-            fontColor: Colors.black,
-            fontWeight: FontWeight.w500,
-            fontSize: 14,
-          ),
-        ],
+      bottomAppbar: AppNavbar(
+        selectedIndex: _selectedIndex,
+        onItemTapped: _onItemTapped,
       ),
     );
   }

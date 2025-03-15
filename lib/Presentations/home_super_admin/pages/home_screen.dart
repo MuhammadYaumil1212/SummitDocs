@@ -3,6 +3,7 @@ import 'package:SummitDocs/Presentations/error/error_screen.dart';
 import 'package:SummitDocs/Presentations/files/pages/files_screen.dart';
 import 'package:SummitDocs/Presentations/settings/pages/settings_screen.dart';
 import 'package:SummitDocs/commons/constants/string.dart';
+import 'package:SummitDocs/commons/widgets/app_navbar.dart';
 import 'package:SummitDocs/commons/widgets/app_text.dart';
 import 'package:SummitDocs/core/config/theme/app_colors.dart';
 import 'package:flutter/material.dart';
@@ -98,102 +99,9 @@ class _HomeScreenState extends State<HomeScreen> {
           );
         },
       ),
-      bottomAppbar: Theme(
-        data: Theme.of(context).copyWith(
-          splashFactory: NoSplash.splashFactory,
-          highlightColor: Colors.transparent,
-        ),
-        child: BottomNavigationBar(
-          currentIndex: _selectedIndex,
-          onTap: _onItemTapped,
-          selectedItemColor: Colors.black,
-          unselectedItemColor: Colors.black.withValues(
-            alpha: 0.5,
-            blue: 0.5,
-            green: 0.5,
-            red: 0.5,
-          ),
-          backgroundColor: Colors.white,
-          elevation: 0.0,
-          type: BottomNavigationBarType.fixed,
-          iconSize: 30,
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
-          items: [
-            BottomNavigationBarItem(
-                icon: _buildNavItem(
-                  AppString.icHomeSolid,
-                  AppString.icHomeOutlined,
-                  "Beranda",
-                  0,
-                ),
-                label: ''),
-            BottomNavigationBarItem(
-                icon: _buildNavItem(
-                  AppString.icFilesSolid,
-                  AppString.icFilesOutlined,
-                  "Berkas",
-                  1,
-                ),
-                label: ''),
-            BottomNavigationBarItem(
-                icon: _buildNavItem(
-                  AppString.personOutline,
-                  AppString.personSolid,
-                  "Kelola Akun",
-                  2,
-                ),
-                label: ''),
-            BottomNavigationBarItem(
-                icon: _buildNavItem(
-                  AppString.icSettingSolid,
-                  AppString.icSettingOutlined,
-                  "Pengaturan",
-                  3,
-                ),
-                label: ''),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildNavItem(
-    String icon,
-    String iconOutlined,
-    String label,
-    int index,
-  ) {
-    bool isActive = _selectedIndex == index;
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-      width: 100,
-      decoration: BoxDecoration(
-        color: !isActive ? Colors.transparent : AppColors.grayBackground,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          isActive
-              ? SvgPicture.asset(
-                  icon,
-                  width: 20,
-                  height: 20,
-                )
-              : SvgPicture.asset(
-                  iconOutlined,
-                  width: 20,
-                  height: 20,
-                ),
-          const SizedBox(height: 4),
-          AppText(
-            text: label,
-            fontColor: Colors.black,
-            fontWeight: FontWeight.w500,
-            fontSize: 14,
-          ),
-        ],
+      bottomAppbar: AppNavbar(
+        selectedIndex: _selectedIndex,
+        onItemTapped: _onItemTapped,
       ),
     );
   }
