@@ -86,35 +86,38 @@ class AppNavbar extends StatelessWidget {
 
   Widget _buildIcon(String active, String inactive, int index, String label) {
     bool isActive = selectedIndex == index;
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-      width: 100,
-      decoration: BoxDecoration(
-        color: !isActive ? Colors.transparent : AppColors.grayBackground,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          isActive
-              ? SvgPicture.asset(
-                  active,
-                  width: 20,
-                  height: 20,
-                )
-              : SvgPicture.asset(
-                  inactive,
-                  width: 20,
-                  height: 20,
-                ),
-          const SizedBox(height: 4),
-          AppText(
-            text: label,
-            fontColor: Colors.black,
-            fontWeight: FontWeight.w500,
-            fontSize: 14,
-          ),
-        ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+        width: 100,
+        decoration: BoxDecoration(
+          color: !isActive ? Colors.transparent : AppColors.grayBackground,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            isActive
+                ? SvgPicture.asset(
+                    active,
+                    width: 20,
+                    height: 20,
+                  )
+                : SvgPicture.asset(
+                    inactive,
+                    width: 20,
+                    height: 20,
+                  ),
+            const SizedBox(height: 4),
+            AppText(
+              text: label,
+              fontColor: Colors.black,
+              fontWeight: FontWeight.w500,
+              fontSize: 14,
+            ),
+          ],
+        ),
       ),
     );
   }
