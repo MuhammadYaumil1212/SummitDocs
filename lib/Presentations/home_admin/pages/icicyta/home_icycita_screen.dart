@@ -1,30 +1,31 @@
-import 'package:SummitDocs/Presentations/dashboard/pages/dashboard_screen.dart';
-import 'package:SummitDocs/Presentations/dashboard_admin/pages/dashboard_admin_screen.dart';
+import 'package:SummitDocs/Presentations/dashboard_admin/pages/icodsa/dashboard_icodsa_screen.dart';
 import 'package:SummitDocs/Presentations/error/error_screen.dart';
 import 'package:SummitDocs/Presentations/files/pages/files_screen.dart';
 import 'package:SummitDocs/Presentations/home_admin/bloc/home_admin_bloc.dart';
-import 'package:SummitDocs/Presentations/manage_account/pages/manage_account.dart';
 import 'package:SummitDocs/Presentations/settings/pages/settings_screen.dart';
 import 'package:SummitDocs/commons/constants/string.dart';
 import 'package:SummitDocs/commons/widgets/app_text.dart';
 import 'package:SummitDocs/core/config/theme/app_colors.dart';
+import 'package:SummitDocs/core/helper/storage/AppStorage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 
-import '../../../commons/widgets/app_scaffold.dart';
-import '../../../core/helper/message/message.dart';
+import '../../../../commons/widgets/app_scaffold.dart';
+import '../../../../core/helper/message/message.dart';
+import '../../../dashboard_admin/pages/icycita/dashboard_icycycita_screen.dart';
 
-class HomeAdminScreen extends StatefulWidget {
-  const HomeAdminScreen({super.key});
+class HomeIcycitaScreen extends StatefulWidget {
+  const HomeIcycitaScreen({super.key});
 
   @override
-  State<HomeAdminScreen> createState() => _HomeScreenState();
+  State<HomeIcycitaScreen> createState() => _HomeIcycitaScreenState();
 }
 
-class _HomeScreenState extends State<HomeAdminScreen> {
+class _HomeIcycitaScreenState extends State<HomeIcycitaScreen> {
   final HomeAdminBloc _bloc = HomeAdminBloc();
   final PageController pageController = PageController();
+  final AppStorage _storage = AppStorage.instance;
   var _selectedIndex = 0;
 
   @override
@@ -87,8 +88,10 @@ class _HomeScreenState extends State<HomeAdminScreen> {
             physics: const NeverScrollableScrollPhysics(),
             controller: pageController,
             children: [
-              DashboardAdminScreen(),
-              const FilesScreen(),
+              DashboardIcycitaScreen(),
+              FilesScreen(
+                roleId: _storage.get<int>(AppString.ROLE) ?? 0,
+              ),
               const SettingsScreen(),
             ],
           );

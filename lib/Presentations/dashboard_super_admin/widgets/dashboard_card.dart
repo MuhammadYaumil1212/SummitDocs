@@ -1,4 +1,4 @@
-import 'package:SummitDocs/Presentations/dashboard/widgets/status_file.dart';
+import 'package:SummitDocs/Presentations/dashboard_super_admin/widgets/status_file.dart';
 import 'package:SummitDocs/commons/widgets/app_button.dart';
 import 'package:SummitDocs/commons/widgets/app_text.dart';
 import 'package:SummitDocs/core/config/theme/app_colors.dart';

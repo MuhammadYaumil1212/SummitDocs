@@ -14,10 +14,10 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   setupServiceLocator();
   await AppStorage.init();
-  final storage = AppStorage.instance;
 
+  final storage = await AppStorage.instance;
   storage.put<String>(AppString.TOKEN_KEY, "123");
-  storage.put<bool>(AppString.is_superAdmin, true);
+  storage.put<int>(AppString.ROLE, 3);
 
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(const MyApp());

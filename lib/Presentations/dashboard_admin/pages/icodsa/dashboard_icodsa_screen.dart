@@ -1,29 +1,28 @@
-import 'package:SummitDocs/Presentations/dashboard/bloc/dashboard_bloc.dart';
-import 'package:SummitDocs/Presentations/dashboard/widgets/dashboard_card.dart';
+import 'package:SummitDocs/Presentations/dashboard_super_admin/widgets/dashboard_card.dart';
 import 'package:SummitDocs/commons/widgets/app_scaffold.dart';
 import 'package:SummitDocs/commons/widgets/app_text.dart';
 import 'package:SummitDocs/commons/widgets/title.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class DashboardScreen extends StatefulWidget {
-  DashboardScreen({super.key});
+import '../../bloc/icodsa/dashboard_icodsa_bloc.dart';
+
+class DashboardIcodsaScreen extends StatefulWidget {
+  const DashboardIcodsaScreen({super.key});
 
   @override
-  State<DashboardScreen> createState() => _DashboardScreenState();
+  State<DashboardIcodsaScreen> createState() => _DashboardIcodsaScreenState();
 }
 
-class _DashboardScreenState extends State<DashboardScreen> {
-  final _bloc = DashboardBloc();
+class _DashboardIcodsaScreenState extends State<DashboardIcodsaScreen> {
+  final DashboardIcodsaBloc _bloc = DashboardIcodsaBloc();
   final ValueNotifier<bool> _isExpandedIcodsa = ValueNotifier(true);
-
-  final ValueNotifier<bool> _isExpandedIcicyta = ValueNotifier(true);
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
       bloc: _bloc,
-      listener: (BuildContext context, DashboardState state) {},
-      appWidget: BlocBuilder<DashboardBloc, DashboardState>(
+      listener: (BuildContext context, state) {},
+      appWidget: BlocBuilder<DashboardIcodsaBloc, DashboardIcodsaState>(
         builder: (context, state) {
           return SingleChildScrollView(
             child: Padding(
@@ -33,10 +32,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 children: [
                   const HomeTitle(
                     title: "Selamat Datang",
-                    description: "Di Dashboard Super Admin",
+                    description: "Di Dashboard ICODSA",
                   ),
                   _buildExpansionTile("ICODSA", _isExpandedIcodsa),
-                  _buildExpansionTile("ICICYTA", _isExpandedIcicyta),
                 ],
               ),
             ),

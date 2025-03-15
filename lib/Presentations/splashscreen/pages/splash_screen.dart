@@ -1,10 +1,11 @@
-import 'package:SummitDocs/Presentations/home_admin/pages/home_screen.dart';
+import 'package:SummitDocs/Presentations/home_admin/pages/icicyta/home_icycita_screen.dart';
+import 'package:SummitDocs/Presentations/home_admin/pages/icodsa/home_icodsa_screen.dart';
+import 'package:SummitDocs/Presentations/home_super_admin/pages/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import '../../../commons/constants/string.dart';
 import '../../../core/helper/navigation/app_navigation.dart';
-import '../../home/pages/home_screen.dart';
 import '../../signin/pages/signin_screen.dart';
 import '../bloc/splashscreen_cubit.dart';
 
@@ -22,14 +23,21 @@ class SplashScreen extends StatelessWidget {
             SigninScreen(),
           );
         }
-        if (state is Authenticated) {
+        if (state is Icodsa) {
           AppNavigator.pushReplacement(
             context,
             transitionType: TransitionType.fade,
-            HomeAdminScreen(),
+            HomeIcodsaScreen(),
           );
         }
-        if (state is IsSuperAdmin) {
+        if (state is Icicyta) {
+          AppNavigator.pushReplacement(
+            context,
+            transitionType: TransitionType.fade,
+            HomeIcycitaScreen(),
+          );
+        }
+        if (state is SuperAdmin) {
           AppNavigator.pushReplacement(
             context,
             transitionType: TransitionType.fade,

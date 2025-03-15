@@ -1,29 +1,27 @@
-import 'package:SummitDocs/Presentations/dashboard/widgets/dashboard_card.dart';
-import 'package:SummitDocs/Presentations/dashboard_admin/bloc/dashboard_admin_bloc.dart';
+import 'package:SummitDocs/Presentations/dashboard_super_admin/widgets/dashboard_card.dart';
+import 'package:SummitDocs/Presentations/dashboard_admin/bloc/icycita/dashboard_icycita_bloc.dart';
 import 'package:SummitDocs/commons/widgets/app_scaffold.dart';
 import 'package:SummitDocs/commons/widgets/app_text.dart';
 import 'package:SummitDocs/commons/widgets/title.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class DashboardAdminScreen extends StatefulWidget {
-  const DashboardAdminScreen({super.key});
+class DashboardIcycitaScreen extends StatefulWidget {
+  const DashboardIcycitaScreen({super.key});
 
   @override
-  State<DashboardAdminScreen> createState() => _DashboardAdminScreenState();
+  State<DashboardIcycitaScreen> createState() => _DashboardIcycitaScreenState();
 }
 
-class _DashboardAdminScreenState extends State<DashboardAdminScreen> {
-  final DashboardAdminBloc _bloc = DashboardAdminBloc();
+class _DashboardIcycitaScreenState extends State<DashboardIcycitaScreen> {
+  final DashboardIcycitaBloc _bloc = DashboardIcycitaBloc();
   final ValueNotifier<bool> _isExpandedIcodsa = ValueNotifier(true);
-
-  final ValueNotifier<bool> _isExpandedIcicyta = ValueNotifier(true);
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
       bloc: _bloc,
-      listener: (BuildContext context, DashboardAdminState state) {},
-      appWidget: BlocBuilder<DashboardAdminBloc, DashboardAdminState>(
+      listener: (BuildContext context, state) {},
+      appWidget: BlocBuilder<DashboardIcycitaBloc, DashboardIcycitaState>(
         builder: (context, state) {
           return SingleChildScrollView(
             child: Padding(
@@ -33,10 +31,9 @@ class _DashboardAdminScreenState extends State<DashboardAdminScreen> {
                 children: [
                   const HomeTitle(
                     title: "Selamat Datang",
-                    description: "Di Dashboard Admin",
+                    description: "Di Dashboard ICYCITA",
                   ),
-                  _buildExpansionTile("ICODSA", _isExpandedIcodsa),
-                  _buildExpansionTile("ICICYTA", _isExpandedIcicyta),
+                  _buildExpansionTile("ICYCITA", _isExpandedIcodsa),
                 ],
               ),
             ),

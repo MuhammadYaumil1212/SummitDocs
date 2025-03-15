@@ -19,7 +19,7 @@ class SigninRepositoryImpl extends SigninRepository {
       },
       (data) async {
         await storage.put(AppString.TOKEN_KEY, data['user']['token']);
-        await storage.put(AppString.is_superAdmin, data['user']['role']);
+        await storage.put(AppString.ROLE, data['user']['role']);
         return Right(data);
       },
     );

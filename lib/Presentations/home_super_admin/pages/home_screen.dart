@@ -1,4 +1,4 @@
-import 'package:SummitDocs/Presentations/dashboard/pages/dashboard_screen.dart';
+import 'package:SummitDocs/Presentations/dashboard_super_admin/pages/dashboard_screen.dart';
 import 'package:SummitDocs/Presentations/error/error_screen.dart';
 import 'package:SummitDocs/Presentations/files/pages/files_screen.dart';
 import 'package:SummitDocs/Presentations/settings/pages/settings_screen.dart';
@@ -11,6 +11,7 @@ import 'package:flutter_svg/svg.dart';
 
 import '../../../commons/widgets/app_scaffold.dart';
 import '../../../core/helper/message/message.dart';
+import '../../../core/helper/storage/AppStorage.dart';
 import '../../manage_account/pages/manage_account.dart';
 import '../bloc/home_bloc.dart';
 
@@ -24,6 +25,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final HomeBloc _bloc = HomeBloc();
   final PageController pageController = PageController();
+  final AppStorage _storage = AppStorage.instance;
   var _selectedIndex = 0;
 
   @override
@@ -87,7 +89,9 @@ class _HomeScreenState extends State<HomeScreen> {
             controller: pageController,
             children: [
               DashboardScreen(),
-              const FilesScreen(),
+              FilesScreen(
+                roleId: _storage.get<int>(AppString.ROLE) ?? 0,
+              ),
               const ManageAccount(),
               const SettingsScreen(),
             ],

@@ -14,12 +14,20 @@ class SplashscreenCubit extends Cubit<SplashscreenState> {
     final storageInstance = AppStorage.instance;
     await Future.delayed(Duration(seconds: 2));
     final storage = await storageInstance.get(AppString.TOKEN_KEY);
-    final getRole = await storageInstance.get<bool>(AppString.is_superAdmin);
+    final role = await storageInstance.get<int>(AppString.ROLE);
     if (storage != null) {
-      if (getRole == true) {
-        emit(IsSuperAdmin());
-      } else {
-        emit(Authenticated());
+      switch (role) {
+        case 1:
+          emit(SuperAdmin());
+          break;
+        case 2:
+          emit(Icodsa());
+          break;
+        case 3:
+          emit(Icicyta());
+          break;
+        default:
+          emit(UnAuthenticated());
       }
     } else {
       emit(UnAuthenticated());

@@ -1,9 +1,7 @@
-import 'package:SummitDocs/Presentations/home/pages/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:SummitDocs/commons/widgets/app_button.dart';
 import 'package:SummitDocs/commons/widgets/app_text.dart';
 import 'package:SummitDocs/commons/widgets/app_textfield.dart';
-import 'package:SummitDocs/core/helper/navigation/app_navigation.dart';
 import '../../../core/config/theme/app_colors.dart';
 
 class LoginCard extends StatefulWidget {
@@ -34,8 +32,6 @@ class _LoginCardState extends State<LoginCard> {
 
   void _validateAndLogin() {
     if (_formKey.currentState!.validate()) {
-      print("Login berhasil");
-      AppNavigator.pushAndRemove(context, HomeScreen());
     } else {
       print("Validasi gagal");
       FocusScope.of(context).requestFocus(FocusNode());
