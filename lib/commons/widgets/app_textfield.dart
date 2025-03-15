@@ -1,5 +1,9 @@
+import 'package:SummitDocs/commons/widgets/app_button.dart';
 import 'package:SummitDocs/commons/widgets/app_text.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:logger/logger.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 import '../../core/config/theme/app_colors.dart';
 
@@ -173,6 +177,93 @@ class _AppDropdownState extends State<AppDropdown> {
           },
         ),
       ),
+    );
+  }
+}
+
+class AppDatePicker extends StatefulWidget {
+  final TextEditingController dateController;
+  final String hint;
+  final bool readOnly;
+  final Function(String value) value;
+
+  AppDatePicker({
+    required this.dateController,
+    required this.hint,
+    required this.value,
+    this.readOnly = true,
+  });
+
+  @override
+  State<AppDatePicker> createState() => _AppDatePickerState();
+}
+
+class _AppDatePickerState extends State<AppDatePicker> {
+  DateTime? selectedDate;
+  Future<void> _pickDate(BuildContext context) async {
+    DateTime initialDate = selectedDate ?? DateTime.now();
+
+    await showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (BuildContext context) {
+        return Container(
+          height: 300,
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Expanded(
+                child: Theme(
+                  data: Theme.of(context).copyWith(
+                    colorScheme: ColorScheme.light(
+                      primary: AppColors.primary,
+                      onPrimary: Colors.white,
+                      onSurface: Colors.black,
+                    ),
+                  ),
+                  child: CalendarDatePicker(
+                    initialDate: selectedDate,
+                    currentDate: selectedDate,
+                    firstDate: DateTime(1950),
+                    lastDate: DateTime(2100),
+                    onDateChanged: (DateTime date) {
+                      setState(() {
+                        selectedDate = date;
+                      });
+                    },
+                  ),
+                ),
+              ),
+              AppButton(
+                  text: "Pilih Tanggal",
+                  action: () {
+                    setState(() {
+                      widget.dateController.text =
+                          DateFormat('dd/MM/yyyy').format(selectedDate!);
+                      widget.value(widget.dateController.text);
+                    });
+                    Navigator.pop(context);
+                  })
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AppTextfield(
+      hint: widget.hint,
+      controller: widget.dateController,
+      onChanged: widget.value,
+      readOnly: widget.readOnly,
+      prefixIcon: Icon(Icons.date_range_outlined),
+      onTap: () => _pickDate(context),
     );
   }
 }
