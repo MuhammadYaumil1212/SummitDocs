@@ -7,11 +7,13 @@ import 'app_text.dart';
 class AppNavbar extends StatelessWidget {
   final int selectedIndex;
   final ValueChanged<int> onItemTapped;
+  final int roleId;
 
   const AppNavbar({
     Key? key,
     required this.selectedIndex,
     required this.onItemTapped,
+    required this.roleId,
   }) : super(key: key);
 
   @override
@@ -38,16 +40,40 @@ class AppNavbar extends StatelessWidget {
   }
 
   List<BottomNavigationBarItem> _navBarItems() {
-    return [
+    List<BottomNavigationBarItem> items = [
       _buildNavItem(
-          AppString.icHomeSolid, AppString.icHomeOutlined, "Beranda", 0),
+        AppString.icHomeSolid,
+        AppString.icHomeOutlined,
+        "Beranda",
+        0,
+      ),
       _buildNavItem(
-          AppString.icFilesSolid, AppString.icFilesOutlined, "Berkas", 1),
+        AppString.icFilesSolid,
+        AppString.icFilesOutlined,
+        "Berkas",
+        1,
+      ),
       _buildNavItem(
-          AppString.personOutline, AppString.personSolid, "Kelola Akun", 2),
-      _buildNavItem(AppString.icSettingSolid, AppString.icSettingOutlined,
-          "Pengaturan", 3),
+        AppString.icSettingSolid,
+        AppString.icSettingOutlined,
+        "Pengaturan",
+        roleId == 1 ? 3 : 2,
+      ),
     ];
+
+    if (roleId != 2 && roleId != 3) {
+      items.insert(
+        2,
+        _buildNavItem(
+          AppString.personOutline,
+          AppString.personSolid,
+          "Kelola Akun",
+          2,
+        ),
+      );
+    }
+
+    return items;
   }
 
   BottomNavigationBarItem _buildNavItem(

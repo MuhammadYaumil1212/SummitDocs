@@ -100,6 +100,7 @@ class _HomeScreenState extends State<HomeScreen> {
         },
       ),
       bottomAppbar: AppNavbar(
+        roleId: _storage.get<int>(AppString.ROLE) ?? 0,
         selectedIndex: _selectedIndex,
         onItemTapped: _onItemTapped,
       ),

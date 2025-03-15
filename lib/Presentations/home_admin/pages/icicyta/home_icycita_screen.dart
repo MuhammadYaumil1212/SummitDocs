@@ -99,6 +99,7 @@ class _HomeIcycitaScreenState extends State<HomeIcycitaScreen> {
         },
       ),
       bottomAppbar: AppNavbar(
+        roleId: _storage.get<int>(AppString.ROLE) ?? 0,
         selectedIndex: _selectedIndex,
         onItemTapped: _onItemTapped,
       ),
