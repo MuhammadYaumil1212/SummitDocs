@@ -22,20 +22,9 @@ class ManageAccount extends StatefulWidget {
 class _ManageAccountState extends State<ManageAccount> {
   final ManageAccountBloc _bloc = ManageAccountBloc();
   //virtual acc
-  TextEditingController virtualAccountNumber = TextEditingController();
-  TextEditingController holderName = TextEditingController();
-  TextEditingController nameBank = TextEditingController();
-  TextEditingController nameBranch = TextEditingController();
-
-  //transfer bank
-  TextEditingController nameBankTransfer = TextEditingController();
-  TextEditingController swiftCode = TextEditingController();
-  TextEditingController beneficiaryName = TextEditingController();
-  TextEditingController beneficiaryBankAcc = TextEditingController();
-  TextEditingController nameBranchTransfer = TextEditingController();
-  TextEditingController nameBranchAddressTransfer = TextEditingController();
-  TextEditingController cityName = TextEditingController();
-  TextEditingController countryName = TextEditingController();
+  TextEditingController username = TextEditingController();
+  TextEditingController email = TextEditingController();
+  TextEditingController password = TextEditingController();
 
   final List<UserEntity> conferences = List.generate(
     15,
@@ -159,34 +148,30 @@ class _ManageAccountState extends State<ManageAccount> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                AppText(
-                  text: "Virtual Account",
-                  fontSize: 14,
-                ),
-                const SizedBox(height: 10),
-                AppTextfield(
-                  prefixIcon: Icon(
-                    Icons.pin_outlined,
-                    color: AppColors.grayBackground3,
-                  ),
-                  hint: "No. Virtual Account",
-                  controller: virtualAccountNumber,
-                ),
                 AppTextfield(
                   prefixIcon: Icon(
                     Icons.person_outline,
                     color: AppColors.grayBackground3,
                   ),
-                  hint: "Account Holder Name",
-                  controller: holderName,
+                  hint: "Username",
+                  controller: username,
                 ),
                 AppTextfield(
                   prefixIcon: Icon(
-                    Icons.title,
+                    Icons.email_outlined,
                     color: AppColors.grayBackground3,
                   ),
-                  hint: "Bank Name",
-                  controller: nameBank,
+                  hint: "Email",
+                  controller: email,
+                ),
+                AppTextfield(
+                  prefixIcon: Icon(
+                    Icons.lock_outline,
+                    color: AppColors.grayBackground3,
+                  ),
+                  obscureText: true,
+                  hint: "Kata Sandi Baru",
+                  controller: password,
                 ),
                 AppDropdown(
                   label: "Roles",

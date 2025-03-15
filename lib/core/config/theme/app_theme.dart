@@ -17,6 +17,11 @@ class AppTheme {
       backgroundColor: AppColors.background,
       contentTextStyle: TextStyle(color: Colors.white),
     ),
+    textSelectionTheme: TextSelectionThemeData(
+      cursorColor: AppColors.primary,
+      selectionColor: AppColors.primary,
+      selectionHandleColor: AppColors.primary,
+    ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       fillColor: Color(0xff2c2b2b),

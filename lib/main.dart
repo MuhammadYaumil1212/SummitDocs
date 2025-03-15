@@ -17,7 +17,7 @@ void main() async {
 
   final storage = await AppStorage.instance;
   storage.put<String>(AppString.TOKEN_KEY, "123");
-  storage.put<int>(AppString.ROLE, 3);
+  storage.put<int>(AppString.ROLE, 1);
 
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(const MyApp());
