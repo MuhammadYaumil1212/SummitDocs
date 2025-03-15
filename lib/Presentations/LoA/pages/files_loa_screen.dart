@@ -128,9 +128,7 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
 
   DataColumn _centeredColumn(String title) {
     return DataColumn(
-      label: Center(
-        child: AppText(text: title),
-      ),
+      label: AppText(text: title),
     );
   }
 
@@ -145,15 +143,13 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
         DataCell(Center(child: AppText(text: conference.dateAndPlace))),
         DataCell(Center(child: AppText(text: conference.status))),
         DataCell(
-          Center(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ActionButton(icon: AppString.infoIcon, action: () {}),
-                const SizedBox(width: 10),
-                ActionButton(icon: AppString.downloadIcon, action: () {}),
-              ],
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ActionButton(icon: AppString.infoIcon, action: () {}),
+              const SizedBox(width: 10),
+              ActionButton(icon: AppString.downloadIcon, action: () {}),
+            ],
           ),
         ),
       ],

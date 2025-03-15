@@ -8,7 +8,6 @@ import 'package:SummitDocs/core/helper/navigation/app_navigation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../commons/widgets/title.dart';
-import '../../error/error_screen.dart';
 import '../widgets/feature_card.dart';
 import 'FeatureItem.dart';
 
@@ -16,74 +15,89 @@ class FilesScreen extends StatelessWidget {
   final int roleId;
   const FilesScreen({super.key, required this.roleId});
 
+  static final List<FeatureItem> features = [
+    FeatureItem(id: 1, icon: AppString.loaIcon, text: "LoA"),
+    FeatureItem(id: 2, icon: AppString.overviewIcon, text: "Invoice"),
+    FeatureItem(id: 3, icon: AppString.receiptIcon, text: "Receipt"),
+  ];
+
+  void _navigateToFeature(BuildContext context, int id) {
+    switch (id) {
+      case 1:
+        AppNavigator.push(context, FilesLoaScreen());
+        break;
+      case 2:
+        AppNavigator.push(context, FilesInvoiceScreen());
+        break;
+      case 3:
+        AppNavigator.push(context, FilesReceiptScreen());
+        break;
+      default:
+        DisplayMessage.errorMessage("No Features", context);
+    }
+  }
+
+  Widget _buildFeatureList(BuildContext context) {
+    return SizedBox(
+      height: 100,
+      width: double.infinity,
+      child: ListView.separated(
+        itemCount: features.length,
+        shrinkWrap: true,
+        physics: const BouncingScrollPhysics(),
+        scrollDirection: Axis.horizontal,
+        itemBuilder: (context, index) {
+          final feature = features[index];
+          return Featurecard(
+            onClick: () => _navigateToFeature(context, feature.id),
+            icon: feature.icon,
+            text: feature.text,
+          );
+        },
+        separatorBuilder: (_, __) => const SizedBox(width: 35),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final featuresIcodsa = [
-      FeatureItem(id: 1, icon: AppString.loaIcon, text: "LoA"),
-      FeatureItem(id: 2, icon: AppString.overviewIcon, text: "Invoice"),
-      FeatureItem(id: 3, icon: AppString.receiptIcon, text: "Receipt"),
-    ];
+    final isRole1 = roleId == 1;
+    final titleText = isRole1 ? "ICODSA" : (roleId == 2 ? "ICODSA" : "ICICYTA");
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
-      child: roleId != 0
-          ? Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                HomeTitle(
-                  title: "Berkas",
-                  description: "Pilih Salah Satu",
-                ),
-                const SizedBox(height: 20),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: AppText(
-                    text: roleId == 2 ? "ICODSA" : "ICICYTA",
-                    fontWeight: FontWeight.w700,
-                    fontSize: 18,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                SizedBox(
-                  height: 100,
-                  width: double.infinity,
-                  child: ListView.separated(
-                    itemCount: featuresIcodsa.length,
-                    shrinkWrap: true,
-                    physics: BouncingScrollPhysics(),
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (BuildContext context, index) {
-                      final feature = featuresIcodsa[index];
-                      return Featurecard(
-                        onClick: () {
-                          switch (feature.id) {
-                            case 1:
-                              AppNavigator.push(context, FilesLoaScreen());
-                              break;
-                            case 2:
-                              AppNavigator.push(context, FilesInvoiceScreen());
-                              break;
-                            case 3:
-                              AppNavigator.push(context, FilesReceiptScreen());
-                              break;
-                            default:
-                              DisplayMessage.errorMessage(
-                                  "No Features", context);
-                          }
-                        },
-                        icon: feature.icon,
-                        text: feature.text,
-                      );
-                    },
-                    separatorBuilder: (BuildContext context, int index) =>
-                        SizedBox(width: 35),
-                  ),
-                ),
-              ],
-            )
-          : ErrorScreen(
-              errorMessage: 'Role tidak sesuai',
-              imageString: AppString.errorImages,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const HomeTitle(title: "Berkas", description: "Pilih Salah Satu"),
+          const SizedBox(height: 20),
+          if (isRole1) ...[
+            const Align(
+              alignment: Alignment.centerLeft,
+              child: AppText(
+                  text: "ICODSA", fontWeight: FontWeight.w700, fontSize: 18),
             ),
+            const SizedBox(height: 10),
+            _buildFeatureList(context),
+            const SizedBox(height: 20),
+            const Align(
+              alignment: Alignment.centerLeft,
+              child: AppText(
+                  text: "ICICYTA", fontWeight: FontWeight.w700, fontSize: 18),
+            ),
+            const SizedBox(height: 10),
+            _buildFeatureList(context),
+          ] else ...[
+            Align(
+              alignment: Alignment.centerLeft,
+              child: AppText(
+                  text: titleText, fontWeight: FontWeight.w700, fontSize: 18),
+            ),
+            const SizedBox(height: 10),
+            _buildFeatureList(context),
+          ]
+        ],
+      ),
     );
   }
 }
