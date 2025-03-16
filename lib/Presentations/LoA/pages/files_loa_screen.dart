@@ -12,7 +12,9 @@ import '../../../commons/widgets/app_datatable.dart';
 import '../../../commons/widgets/app_scaffold.dart';
 
 class FilesLoaScreen extends StatefulWidget {
-  const FilesLoaScreen({super.key});
+  final int roleId;
+  final String title;
+  const FilesLoaScreen({super.key, required this.roleId, required this.title});
 
   @override
   State<FilesLoaScreen> createState() => _FilesLoaScreenState();
@@ -65,7 +67,7 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildHeader("ICODSA"),
+              _buildHeader(widget.title),
               const SizedBox(height: 20),
               _buildTable("Peserta"),
               _buildTable("Pengurus"),
@@ -128,7 +130,7 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
 
   DataColumn _centeredColumn(String title) {
     return DataColumn(
-      label: AppText(text: title),
+      label: Center(child: AppText(text: title)),
     );
   }
 

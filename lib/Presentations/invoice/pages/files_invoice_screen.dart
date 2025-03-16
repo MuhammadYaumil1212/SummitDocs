@@ -12,7 +12,10 @@ import '../../../commons/widgets/app_textfield.dart';
 import '../../../core/config/theme/app_colors.dart';
 
 class FilesInvoiceScreen extends StatefulWidget {
-  const FilesInvoiceScreen({super.key});
+  final int roleId;
+  final String title;
+  const FilesInvoiceScreen(
+      {super.key, required this.roleId, required this.title});
 
   @override
   State<FilesInvoiceScreen> createState() => _FilesInvoiceScreenState();
@@ -20,13 +23,10 @@ class FilesInvoiceScreen extends StatefulWidget {
 
 class _FilesInvoiceScreenState extends State<FilesInvoiceScreen> {
   final InvoiceBloc _bloc = InvoiceBloc();
-  //virtual acc
   TextEditingController virtualAccountNumber = TextEditingController();
   TextEditingController holderName = TextEditingController();
   TextEditingController nameBank = TextEditingController();
   TextEditingController nameBranch = TextEditingController();
-
-  //transfer bank
   TextEditingController nameBankTransfer = TextEditingController();
   TextEditingController swiftCode = TextEditingController();
   TextEditingController beneficiaryName = TextEditingController();
@@ -35,7 +35,6 @@ class _FilesInvoiceScreenState extends State<FilesInvoiceScreen> {
   TextEditingController nameBranchAddressTransfer = TextEditingController();
   TextEditingController cityName = TextEditingController();
   TextEditingController countryName = TextEditingController();
-
   final List<InvoiceEntity> conferences = List.generate(
     15,
     (index) => InvoiceEntity(
@@ -75,7 +74,7 @@ class _FilesInvoiceScreenState extends State<FilesInvoiceScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildHeader(context, "ICODSA"),
+              _buildHeader(context, widget.title),
               const SizedBox(height: 20),
               _buildTable("Peserta"),
               _buildTable("Pengurus"),
@@ -138,9 +137,7 @@ class _FilesInvoiceScreenState extends State<FilesInvoiceScreen> {
 
   DataColumn _centeredColumn(String title) {
     return DataColumn(
-      label: Center(
-        child: AppText(text: title),
-      ),
+      label: Center(child: AppText(text: title)),
     );
   }
 

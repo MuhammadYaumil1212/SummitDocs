@@ -13,7 +13,7 @@ import 'FeatureItem.dart';
 
 class FilesScreen extends StatelessWidget {
   final int roleId;
-  const FilesScreen({super.key, required this.roleId});
+  FilesScreen({super.key, required this.roleId});
 
   static final List<FeatureItem> features = [
     FeatureItem(id: 1, icon: AppString.loaIcon, text: "LoA"),
@@ -21,23 +21,26 @@ class FilesScreen extends StatelessWidget {
     FeatureItem(id: 3, icon: AppString.receiptIcon, text: "Receipt"),
   ];
 
-  void _navigateToFeature(BuildContext context, int id) {
+  void _navigateToFeature(BuildContext context, int id, String title) {
     switch (id) {
       case 1:
-        AppNavigator.push(context, FilesLoaScreen());
+        AppNavigator.push(
+            context, FilesLoaScreen(roleId: roleId, title: title));
         break;
       case 2:
-        AppNavigator.push(context, FilesInvoiceScreen());
+        AppNavigator.push(
+            context, FilesInvoiceScreen(roleId: roleId, title: title));
         break;
       case 3:
-        AppNavigator.push(context, FilesReceiptScreen());
+        AppNavigator.push(
+            context, FilesReceiptScreen(roleId: roleId, title: title));
         break;
       default:
         DisplayMessage.errorMessage("No Features", context);
     }
   }
 
-  Widget _buildFeatureList(BuildContext context) {
+  Widget _buildFeatureList(BuildContext context, String title) {
     return SizedBox(
       height: 100,
       width: double.infinity,
@@ -49,7 +52,7 @@ class FilesScreen extends StatelessWidget {
         itemBuilder: (context, index) {
           final feature = features[index];
           return Featurecard(
-            onClick: () => _navigateToFeature(context, feature.id),
+            onClick: () => _navigateToFeature(context, feature.id, title),
             icon: feature.icon,
             text: feature.text,
           );
@@ -63,7 +66,6 @@ class FilesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final isRole1 = roleId == 1;
     final titleText = isRole1 ? "ICODSA" : (roleId == 2 ? "ICODSA" : "ICICYTA");
-
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -75,26 +77,35 @@ class FilesScreen extends StatelessWidget {
             const Align(
               alignment: Alignment.centerLeft,
               child: AppText(
-                  text: "ICODSA", fontWeight: FontWeight.w700, fontSize: 18),
+                text: "ICODSA",
+                fontWeight: FontWeight.w700,
+                fontSize: 18,
+              ),
             ),
             const SizedBox(height: 10),
-            _buildFeatureList(context),
+            _buildFeatureList(context, "ICODSA"),
             const SizedBox(height: 20),
             const Align(
               alignment: Alignment.centerLeft,
               child: AppText(
-                  text: "ICICYTA", fontWeight: FontWeight.w700, fontSize: 18),
+                text: "ICICYTA",
+                fontWeight: FontWeight.w700,
+                fontSize: 18,
+              ),
             ),
             const SizedBox(height: 10),
-            _buildFeatureList(context),
+            _buildFeatureList(context, "ICICYTA"),
           ] else ...[
             Align(
               alignment: Alignment.centerLeft,
               child: AppText(
-                  text: titleText, fontWeight: FontWeight.w700, fontSize: 18),
+                text: titleText,
+                fontWeight: FontWeight.w700,
+                fontSize: 18,
+              ),
             ),
             const SizedBox(height: 10),
-            _buildFeatureList(context),
+            _buildFeatureList(context, titleText),
           ]
         ],
       ),

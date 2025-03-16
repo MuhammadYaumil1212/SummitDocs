@@ -12,7 +12,10 @@ import '../../../commons/widgets/app_textfield.dart';
 import '../../../core/config/theme/app_colors.dart';
 
 class FilesReceiptScreen extends StatelessWidget {
-  FilesReceiptScreen({super.key});
+  final int roleId;
+  final String title;
+  FilesReceiptScreen({super.key, required this.roleId, required this.title});
+
   final ReceiptBloc _bloc = ReceiptBloc();
   final TextEditingController virtualAccountNumber = TextEditingController();
   final TextEditingController holderName = TextEditingController();
@@ -61,7 +64,7 @@ class FilesReceiptScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildHeader(context, "ICODSA"),
+              _buildHeader(context, title),
               const SizedBox(height: 20),
               _buildTable("Peserta"),
               _buildTable("Pengurus"),
@@ -126,18 +129,16 @@ class FilesReceiptScreen extends StatelessWidget {
 
   DataColumn _centeredColumn(String title) {
     return DataColumn(
-      label: Center(
-        child: AppText(text: title),
-      ),
+      label: Center(child: AppText(text: title)),
     );
   }
 
-  //
   DataRow _buildRow(ReceiptEntity conference) {
     return DataRow(
       cells: [
         DataCell(
-            Center(child: AppText(text: conference.receivedFrom.toString()))),
+          Center(child: AppText(text: conference.receivedFrom.toString())),
+        ),
         DataCell(Center(child: AppText(text: conference.amount))),
         DataCell(Center(child: AppText(text: conference.conferenceTitle))),
         DataCell(Center(child: AppText(text: conference.inPaymentOf))),
