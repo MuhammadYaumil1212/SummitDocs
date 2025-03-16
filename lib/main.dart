@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'Presentations/splashscreen/bloc/splashscreen_cubit.dart';
 import 'Presentations/splashscreen/pages/splash_screen.dart';
-import 'commons/constants/string.dart';
 import 'core/config/theme/app_theme.dart';
 import 'core/helper/storage/AppStorage.dart';
 import 'core/network/network_cubit.dart';
@@ -14,11 +13,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   setupServiceLocator();
   await AppStorage.init();
-
-  final storage = await AppStorage.instance;
-  storage.put<String>(AppString.TOKEN_KEY, "123");
-  storage.put<int>(AppString.ROLE, 1);
-
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(const MyApp());
 }

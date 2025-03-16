@@ -1,8 +1,14 @@
+import 'package:SummitDocs/Presentations/home_admin/pages/icicyta/home_icycita_screen.dart';
+import 'package:SummitDocs/Presentations/home_admin/pages/icodsa/home_icodsa_screen.dart';
+import 'package:SummitDocs/Presentations/home_super_admin/pages/home_screen.dart';
+import 'package:SummitDocs/core/helper/navigation/app_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:SummitDocs/commons/widgets/app_button.dart';
 import 'package:SummitDocs/commons/widgets/app_text.dart';
 import 'package:SummitDocs/commons/widgets/app_textfield.dart';
+import '../../../commons/constants/string.dart';
 import '../../../core/config/theme/app_colors.dart';
+import '../../../core/helper/storage/AppStorage.dart';
 
 class LoginCard extends StatefulWidget {
   const LoginCard({super.key});
@@ -14,6 +20,7 @@ class LoginCard extends StatefulWidget {
 class _LoginCardState extends State<LoginCard> {
   late final TextEditingController _username;
   late final TextEditingController _password;
+  late final AppStorage _storage;
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -21,6 +28,11 @@ class _LoginCardState extends State<LoginCard> {
     super.initState();
     _username = TextEditingController();
     _password = TextEditingController();
+    initStorage();
+  }
+
+  void initStorage() async {
+    _storage = await AppStorage.instance;
   }
 
   @override
@@ -32,6 +44,19 @@ class _LoginCardState extends State<LoginCard> {
 
   void _validateAndLogin() {
     if (_formKey.currentState!.validate()) {
+      if (_username.text == "superAdmin") {
+        _storage.put<String>(AppString.TOKEN_KEY, "123");
+        _storage.put<int>(AppString.ROLE, 1);
+        AppNavigator.pushAndRemove(context, HomeScreen());
+      } else if (_username.text == "icodsaAdmin") {
+        _storage.put<String>(AppString.TOKEN_KEY, "123");
+        _storage.put<int>(AppString.ROLE, 2);
+        AppNavigator.pushAndRemove(context, HomeIcodsaScreen());
+      } else {
+        _storage.put<String>(AppString.TOKEN_KEY, "123");
+        _storage.put<int>(AppString.ROLE, 3);
+        AppNavigator.pushAndRemove(context, HomeIcycitaScreen());
+      }
     } else {
       print("Validasi gagal");
       FocusScope.of(context).requestFocus(FocusNode());
