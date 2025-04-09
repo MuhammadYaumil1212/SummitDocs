@@ -67,7 +67,7 @@ class AppNavbar extends StatelessWidget {
         _buildNavItem(
           AppString.personOutline,
           AppString.personSolid,
-          "Kelola Akun",
+          "Admin",
           2,
         ),
       );
