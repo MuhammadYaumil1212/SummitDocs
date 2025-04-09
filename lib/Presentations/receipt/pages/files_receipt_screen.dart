@@ -80,7 +80,7 @@ class FilesReceiptScreen extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         AppText(
-          text: "Receipt \n${title}",
+          text: "Receipt \n$title",
           fontWeight: FontWeight.w700,
           fontSize: 30,
         ),
@@ -104,16 +104,18 @@ class FilesReceiptScreen extends StatelessWidget {
         ),
         const SizedBox(height: 5),
         AppDataTable(
-          columns: _buildColumns(),
+          columns: _buildColumns(title),
           data: conferences,
-          rowBuilder: _buildRow,
+          rowBuilder: (conference) => _buildRow(conference, title),
         ),
       ],
     );
   }
 
-  List<DataColumn> _buildColumns() {
-    return [
+  List<DataColumn> _buildColumns(String sectionTitle) {
+    final isPeserta = sectionTitle.toLowerCase() == 'peserta';
+
+    final columns = [
       _centeredColumn("Received From"),
       _centeredColumn("Amount"),
       _centeredColumn("In Payment of"),
@@ -122,9 +124,15 @@ class FilesReceiptScreen extends StatelessWidget {
       _centeredColumn("Conference Title"),
       _centeredColumn("User Conference Title"),
       _centeredColumn("Place and date"),
-      _centeredColumn("Signature"),
-      _centeredColumn("Tindakan"),
     ];
+
+    if (!isPeserta) {
+      columns.add(_centeredColumn("Signature"));
+    }
+
+    columns.add(_centeredColumn("Tindakan"));
+
+    return columns;
   }
 
   DataColumn _centeredColumn(String title) {
@@ -133,43 +141,48 @@ class FilesReceiptScreen extends StatelessWidget {
     );
   }
 
-  DataRow _buildRow(ReceiptEntity conference) {
-    return DataRow(
-      cells: [
-        DataCell(
-          Center(child: AppText(text: conference.receivedFrom.toString())),
-        ),
-        DataCell(Center(child: AppText(text: conference.amount))),
-        DataCell(Center(child: AppText(text: conference.conferenceTitle))),
-        DataCell(Center(child: AppText(text: conference.inPaymentOf))),
-        DataCell(Center(child: AppText(text: conference.paymentDate))),
-        DataCell(Center(child: AppText(text: conference.invoiceNo))),
-        DataCell(Center(child: AppText(text: conference.conferenceTitle))),
-        DataCell(Center(child: AppText(text: conference.placeAndDate))),
-        DataCell(
-          Center(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ActionButton(icon: AppString.infoIcon, action: () {}),
-              ],
-            ),
+  DataRow _buildRow(ReceiptEntity conference, String sectionTitle) {
+    final isPeserta = sectionTitle.toLowerCase() == 'peserta';
+
+    final cells = [
+      DataCell(
+          Center(child: AppText(text: conference.receivedFrom.toString()))),
+      DataCell(Center(child: AppText(text: conference.amount))),
+      DataCell(Center(child: AppText(text: conference.conferenceTitle))),
+      DataCell(Center(child: AppText(text: conference.inPaymentOf))),
+      DataCell(Center(child: AppText(text: conference.paymentDate))),
+      DataCell(Center(child: AppText(text: conference.invoiceNo))),
+      DataCell(Center(child: AppText(text: conference.conferenceTitle))),
+      DataCell(Center(child: AppText(text: conference.placeAndDate))),
+    ];
+
+    if (!isPeserta) {
+      cells.add(DataCell(
+        Center(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ActionButton(icon: AppString.infoIcon, action: () {}),
+            ],
           ),
         ),
-        DataCell(
-          Center(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ActionButton(icon: AppString.infoIcon, action: () {}),
-                const SizedBox(width: 10),
-                ActionButton(icon: AppString.downloadIcon, action: () {}),
-              ],
-            ),
-          ),
+      ));
+    }
+
+    cells.add(DataCell(
+      Center(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ActionButton(icon: AppString.infoIcon, action: () {}),
+            const SizedBox(width: 10),
+            ActionButton(icon: AppString.downloadIcon, action: () {}),
+          ],
         ),
-      ],
-    );
+      ),
+    ));
+
+    return DataRow(cells: cells);
   }
 
   void _showAddDataDialog(BuildContext context) {
