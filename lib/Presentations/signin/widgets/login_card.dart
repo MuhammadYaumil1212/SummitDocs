@@ -1,6 +1,7 @@
 import 'package:SummitDocs/Presentations/home_admin/pages/icicyta/home_icycita_screen.dart';
 import 'package:SummitDocs/Presentations/home_admin/pages/icodsa/home_icodsa_screen.dart';
 import 'package:SummitDocs/Presentations/home_super_admin/pages/home_screen.dart';
+import 'package:SummitDocs/core/helper/message/message.dart';
 import 'package:SummitDocs/core/helper/navigation/app_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:SummitDocs/commons/widgets/app_button.dart';
@@ -52,10 +53,15 @@ class _LoginCardState extends State<LoginCard> {
         _storage.put<String>(AppString.TOKEN_KEY, "123");
         _storage.put<int>(AppString.ROLE, 2);
         AppNavigator.pushAndRemove(context, HomeIcodsaScreen());
-      } else {
+      } else if (_username.text == "icicytaAdmin") {
         _storage.put<String>(AppString.TOKEN_KEY, "123");
         _storage.put<int>(AppString.ROLE, 3);
         AppNavigator.pushAndRemove(context, HomeIcycitaScreen());
+      } else {
+        DisplayMessage.errorMessage(
+          "Username tidak sesuai! harap periksa kembali",
+          context,
+        );
       }
     } else {
       print("Validasi gagal");
