@@ -34,18 +34,39 @@ class _ManageAccountState extends State<ManageAccount> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.vertical,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildHeader(context, "Kelola Akun"),
-            const SizedBox(height: 20),
-            _buildTable("Peserta"),
-            _buildTable("Pengurus"),
-          ],
+    return AppScaffold(
+      bloc: ManageAccountBloc(),
+      appBar: AppBar(
+        surfaceTintColor: Colors.transparent,
+        centerTitle: true,
+        title: SvgPicture.asset(
+          AppString.logoApp,
+          width: 45,
+          height: 45,
+        ),
+        backgroundColor: AppColors.background,
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(4.0),
+          child: Container(
+            color: AppColors.grayBackground,
+            height: 4.0,
+          ),
+        ),
+      ),
+      listener: (BuildContext context, ManageAccountState state) {},
+      appWidget: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildHeader(context, "Kelola Akun"),
+              const SizedBox(height: 20),
+              _buildTable("Peserta"),
+              _buildTable("Pengurus"),
+            ],
+          ),
         ),
       ),
     );

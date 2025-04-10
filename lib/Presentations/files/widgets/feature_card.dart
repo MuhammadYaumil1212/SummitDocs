@@ -7,11 +7,19 @@ class Featurecard extends StatelessWidget {
   final VoidCallback onClick;
   final String icon;
   final String text;
-  const Featurecard({
+  final double? sizeHeightBox;
+  final double? sizeWidthBox;
+  final double? iconSize;
+  final double? textSize;
+  Featurecard({
     super.key,
     required this.onClick,
     required this.icon,
     required this.text,
+    this.sizeHeightBox,
+    this.sizeWidthBox,
+    this.iconSize,
+    this.textSize,
   });
 
   @override
@@ -19,8 +27,8 @@ class Featurecard extends StatelessWidget {
     return GestureDetector(
       onTap: onClick,
       child: Container(
-        width: MediaQuery.of(context).size.width * 0.25,
-        height: MediaQuery.of(context).size.height * 0.1,
+        width: sizeWidthBox ?? MediaQuery.of(context).size.width * 0.25,
+        height: sizeHeightBox ?? MediaQuery.of(context).size.height * 0.1,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.all(
               Radius.circular(10),
@@ -35,11 +43,15 @@ class Featurecard extends StatelessWidget {
               SvgPicture.asset(
                 icon,
                 colorFilter: ColorFilter.mode(Colors.black, BlendMode.srcIn),
-                width: 30,
-                height: 30,
+                width: iconSize ?? 30,
+                height: iconSize ?? 30,
               ),
               const SizedBox(height: 5),
-              AppText(text: text)
+              AppText(
+                text: text,
+                fontSize: textSize,
+                textAlign: TextAlign.center,
+              )
             ],
           ),
         ),

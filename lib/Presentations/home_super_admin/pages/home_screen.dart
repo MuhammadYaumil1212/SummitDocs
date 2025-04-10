@@ -1,3 +1,4 @@
+import 'package:SummitDocs/Presentations/admin_bank/pages/admin_bank.dart';
 import 'package:SummitDocs/Presentations/dashboard_super_admin/pages/dashboard_screen.dart';
 import 'package:SummitDocs/Presentations/error/error_screen.dart';
 import 'package:SummitDocs/Presentations/files/pages/files_screen.dart';
@@ -93,7 +94,9 @@ class _HomeScreenState extends State<HomeScreen> {
               FilesScreen(
                 roleId: _storage.get<int>(AppString.ROLE) ?? 0,
               ),
-              const ManageAccount(),
+              AdminBank(
+                roleId: _storage.get<int>(AppString.ROLE) ?? 0,
+              ),
               const SettingsScreen(),
             ],
           );
