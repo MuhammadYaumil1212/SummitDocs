@@ -2,12 +2,9 @@ import 'package:SummitDocs/Presentations/manage_account/pages/manage_account.dar
 import 'package:flutter/material.dart';
 
 import '../../../commons/constants/string.dart';
-import '../../../commons/utilities/adaptive_font_size.dart';
-import '../../../commons/widgets/app_text.dart';
 import '../../../commons/widgets/title.dart';
 import '../../../core/helper/message/message.dart';
 import '../../../core/helper/navigation/app_navigation.dart';
-import '../../LoA/pages/files_loa_screen.dart';
 import '../../files/pages/FeatureItem.dart';
 import '../../files/widgets/feature_card.dart';
 import '../../invoice/pages/files_invoice_screen.dart';
