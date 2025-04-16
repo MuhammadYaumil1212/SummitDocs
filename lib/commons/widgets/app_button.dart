@@ -142,3 +142,175 @@ class FileAddButton extends StatelessWidget {
     );
   }
 }
+
+class AppDropdownButton extends StatefulWidget {
+  final List<String> items;
+  final String buttonText;
+  final void Function(String) onSelected;
+
+  const AppDropdownButton({
+    Key? key,
+    required this.items,
+    required this.buttonText,
+    required this.onSelected,
+  }) : super(key: key);
+
+  @override
+  State<AppDropdownButton> createState() => _AppDropdownButtonState();
+}
+
+class _AppDropdownButtonState extends State<AppDropdownButton> {
+  final GlobalKey _key = GlobalKey();
+  OverlayEntry? _overlayEntry;
+  bool _isDropdownOpen = false;
+
+  void _toggleDropdown() {
+    if (_isDropdownOpen) {
+      _removeDropdown();
+    } else {
+      _showDropdown();
+    }
+  }
+
+  void _showDropdown() {
+    final RenderBox renderBox =
+        _key.currentContext!.findRenderObject() as RenderBox;
+    final size = renderBox.size;
+    final offset = renderBox.localToGlobal(Offset.zero);
+
+    _overlayEntry = OverlayEntry(
+      builder: (context) => _DropdownOverlay(
+        offset: offset,
+        width: size.width,
+        items: widget.items,
+        onItemSelected: (item) {
+          widget.onSelected(item);
+          _removeDropdown();
+        },
+      ),
+    );
+
+    Overlay.of(context).insert(_overlayEntry!);
+    setState(() => _isDropdownOpen = true);
+  }
+
+  void _removeDropdown() {
+    _overlayEntry?.remove();
+    _overlayEntry = null;
+    setState(() => _isDropdownOpen = false);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      key: _key,
+      onTap: _toggleDropdown,
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppColors.primary,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            AppText(
+              text: widget.buttonText,
+              fontColor: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+            Icon(
+              !_isDropdownOpen ? Icons.arrow_drop_down : Icons.arrow_drop_up,
+              color: Colors.white,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _DropdownOverlay extends StatefulWidget {
+  final Offset offset;
+  final double width;
+  final List<String> items;
+  final void Function(String) onItemSelected;
+
+  const _DropdownOverlay({
+    required this.offset,
+    required this.width,
+    required this.items,
+    required this.onItemSelected,
+  });
+
+  @override
+  State<_DropdownOverlay> createState() => _DropdownOverlayState();
+}
+
+class _DropdownOverlayState extends State<_DropdownOverlay>
+    with TickerProviderStateMixin {
+  late AnimationController _opacityController;
+  late AnimationController _sizeController;
+
+  @override
+  void initState() {
+    super.initState();
+    _opacityController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 200),
+    );
+    _sizeController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 200),
+    );
+
+    _opacityController.forward();
+    _sizeController.forward();
+  }
+
+  @override
+  void dispose() {
+    _opacityController.dispose();
+    _sizeController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      left: widget.offset.dx,
+      top: widget.offset.dy + 48,
+      width: widget.width,
+      child: FadeTransition(
+        opacity: _opacityController,
+        child: SizeTransition(
+          sizeFactor: _sizeController,
+          axisAlignment: -1.0,
+          child: Material(
+            elevation: 4,
+            borderRadius: BorderRadius.circular(8),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: widget.items.map((item) {
+                return InkWell(
+                  onTap: () => widget.onItemSelected(item),
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 14,
+                    ),
+                    child: AppText(
+                      text: item,
+                      fontSize: 16,
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

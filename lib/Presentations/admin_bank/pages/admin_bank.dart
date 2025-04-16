@@ -1,4 +1,5 @@
 import 'package:SummitDocs/Presentations/manage_account/pages/manage_account.dart';
+import 'package:SummitDocs/Presentations/transfer_virtual/pages/transfer_virtual.dart';
 import 'package:flutter/material.dart';
 
 import '../../../commons/constants/string.dart';
@@ -38,10 +39,7 @@ class AdminBank extends StatelessWidget {
         case 2:
           AppNavigator.push(
             context,
-            FilesInvoiceScreen(
-              roleId: roleId,
-              title: title,
-            ),
+            TransferVirtual(),
           );
           break;
         default:
