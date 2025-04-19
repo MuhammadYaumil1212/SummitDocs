@@ -16,7 +16,7 @@ class SigninServiceImpl extends SigninService {
     // TODO: implement signin
     try {
       var response = await sl<DioClient>().post(
-        ApiUrl.signin,
+        ApiUrl.login,
         data: params.toMap(),
       );
       return Right(response.data);
