@@ -52,6 +52,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               action: () {
                 storage?.delete(AppString.TOKEN_KEY);
                 storage?.delete(AppString.ROLE);
+                storage?.delete(AppString.USERNAME);
                 AppNavigator.pushAndRemove(context, SigninScreen());
               },
               backgroundColor: Colors.white,

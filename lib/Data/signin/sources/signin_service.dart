@@ -21,7 +21,7 @@ class SigninServiceImpl extends SigninService {
       );
       return Right(response.data);
     } on DioException catch (e) {
-      return Left(e.response?.data['message'] ?? "Something Gone Wrong!");
+      return Left(e.response?.data ?? "Something Gone Wrong!");
     }
   }
 }

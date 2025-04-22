@@ -1,15 +1,13 @@
-class SigninMapper {}
+import 'package:SummitDocs/Data/signin/models/signin_models.dart';
 
-// static TrailerEntity toEntity(TrailerModel movie) {
-//   return TrailerEntity(
-//       id: movie.id,
-//       name: movie.name,
-//       iso6391: movie.iso6391,
-//       iso31661: movie.iso31661,
-//       key: movie.key,
-//       official: movie.official,
-//       publishedAt: movie.publishedAt,
-//       site: movie.site,
-//       size: movie.size,
-//       type: movie.type);
-// }
+import '../../../Domain/signin/entity/signin_entity.dart';
+
+class SigninMapper {
+  static SigninEntity toEntity(SigninModels signin) {
+    return SigninEntity(
+      name: signin.user?.name,
+      username: signin.user?.username,
+      role: signin.user?.role,
+    );
+  }
+}

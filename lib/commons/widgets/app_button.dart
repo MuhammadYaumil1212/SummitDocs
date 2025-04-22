@@ -12,53 +12,66 @@ class AppButton extends StatelessWidget {
   final FontWeight? fontWeight;
   final IconData? icon;
   final Color? iconColor;
+  final bool isLoading;
 
-  const AppButton(
-      {super.key,
-      required this.text,
-      required this.action,
-      this.fontColor,
-      this.backgroundColor,
-      this.borderColor,
-      this.fontWeight,
-      this.iconColor,
-      this.icon});
+  const AppButton({
+    super.key,
+    required this.text,
+    required this.action,
+    this.fontColor,
+    this.backgroundColor,
+    this.borderColor,
+    this.fontWeight,
+    this.iconColor,
+    this.isLoading = false,
+    this.icon,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: action,
-      style: ElevatedButton.styleFrom(
-        padding: EdgeInsets.zero,
-        backgroundColor: backgroundColor ?? Theme.of(context).primaryColor,
-        side: BorderSide(color: borderColor ?? Colors.transparent),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
+      child: ElevatedButton(
+        onPressed: isLoading ? null : action,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: backgroundColor ?? Theme.of(context).primaryColor,
+          side: BorderSide(color: borderColor ?? Colors.transparent),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
         ),
+        child: isLoading
+            ? const SizedBox(
+                width: 24,
+                height: 24,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2.5,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                ),
+              )
+            : icon != null
+                ? Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        icon,
+                        color: iconColor ?? Colors.white,
+                      ),
+                      const SizedBox(width: 8),
+                      AppText(
+                        text: text,
+                        fontWeight: fontWeight ?? FontWeight.w700,
+                        fontColor: fontColor ?? Colors.white,
+                      ),
+                    ],
+                  )
+                : AppText(
+                    text: text,
+                    fontWeight: fontWeight ?? FontWeight.w700,
+                    fontColor: fontColor ?? Colors.white,
+                  ),
       ),
-      child: icon != ""
-          ? Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  icon,
-                  color: iconColor,
-                ),
-                const SizedBox(width: 5),
-                AppText(
-                  text: text,
-                  fontWeight: fontWeight ?? FontWeight.w700,
-                  fontColor: fontColor ?? Colors.white,
-                ),
-              ],
-            )
-          : Center(
-              child: AppText(
-                text: text,
-                fontWeight: fontWeight ?? FontWeight.w700,
-                fontColor: fontColor ?? Colors.white,
-              ),
-            ),
     );
   }
 }

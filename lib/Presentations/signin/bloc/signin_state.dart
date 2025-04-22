@@ -10,9 +10,11 @@ final class SigninInitial extends SigninState {
 }
 
 final class OnLoading extends SigninState {
+  final bool isLoading;
+  OnLoading({this.isLoading = false});
   @override
-  // TODO: implement props
-  List<Object?> get props => [];
+  // TODO: implement propss
+  List<Object?> get props => [isLoading];
 }
 
 final class OnFailed extends SigninState {
@@ -25,9 +27,11 @@ final class OnFailed extends SigninState {
 }
 
 final class OnSuccess extends SigninState {
+  SigninEntity signinEntity;
+  OnSuccess({required this.signinEntity});
   @override
   // TODO: implement props
-  List<Object?> get props => [];
+  List<Object?> get props => [signinEntity];
 }
 
 class NetworkAvailable extends SigninState {

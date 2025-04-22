@@ -1,8 +1,6 @@
-import 'package:SummitDocs/Presentations/signin/widgets/login_card.dart';
 import 'package:SummitDocs/Presentations/signup/bloc/signup_bloc.dart';
 import 'package:SummitDocs/Presentations/signup/widgets/register_card.dart';
 import 'package:SummitDocs/commons/constants/string.dart';
-import 'package:SummitDocs/core/helper/message/message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 

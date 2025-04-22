@@ -1,22 +1,22 @@
 class SigninParams {
-  String email;
+  String username;
   String password;
 
-  SigninParams({required this.email, required this.password});
+  SigninParams({required this.username, required this.password});
 
   SigninParams copyWith({
-    String? email,
+    String? username,
     String? password,
   }) {
     return SigninParams(
-      email: email ?? this.email,
+      username: username ?? this.username,
       password: password ?? this.password,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'email': email,
+      'username': username,
       'password': password,
     };
   }

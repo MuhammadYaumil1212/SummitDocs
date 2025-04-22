@@ -1,3 +1,4 @@
+import 'package:SummitDocs/Domain/signin/entity/signin_entity.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
@@ -36,13 +37,19 @@ class SigninBloc extends Bloc<SigninEvent, SigninState> {
     });
 
     on<Signin>((event, emit) async {
+      emit(OnLoading(isLoading: true));
       var signinCall = await sl<SigninUsecase>().call(
-        params: SigninParams(email: event.email, password: event.password),
+        params: SigninParams(
+          username: event.username,
+          password: event.password,
+        ),
       );
       signinCall.fold((error) {
+        emit(OnLoading(isLoading: false));
         emit(OnFailed(errorMessage: error));
-      }, (_) {
-        emit(OnSuccess());
+      }, (data) {
+        emit(OnLoading(isLoading: false));
+        emit(OnSuccess(signinEntity: data));
       });
     });
   }

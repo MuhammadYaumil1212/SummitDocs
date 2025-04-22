@@ -5,13 +5,13 @@ sealed class SigninEvent extends Equatable {
 }
 
 class Signin extends SigninEvent {
-  final String email;
+  final String username;
   final String password;
 
-  Signin({required this.email, required this.password});
+  Signin({required this.username, required this.password});
 
   @override
-  List<Object> get props => [email, password];
+  List<Object> get props => [username, password];
 }
 
 class CheckNetwork extends SigninEvent {

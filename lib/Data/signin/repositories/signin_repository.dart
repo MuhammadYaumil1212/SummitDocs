@@ -1,3 +1,5 @@
+import 'package:SummitDocs/Data/signin/models/signin_models.dart';
+import 'package:SummitDocs/core/helper/mapper/signin_mapper.dart';
 import 'package:dartz/dartz.dart';
 
 import '../../../Domain/signin/repositories/signin_repository.dart';
@@ -15,12 +17,16 @@ class SigninRepositoryImpl extends SigninRepository {
     var result = await sl<SigninService>().signin(params);
     return result.fold(
       (error) {
-        return Left(error);
+        return Left(error['message']);
       },
       (data) async {
-        await storage.put(AppString.TOKEN_KEY, data['user']['token']);
+        await storage.put(AppString.TOKEN_KEY, data['token']);
         await storage.put(AppString.ROLE, data['user']['role']);
-        return Right(data);
+        await storage.put(AppString.USERNAME, data['user']['name']);
+        final resultDataMapper = SigninMapper.toEntity(
+          SigninModels.fromJson(data),
+        );
+        return Right(resultDataMapper);
       },
     );
   }
