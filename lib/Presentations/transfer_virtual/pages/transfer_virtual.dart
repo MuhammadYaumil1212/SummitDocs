@@ -1,8 +1,9 @@
+import 'package:SummitDocs/Domain/transfer_virtual/entity/transfer_virtual_entity.dart';
 import 'package:SummitDocs/Presentations/transfer_virtual/bloc/transfer_virtual_bloc.dart';
-import 'package:SummitDocs/Presentations/transfer_virtual/transfer_virtual_entity.dart';
 import 'package:SummitDocs/commons/widgets/app_button.dart';
 import 'package:SummitDocs/commons/widgets/app_scaffold.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../../commons/constants/string.dart';
@@ -18,16 +19,15 @@ class TransferVirtual extends StatefulWidget {
 }
 
 class _TransferVirtualState extends State<TransferVirtual> {
-  final List<TransferVirtualEntity> conferences = List.generate(
-    15,
-    (index) => TransferVirtualEntity(
-      id: index + 1,
-      AccountHolderName: "Holder",
-      BankBranch: "branch bank",
-      BankName: "Bank name",
-      NoVirtualAcc: "123456",
-    ),
-  );
+  final _bloc = TransferVirtualBloc();
+  late final List<TransferVirtualEntity> bankData = [];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _bloc.add(LoadTransferBankVirtual());
+  }
 
   Widget _buildHeader(BuildContext context, String title) {
     return Row(
@@ -67,7 +67,10 @@ class _TransferVirtualState extends State<TransferVirtual> {
     ];
   }
 
-  Widget _buildTable(String title) {
+  Widget _buildTable(
+    String title,
+    List<TransferVirtualEntity> listTransferBank,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -77,11 +80,18 @@ class _TransferVirtualState extends State<TransferVirtual> {
           fontWeight: FontWeight.w700,
         ),
         const SizedBox(height: 10),
-        AppDataTable(
-          columns: _buildColumns(),
-          data: conferences,
-          rowBuilder: _buildRow,
-        ),
+        listTransferBank.isNotEmpty
+            ? AppDataTable(
+                columns: _buildColumns(),
+                data: listTransferBank,
+                rowBuilder: _buildRow,
+                rowsPerPage: 10,
+              )
+            : Center(
+                child: CircularProgressIndicator(
+                  color: AppColors.primary,
+                ),
+              ),
       ],
     );
   }
@@ -90,10 +100,12 @@ class _TransferVirtualState extends State<TransferVirtual> {
     return DataRow(
       cells: [
         DataCell(Center(child: AppText(text: tve.id.toString()))),
-        DataCell(Center(child: AppText(text: tve.NoVirtualAcc))),
-        DataCell(Center(child: AppText(text: tve.AccountHolderName))),
-        DataCell(Center(child: AppText(text: tve.BankName))),
-        DataCell(Center(child: AppText(text: tve.BankBranch))),
+        DataCell(Center(
+            child:
+                AppText(text: tve.beneficiaryBankAccountNo ?? "No Account"))),
+        DataCell(Center(child: AppText(text: tve.recipientName ?? "No Name"))),
+        DataCell(Center(child: AppText(text: tve.namaBank ?? "No Bank"))),
+        DataCell(Center(child: AppText(text: tve.bankBranch ?? "No Branch"))),
         DataCell(
           Center(
             child: Row(
@@ -126,11 +138,26 @@ class _TransferVirtualState extends State<TransferVirtual> {
     );
   }
 
+  Future<void> _handleRefresh() async {
+    await Future.delayed(Duration(seconds: 2));
+    setState(() {
+      bankData.clear();
+      _bloc.add(LoadTransferBankVirtual());
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
-      bloc: TransferVirtualBloc(),
-      listener: (BuildContext context, TransferVirtualState state) {},
+      bloc: _bloc,
+      listener: (BuildContext context, TransferVirtualState state) {
+        if (state is SuccessTransfer) {
+          setState(() {
+            bankData.clear();
+            bankData.addAll(state.transferVirtual);
+          });
+        }
+      },
       appBar: AppBar(
         surfaceTintColor: Colors.transparent,
         centerTitle: true,
@@ -148,19 +175,32 @@ class _TransferVirtualState extends State<TransferVirtual> {
           ),
         ),
       ),
-      appWidget: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              _buildHeader(context, "Transfer/\nVirtual Account"),
-              const SizedBox(height: 30),
-              _buildTable("Virtual Account"),
-              _buildTable("Bank Transfer"),
-            ],
-          ),
-        ),
+      appWidget: BlocBuilder<TransferVirtualBloc, TransferVirtualState>(
+        builder: (context, state) {
+          return RefreshIndicator(
+            onRefresh: _handleRefresh,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    _buildHeader(context, "Transfer/\nVirtual Account"),
+                    const SizedBox(height: 30),
+                    _buildTable(
+                      "Virtual Account",
+                      bankData,
+                    ),
+                    _buildTable(
+                      "Bank Transfer",
+                      bankData,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }

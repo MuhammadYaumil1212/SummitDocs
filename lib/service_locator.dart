@@ -1,8 +1,12 @@
 import 'package:SummitDocs/Data/home/repositories/home_repository_impl.dart';
 import 'package:SummitDocs/Data/home/sources/homes_services.dart';
+import 'package:SummitDocs/Data/transfer_virtual/repositories/transfer_virtual_repository_impl.dart';
+import 'package:SummitDocs/Data/transfer_virtual/sources/transfer_virtual_sources.dart';
 import 'package:SummitDocs/Domain/home/repositories/home_repository.dart';
 import 'package:SummitDocs/Domain/home/usecases/loa_usecase.dart';
 import 'package:SummitDocs/Domain/signin/usecases/signin_usecase.dart';
+import 'package:SummitDocs/Domain/transfer_virtual/repositories/transfer_virtual_repository.dart';
+import 'package:SummitDocs/Domain/transfer_virtual/usecase/transfer_virtual_usecase.dart';
 
 import 'Data/signin/repositories/signin_repository.dart';
 import 'Data/signin/sources/signin_service.dart';
@@ -16,10 +20,15 @@ void setupServiceLocator() {
   //services
   sl.registerSingleton<SigninService>(SigninServiceImpl());
   sl.registerSingleton<HomesServices>(HomeServicesImpl());
+  sl.registerSingleton<TransferVirtualServices>(TransferVirtualServicesImpl());
   //repositories
   sl.registerSingleton<SigninRepository>(SigninRepositoryImpl());
   sl.registerSingleton<HomeRepository>(HomeRepositoryImpl());
+  sl.registerSingleton<TransferVirtualRepository>(
+    TransferVirtualRepositoryImpl(),
+  );
   //usecases
   sl.registerSingleton<SigninUsecase>(SigninUsecase());
   sl.registerSingleton<LOAUsecase>(LOAUsecase());
+  sl.registerSingleton<TransferVirtualUsecase>(TransferVirtualUsecase());
 }

@@ -21,6 +21,10 @@ class ApiUrl {
   static const createVirtualAccount = "${apiV}virtual-accounts/create";
   static const updateVirtualAccount =
       "${apiV}virtual-accounts/update/"; //add value 4/0/1..
+  //bank transfer
+  static const getAllListBank = "${apiV}bank-transfer/list";
+  static const getListBankById = "${apiV}bank-transfer/list/";
+  static const createBankTransfer = "${apiV}bank-transfer/create";
 
   //docs invoice
   static const getIcodsaInvoice = "${apiV}icodsa/invoices";
