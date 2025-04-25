@@ -14,8 +14,8 @@ class TransferVirtualMapper {
       recipientName: transfer.recipientName,
       swiftCode: transfer.swiftCode,
       token: transfer.token,
-      updatedAt: transfer.updatedAt,
-      createdAt: transfer.createdAt,
+      createdAt: DateTime.tryParse(transfer.createdAt ?? ''),
+      updatedAt: DateTime.tryParse(transfer.updatedAt ?? ''),
       createdBy: transfer.createdBy,
     );
   }

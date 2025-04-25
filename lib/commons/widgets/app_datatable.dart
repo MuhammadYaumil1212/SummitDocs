@@ -31,7 +31,7 @@ class AppDataTable<T> extends StatelessWidget {
       final int maxRowsPerPage = availableHeight.isFinite
           ? (availableHeight / rowHeight)
               .floor()
-              .clamp(data.length - 4, data.length)
+              .clamp(data.length, data.length)
           : rowsPerPage;
 
       return Expanded(

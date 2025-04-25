@@ -44,3 +44,12 @@ final class SendBankTransferData extends TransferVirtualEvent {
         country,
       ];
 }
+
+final class DeleteTransferData extends TransferVirtualEvent {
+  final int id;
+  DeleteTransferData({required this.id});
+
+  @override
+  // TODO: implement props
+  List<Object?> get props => [id];
+}

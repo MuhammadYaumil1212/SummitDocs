@@ -25,6 +25,7 @@ class ApiUrl {
   static const getAllListBank = "${apiV}bank-transfer/list";
   static const getListBankById = "${apiV}bank-transfer/list/";
   static const createBankTransfer = "${apiV}bank-transfer/create";
+  static const deleteTransferBank = "${apiV}bank-transfer/delete/";
 
   //docs invoice
   static const getIcodsaInvoice = "${apiV}icodsa/invoices";

@@ -49,3 +49,19 @@ final class SuccessSendData extends TransferVirtualState {
   // TODO: implement props
   List<Object?> get props => [successMessage];
 }
+
+final class FailedDeleteData extends TransferVirtualState {
+  final String errorMessage;
+  const FailedDeleteData({required this.errorMessage});
+
+  @override
+  List<Object?> get props => [errorMessage];
+}
+
+final class SuccessDeleteData extends TransferVirtualState {
+  final String successMessage;
+  const SuccessDeleteData({required this.successMessage});
+
+  @override
+  List<Object?> get props => [successMessage];
+}

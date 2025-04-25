@@ -115,9 +115,7 @@ class _TransferVirtualState extends State<TransferVirtual> {
                 rowsPerPage: 10,
               )
             : Center(
-                child: CircularProgressIndicator(
-                  color: AppColors.primary,
-                ),
+                child: AppText(text: "Data Not Found"),
               ),
       ],
     );
@@ -143,10 +141,9 @@ class _TransferVirtualState extends State<TransferVirtual> {
                 ),
                 const SizedBox(width: 5),
                 ActionButton(
-                  icon: AppString.trashIcon,
-                  backgroundColor: AppColors.redFailed,
-                  action: () {},
-                ),
+                    icon: AppString.trashIcon,
+                    backgroundColor: AppColors.redFailed,
+                    action: () => _showDeleteDialog(tve.id ?? -1))
               ],
             ),
           ),
@@ -163,6 +160,10 @@ class _TransferVirtualState extends State<TransferVirtual> {
 
   Future<void> _handleRefresh() async {
     await Future.delayed(Duration(seconds: 2));
+    reloadData();
+  }
+
+  void reloadData() {
     setState(() {
       bankData.clear();
       _bloc.add(LoadTransferBankVirtual());
@@ -177,7 +178,13 @@ class _TransferVirtualState extends State<TransferVirtual> {
         if (state is SuccessTransfer) {
           setState(() {
             bankData.clear();
-            bankData.addAll(state.transferVirtual);
+            final sortedData =
+                List<TransferVirtualEntity>.from(state.transferVirtual)
+                  ..sort(
+                    (a, b) => (b.createdAt ?? DateTime(0))
+                        .compareTo(a.createdAt ?? DateTime(0)),
+                  );
+            bankData.addAll(sortedData);
           });
 
           state.transferVirtual.map((item) {
@@ -186,6 +193,11 @@ class _TransferVirtualState extends State<TransferVirtual> {
               context,
             );
           });
+        }
+
+        if (state is SuccessDeleteData) {
+          reloadData();
+          return DisplayMessage.successMessage(state.successMessage, context);
         }
 
         if (state is FailedSendData) {
@@ -220,7 +232,6 @@ class _TransferVirtualState extends State<TransferVirtual> {
               ),
             );
           }
-
           return RefreshIndicator(
             color: AppColors.primary,
             onRefresh: _handleRefresh,
@@ -365,6 +376,9 @@ class _TransferVirtualState extends State<TransferVirtual> {
                             city: _city.text,
                             country: _country.text,
                           ));
+                          Future.delayed(Duration(seconds: 2), () {
+                            reloadData();
+                          });
                           Navigator.of(context).pop();
                         },
                       ),
@@ -386,6 +400,62 @@ class _TransferVirtualState extends State<TransferVirtual> {
               ),
             );
           },
+        );
+      },
+    );
+  }
+
+  void _showDeleteDialog(int id) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          backgroundColor: Colors.white,
+          title: AppText(
+            text: "Hapus Data",
+            fontSize: 21,
+            fontWeight: FontWeight.w700,
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                AppText(
+                  text: "Apakah anda yakin ingin menghapus Bank ?",
+                  textAlign: TextAlign.center,
+                  fontSize: 20,
+                ),
+                const SizedBox(height: 10),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  child: AppButton(
+                      text: "Hapus Data",
+                      backgroundColor: AppColors.redFailed,
+                      action: () {
+                        _bloc.add(
+                          DeleteTransferData(id: id),
+                        );
+                        Navigator.of(context).pop();
+                      }),
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  child: AppButton(
+                    action: () {
+                      Navigator.of(context).pop();
+                    },
+                    text: "Batalkan",
+                    borderColor: AppColors.grayBackground2,
+                    backgroundColor: AppColors.secondaryBackground,
+                    fontColor: Colors.red,
+                  ),
+                ),
+              ],
+            ),
+          ),
         );
       },
     );

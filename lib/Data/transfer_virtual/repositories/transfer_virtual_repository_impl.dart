@@ -1,6 +1,8 @@
 import 'package:SummitDocs/Data/transfer_virtual/models/bank_params.dart';
-import 'package:SummitDocs/Data/transfer_virtual/sources/transfer_virtual_sources.dart';
+import 'package:SummitDocs/Data/transfer_virtual/models/delete_bank_model.dart';
+import 'package:SummitDocs/Data/transfer_virtual/sources/transfer_virtual_services.dart';
 import 'package:SummitDocs/Domain/transfer_virtual/repositories/transfer_virtual_repository.dart';
+import 'package:SummitDocs/core/helper/mapper/delete_bank_mapper.dart';
 import 'package:SummitDocs/core/helper/mapper/transfer_virtual_mapper.dart';
 import 'package:dartz/dartz.dart';
 
@@ -48,5 +50,20 @@ class TransferVirtualRepositoryImpl extends TransferVirtualRepository {
         return Right(data['message']);
       },
     );
+  }
+
+  @override
+  Future<Either> deleteBankData(int id) async {
+    // TODO: implement deleteBankData
+    final result =
+        await sl<TransferVirtualServices>().deleteBankTransferData(id);
+
+    return result.fold((error) {
+      return Left(error);
+    }, (data) {
+      final model = DeleteBankModel.fromJson(data);
+      final dataMapper = DeleteBankMapper.toEntity(model);
+      return Right(dataMapper);
+    });
   }
 }

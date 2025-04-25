@@ -10,8 +10,8 @@ class TransferVirtualEntity {
   String? country;
   String? token;
   int? createdBy;
-  String? createdAt;
-  String? updatedAt;
+  DateTime? createdAt;
+  DateTime? updatedAt;
 
   TransferVirtualEntity(
       {this.id,
