@@ -1,3 +1,4 @@
+import 'package:SummitDocs/Data/transfer_virtual/models/bank_params.dart';
 import 'package:SummitDocs/Data/transfer_virtual/sources/transfer_virtual_sources.dart';
 import 'package:SummitDocs/Domain/transfer_virtual/repositories/transfer_virtual_repository.dart';
 import 'package:SummitDocs/core/helper/mapper/transfer_virtual_mapper.dart';
@@ -22,8 +23,6 @@ class TransferVirtualRepositoryImpl extends TransferVirtualRepository {
           );
           return TransferVirtualMapper.toEntity(model);
         }).toList();
-
-        print("data transfer bank : ${dataMapper.length}");
         return Right(dataMapper);
       },
     );
@@ -33,5 +32,21 @@ class TransferVirtualRepositoryImpl extends TransferVirtualRepository {
   Future<Either> getAllVirtualTransfer() {
     // TODO: implement getAllVirtualTransfer
     throw UnimplementedError();
+  }
+
+  @override
+  Future<Either> sendBankData(BankParams params) async {
+    // TODO: implement sendBankData
+    final result = await sl<TransferVirtualServices>().sendBankTransferData(
+      params,
+    );
+    return result.fold(
+      (error) {
+        return Left(error['errors']);
+      },
+      (data) {
+        return Right(data['message']);
+      },
+    );
   }
 }

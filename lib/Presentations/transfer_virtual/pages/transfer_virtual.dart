@@ -2,6 +2,7 @@ import 'package:SummitDocs/Domain/transfer_virtual/entity/transfer_virtual_entit
 import 'package:SummitDocs/Presentations/transfer_virtual/bloc/transfer_virtual_bloc.dart';
 import 'package:SummitDocs/commons/widgets/app_button.dart';
 import 'package:SummitDocs/commons/widgets/app_scaffold.dart';
+import 'package:SummitDocs/commons/widgets/app_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -10,6 +11,7 @@ import '../../../commons/constants/string.dart';
 import '../../../commons/widgets/app_datatable.dart';
 import '../../../commons/widgets/app_text.dart';
 import '../../../core/config/theme/app_colors.dart';
+import '../../../core/helper/message/message.dart';
 
 class TransferVirtual extends StatefulWidget {
   const TransferVirtual({super.key});
@@ -20,6 +22,15 @@ class TransferVirtual extends StatefulWidget {
 
 class _TransferVirtualState extends State<TransferVirtual> {
   final _bloc = TransferVirtualBloc();
+  final TextEditingController _bankName = TextEditingController();
+  final TextEditingController _swiftCode = TextEditingController();
+  final TextEditingController _recipientName = TextEditingController();
+  final TextEditingController _beneficiaryBankAccNo = TextEditingController();
+  final TextEditingController _bankAddress = TextEditingController();
+  final TextEditingController _bankBranch = TextEditingController();
+  final TextEditingController _city = TextEditingController();
+  final TextEditingController _country = TextEditingController();
+
   late final List<TransferVirtualEntity> bankData = [];
 
   @override
@@ -29,7 +40,8 @@ class _TransferVirtualState extends State<TransferVirtual> {
     _bloc.add(LoadTransferBankVirtual());
   }
 
-  Widget _buildHeader(BuildContext context, String title) {
+  Widget _buildHeader(
+      BuildContext context, String title, TransferVirtualState state) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -44,9 +56,11 @@ class _TransferVirtualState extends State<TransferVirtual> {
             switch (value) {
               case "Virtual Account":
                 // Handle Virtual Account selection
+                _showVirtualAccountAddDataDialog(context);
                 break;
               case "Bank Transfer":
                 // Handle Bank Transfer selection
+                _showBankTransferAddDataDialog(context, state);
                 break;
             }
           },
@@ -56,7 +70,7 @@ class _TransferVirtualState extends State<TransferVirtual> {
     );
   }
 
-  List<DataColumn> _buildColumns() {
+  List<DataColumn> _buildVirtualColumns() {
     return [
       _centeredColumn("ID"),
       _centeredColumn("No.Virtual acc"),
@@ -67,7 +81,20 @@ class _TransferVirtualState extends State<TransferVirtual> {
     ];
   }
 
+  List<DataColumn> _buildBankColumns() {
+    return [
+      _centeredColumn("ID"),
+      _centeredColumn("Bank Name"),
+      _centeredColumn("Swift Code"),
+      _centeredColumn("Recipient Name"),
+      _centeredColumn("Beneficiary Bank Acc No."),
+      _centeredColumn("Tindakan"),
+    ];
+  }
+
   Widget _buildTable(
+    List<DataColumn> columns,
+    DataRow Function(TransferVirtualEntity) row,
     String title,
     List<TransferVirtualEntity> listTransferBank,
   ) {
@@ -82,9 +109,9 @@ class _TransferVirtualState extends State<TransferVirtual> {
         const SizedBox(height: 10),
         listTransferBank.isNotEmpty
             ? AppDataTable(
-                columns: _buildColumns(),
+                columns: columns,
                 data: listTransferBank,
-                rowBuilder: _buildRow,
+                rowBuilder: row,
                 rowsPerPage: 10,
               )
             : Center(
@@ -96,16 +123,14 @@ class _TransferVirtualState extends State<TransferVirtual> {
     );
   }
 
-  DataRow _buildRow(TransferVirtualEntity tve) {
+  DataRow _buildBankRow(TransferVirtualEntity tve) {
     return DataRow(
       cells: [
-        DataCell(Center(child: AppText(text: tve.id.toString()))),
-        DataCell(Center(
-            child:
-                AppText(text: tve.beneficiaryBankAccountNo ?? "No Account"))),
-        DataCell(Center(child: AppText(text: tve.recipientName ?? "No Name"))),
-        DataCell(Center(child: AppText(text: tve.namaBank ?? "No Bank"))),
-        DataCell(Center(child: AppText(text: tve.bankBranch ?? "No Branch"))),
+        DataCell(AppText(text: tve.id.toString())),
+        DataCell(AppText(text: tve.namaBank ?? "-")),
+        DataCell(AppText(text: tve.swiftCode ?? "-")),
+        DataCell(AppText(text: tve.recipientName ?? "-")),
+        DataCell(AppText(text: tve.beneficiaryBankAccountNo ?? "-")),
         DataCell(
           Center(
             child: Row(
@@ -132,9 +157,7 @@ class _TransferVirtualState extends State<TransferVirtual> {
 
   DataColumn _centeredColumn(String title) {
     return DataColumn(
-      label: Center(
-        child: AppText(text: title),
-      ),
+      label: AppText(text: title),
     );
   }
 
@@ -156,6 +179,19 @@ class _TransferVirtualState extends State<TransferVirtual> {
             bankData.clear();
             bankData.addAll(state.transferVirtual);
           });
+
+          state.transferVirtual.map((item) {
+            DisplayMessage.successMessage(
+              "Berhasil menambahkan ${item.namaBank}",
+              context,
+            );
+          });
+        }
+
+        if (state is FailedSendData) {
+          state.errorMessage.map((item) {
+            return DisplayMessage.errorMessage(item, context);
+          }).toList();
         }
       },
       appBar: AppBar(
@@ -177,21 +213,29 @@ class _TransferVirtualState extends State<TransferVirtual> {
       ),
       appWidget: BlocBuilder<TransferVirtualBloc, TransferVirtualState>(
         builder: (context, state) {
+          if (state is LoadingTransfer) {
+            return const Center(
+              child: CircularProgressIndicator(
+                color: AppColors.primary,
+              ),
+            );
+          }
+
           return RefreshIndicator(
+            color: AppColors.primary,
             onRefresh: _handleRefresh,
             child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
               scrollDirection: Axis.vertical,
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   children: [
-                    _buildHeader(context, "Transfer/\nVirtual Account"),
+                    _buildHeader(context, "Transfer/\nVirtual Account", state),
                     const SizedBox(height: 30),
                     _buildTable(
-                      "Virtual Account",
-                      bankData,
-                    ),
-                    _buildTable(
+                      _buildBankColumns(),
+                      _buildBankRow,
                       "Bank Transfer",
                       bankData,
                     ),
@@ -202,6 +246,148 @@ class _TransferVirtualState extends State<TransferVirtual> {
           );
         },
       ),
+    );
+  }
+
+  void _showVirtualAccountAddDataDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          backgroundColor: Colors.white,
+          title: AppText(
+            text: "Tambah Data",
+            fontSize: 21,
+            fontWeight: FontWeight.w700,
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(height: 10),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  child: AppButton(text: "Masukkan", action: () {}),
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  child: AppButton(
+                    action: () {
+                      Navigator.of(context).pop();
+                    },
+                    text: "Batalkan",
+                    borderColor: AppColors.grayBackground2,
+                    backgroundColor: AppColors.secondaryBackground,
+                    fontColor: Colors.red,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _showBankTransferAddDataDialog(
+      BuildContext context, TransferVirtualState state) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return BlocBuilder<TransferVirtualBloc, TransferVirtualState>(
+          bloc: _bloc,
+          builder: (context, state) {
+            final bool isLoading = state is LoadingTransfer && state.isLoading;
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              backgroundColor: Colors.white,
+              title: AppText(
+                text: "Tambah Data",
+                fontSize: 21,
+                fontWeight: FontWeight.w700,
+              ),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    AppTextfield(
+                      hint: "Bank Name",
+                      controller: _bankName,
+                    ),
+                    AppTextfield(
+                      hint: "Swift Code",
+                      controller: _swiftCode,
+                    ),
+                    AppTextfield(
+                      hint: "Recipient Name",
+                      controller: _recipientName,
+                    ),
+                    AppTextfield(
+                      hint: "Beneficiary Bank Account",
+                      controller: _beneficiaryBankAccNo,
+                    ),
+                    AppTextfield(
+                      hint: "Bank Branch",
+                      controller: _bankBranch,
+                    ),
+                    AppTextfield(
+                      hint: "Bank Address",
+                      controller: _bankAddress,
+                    ),
+                    AppTextfield(
+                      hint: "City",
+                      controller: _city,
+                    ),
+                    AppTextfield(
+                      hint: "Country",
+                      controller: _country,
+                    ),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      width: double.infinity,
+                      child: AppButton(
+                        text: "Masukkan",
+                        isLoading: isLoading,
+                        action: () {
+                          _bloc.add(SendBankTransferData(
+                            namaBank: _bankName.text,
+                            swiftCode: _swiftCode.text,
+                            receipientName: _recipientName.text,
+                            beneficiaryBankAccountNo:
+                                _beneficiaryBankAccNo.text,
+                            bankBranch: _bankBranch.text,
+                            bankAddress: _bankAddress.text,
+                            city: _city.text,
+                            country: _country.text,
+                          ));
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      child: AppButton(
+                        action: () {
+                          Navigator.of(context).pop();
+                        },
+                        text: "Batalkan",
+                        borderColor: AppColors.grayBackground2,
+                        backgroundColor: AppColors.secondaryBackground,
+                        fontColor: Colors.red,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }

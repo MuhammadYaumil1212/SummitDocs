@@ -32,3 +32,20 @@ final class FailedTransfer extends TransferVirtualState {
   @override
   List<Object> get props => [errorMessage];
 }
+
+final class FailedSendData extends TransferVirtualState {
+  final List<String> errorMessage;
+
+  const FailedSendData({required this.errorMessage});
+
+  @override
+  List<Object?> get props => [errorMessage];
+}
+
+final class SuccessSendData extends TransferVirtualState {
+  final String successMessage;
+  SuccessSendData({required this.successMessage});
+  @override
+  // TODO: implement props
+  List<Object?> get props => [successMessage];
+}

@@ -1,3 +1,4 @@
+import 'package:SummitDocs/Data/transfer_virtual/models/bank_params.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 
@@ -8,6 +9,7 @@ import '../../../service_locator.dart';
 abstract class TransferVirtualServices {
   Future<Either> getAllBankTransfer();
   Future<Either> getAllVirtualTransfer();
+  Future<Either> sendBankTransferData(BankParams params);
 }
 
 class TransferVirtualServicesImpl extends TransferVirtualServices {
@@ -28,5 +30,19 @@ class TransferVirtualServicesImpl extends TransferVirtualServices {
   Future<Either> getAllVirtualTransfer() {
     // TODO: implement getAllVirtualTransfer
     throw UnimplementedError();
+  }
+
+  @override
+  Future<Either> sendBankTransferData(BankParams params) async {
+    // TODO: implement sendBankTransferData
+    try {
+      var response = await sl<DioClient>().post(
+        ApiUrl.createBankTransfer,
+        data: params.toMap(),
+      );
+      return Right(response.data);
+    } on DioException catch (e) {
+      return Left(e.response?.data ?? "Something Gone Wrong!");
+    }
   }
 }
