@@ -6,6 +6,7 @@ import 'package:SummitDocs/commons/widgets/app_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:intl/intl.dart';
 
 import '../../../commons/constants/string.dart';
 import '../../../commons/widgets/app_datatable.dart';
@@ -137,7 +138,10 @@ class _TransferVirtualState extends State<TransferVirtual> {
                 ActionButton(
                   icon: AppString.infoIcon,
                   backgroundColor: AppColors.primary,
-                  action: () {},
+                  action: () {
+                    _bloc.add(LoadDetailBank(id: tve.id ?? -1));
+                    _showDetailDialog(tve.id ?? -1, tve);
+                  },
                 ),
                 const SizedBox(width: 5),
                 ActionButton(
@@ -163,10 +167,11 @@ class _TransferVirtualState extends State<TransferVirtual> {
     reloadData();
   }
 
-  void reloadData() {
+  void reloadData({int id = -1}) {
     setState(() {
       bankData.clear();
       _bloc.add(LoadTransferBankVirtual());
+      _bloc.add(LoadDetailBank(id: id));
     });
   }
 
@@ -458,6 +463,68 @@ class _TransferVirtualState extends State<TransferVirtual> {
           ),
         );
       },
+    );
+  }
+
+  void _showDetailDialog(int id, TransferVirtualEntity detail) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          backgroundColor: Colors.white,
+          title: AppText(
+            text: "Detail Bank",
+            fontSize: 21,
+            fontWeight: FontWeight.w700,
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildDetailRow("ID", detail.id.toString()),
+                _buildDetailRow("Bank Name", detail.namaBank ?? "-"),
+                _buildDetailRow("Swift Code", detail.swiftCode ?? "-"),
+                _buildDetailRow("Recipient Name", detail.recipientName ?? "-"),
+                _buildDetailRow(
+                    "Beneficiary", detail.beneficiaryBankAccountNo ?? "-"),
+                _buildDetailRow("Bank Branch", detail.bankBranch ?? "-"),
+                _buildDetailRow("Bank Address", detail.bankAddress ?? "-"),
+                _buildDetailRow("City", detail.city ?? "-"),
+                _buildDetailRow("Country", detail.country ?? "-"),
+                _buildDetailRow("Tanggal dibuat",
+                    DateFormat('dd/MM/yyyy').format(detail.createdAt!)),
+                _buildDetailRow("Tanggal Diubah",
+                    DateFormat('dd/MM/yyyy').format(detail.updatedAt!)),
+                const SizedBox(height: 20),
+                SizedBox(
+                  width: double.infinity,
+                  child: AppButton(
+                    action: () {
+                      Navigator.of(context).pop();
+                    },
+                    text: "Tutup",
+                    borderColor: AppColors.grayBackground2,
+                    backgroundColor: AppColors.secondaryBackground,
+                    fontColor: Colors.red,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildDetailRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: AppText(
+        text: "$label: $value",
+      ),
     );
   }
 }

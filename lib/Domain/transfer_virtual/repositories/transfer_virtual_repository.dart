@@ -6,4 +6,5 @@ abstract class TransferVirtualRepository {
   Future<Either> getAllVirtualTransfer();
   Future<Either> sendBankData(BankParams params);
   Future<Either> deleteBankData(int id);
+  Future<Either> detailBankTransfer(int id);
 }

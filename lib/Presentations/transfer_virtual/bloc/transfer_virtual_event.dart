@@ -53,3 +53,12 @@ final class DeleteTransferData extends TransferVirtualEvent {
   // TODO: implement props
   List<Object?> get props => [id];
 }
+
+final class LoadDetailBank extends TransferVirtualEvent {
+  final int id;
+  LoadDetailBank({required this.id});
+
+  @override
+  // TODO: implement props
+  List<Object?> get props => [id];
+}

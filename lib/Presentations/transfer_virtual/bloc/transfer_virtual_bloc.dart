@@ -2,6 +2,7 @@ import 'package:SummitDocs/Data/transfer_virtual/models/bank_params.dart';
 import 'package:SummitDocs/Domain/transfer_virtual/entity/delete_bank_entity.dart';
 import 'package:SummitDocs/Domain/transfer_virtual/entity/transfer_virtual_entity.dart';
 import 'package:SummitDocs/Domain/transfer_virtual/usecase/delete_bank_transfer.dart';
+import 'package:SummitDocs/Domain/transfer_virtual/usecase/detail_bank_transfer_usecase.dart';
 import 'package:SummitDocs/Domain/transfer_virtual/usecase/save_bank_transfer_usecase.dart';
 import 'package:SummitDocs/Domain/transfer_virtual/usecase/transfer_virtual_usecase.dart';
 import 'package:bloc/bloc.dart';
@@ -78,6 +79,18 @@ class TransferVirtualBloc
       }, (data) {
         emit(LoadingTransfer(isLoading: false));
         emit(SuccessDeleteData(successMessage: data.message));
+      });
+    });
+    on<LoadDetailBank>((event, emit) async {
+      emit(LoadingTransfer(isLoading: true));
+      final detailBank =
+          await sl<DetailBankTransferUsecase>().call(params: event.id);
+      detailBank.fold((error) {
+        emit(LoadingTransfer(isLoading: false));
+        emit(DetailBankFailed(errorMessage: error));
+      }, (data) {
+        emit(LoadingTransfer(isLoading: false));
+        emit(DetailBankLoaded(detailBankEntity: data));
       });
     });
   }

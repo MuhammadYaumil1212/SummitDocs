@@ -65,3 +65,19 @@ final class SuccessDeleteData extends TransferVirtualState {
   @override
   List<Object?> get props => [successMessage];
 }
+
+final class DetailBankLoaded extends TransferVirtualState {
+  final TransferVirtualEntity detailBankEntity;
+  const DetailBankLoaded({required this.detailBankEntity});
+
+  @override
+  List<Object?> get props => [detailBankEntity];
+}
+
+final class DetailBankFailed extends TransferVirtualState {
+  final String errorMessage;
+  const DetailBankFailed({required this.errorMessage});
+  @override
+  // TODO: implement props
+  List<Object?> get props => [errorMessage];
+}
