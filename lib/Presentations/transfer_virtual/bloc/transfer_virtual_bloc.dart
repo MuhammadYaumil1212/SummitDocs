@@ -3,6 +3,7 @@ import 'package:SummitDocs/Data/transfer_virtual/models/virtual_account_params.d
 import 'package:SummitDocs/Domain/transfer_virtual/entity/account_virtual_entity.dart';
 import 'package:SummitDocs/Domain/transfer_virtual/entity/transfer_virtual_entity.dart';
 import 'package:SummitDocs/Domain/transfer_virtual/usecase/delete_bank_transfer.dart';
+import 'package:SummitDocs/Domain/transfer_virtual/usecase/delete_virtual_account_usecase.dart';
 import 'package:SummitDocs/Domain/transfer_virtual/usecase/detail_bank_transfer_usecase.dart';
 import 'package:SummitDocs/Domain/transfer_virtual/usecase/get_transfer_virtual_account_usecase.dart';
 import 'package:SummitDocs/Domain/transfer_virtual/usecase/save_bank_transfer_usecase.dart';
@@ -136,6 +137,18 @@ class TransferVirtualBloc
       }, (data) {
         emit(LoadingVirtualAccount(isLoading: false));
         emit(SuccessSendVirtualAccount(successMessage: data));
+      });
+    });
+    on<DeleteVirtualAccountData>((event, emit) async {
+      emit(LoadingTransfer(isLoading: true));
+      final deleteVirtualAccount =
+          await sl<DeleteVirtualAccountUsecase>().call(params: event.id);
+      deleteVirtualAccount.fold((error) {
+        emit(LoadingTransfer(isLoading: false));
+        emit(FailedDeleteData(errorMessage: error));
+      }, (data) {
+        emit(LoadingTransfer(isLoading: false));
+        emit(SuccessDeleteData(successMessage: data.message));
       });
     });
   }

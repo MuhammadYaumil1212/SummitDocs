@@ -171,7 +171,7 @@ class _TransferVirtualState extends State<TransferVirtual> {
                 ActionButton(
                     icon: AppString.trashIcon,
                     backgroundColor: AppColors.redFailed,
-                    action: () => _showDeleteDialog(tve.id ?? -1))
+                    action: () => _showDeleteBankDialog(tve.id ?? -1))
               ],
             ),
           ),
@@ -203,9 +203,10 @@ class _TransferVirtualState extends State<TransferVirtual> {
                 ),
                 const SizedBox(width: 5),
                 ActionButton(
-                    icon: AppString.trashIcon,
-                    backgroundColor: AppColors.redFailed,
-                    action: () => _showDeleteDialog(tve.id ?? -1))
+                  icon: AppString.trashIcon,
+                  backgroundColor: AppColors.redFailed,
+                  action: () => _showDeleteVirtualDialog(tve.id ?? -1),
+                )
               ],
             ),
           ),
@@ -547,7 +548,7 @@ class _TransferVirtualState extends State<TransferVirtual> {
     );
   }
 
-  void _showDeleteDialog(int id) {
+  void _showDeleteBankDialog(int id) {
     showDialog(
       context: context,
       builder: (context) {
@@ -579,6 +580,62 @@ class _TransferVirtualState extends State<TransferVirtual> {
                       action: () {
                         _bloc.add(
                           DeleteTransferData(id: id),
+                        );
+                        Navigator.of(context).pop();
+                      }),
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  child: AppButton(
+                    action: () {
+                      Navigator.of(context).pop();
+                    },
+                    text: "Batalkan",
+                    borderColor: AppColors.grayBackground2,
+                    backgroundColor: AppColors.secondaryBackground,
+                    fontColor: Colors.red,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _showDeleteVirtualDialog(int id) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          backgroundColor: Colors.white,
+          title: AppText(
+            text: "Hapus Data",
+            fontSize: 21,
+            fontWeight: FontWeight.w700,
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                AppText(
+                  text: "Apakah anda yakin ingin menghapus Virtual Account ?",
+                  textAlign: TextAlign.center,
+                  fontSize: 20,
+                ),
+                const SizedBox(height: 10),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  child: AppButton(
+                      text: "Hapus Data",
+                      backgroundColor: AppColors.redFailed,
+                      action: () {
+                        _bloc.add(
+                          DeleteVirtualAccountData(id: id),
                         );
                         Navigator.of(context).pop();
                       }),
@@ -666,7 +723,7 @@ class _TransferVirtualState extends State<TransferVirtual> {
           ),
           backgroundColor: Colors.white,
           title: AppText(
-            text: "Detail Bank",
+            text: "Detail Virtual Account",
             fontSize: 21,
             fontWeight: FontWeight.w700,
           ),

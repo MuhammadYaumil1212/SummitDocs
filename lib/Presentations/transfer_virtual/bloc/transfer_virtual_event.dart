@@ -89,3 +89,12 @@ final class SendVirtualAccount extends TransferVirtualEvent {
         bankBranch,
       ];
 }
+
+final class DeleteVirtualAccountData extends TransferVirtualEvent {
+  final int id;
+  DeleteVirtualAccountData({required this.id});
+
+  @override
+  // TODO: implement props
+  List<Object?> get props => [id];
+}

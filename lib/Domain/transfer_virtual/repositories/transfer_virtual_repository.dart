@@ -13,4 +13,5 @@ abstract class TransferVirtualRepository {
   //transfer virtual account
   Future<Either> getAllVirtualAccountTransfer();
   Future<Either> sendVirtualAccountData(VirtualAccountParams params);
+  Future<Either> deleteVirtualAccountData(int id);
 }

@@ -14,6 +14,7 @@ abstract class TransferVirtualServices {
   Future<Either> deleteBankTransferData(int id);
   Future<Either> detailBankTransfer(int id);
   Future<Either> sendVirtualAccountData(VirtualAccountParams params);
+  Future<Either> deleteVirtualData(int id);
 }
 
 class TransferVirtualServicesImpl extends TransferVirtualServices {
@@ -92,6 +93,19 @@ class TransferVirtualServicesImpl extends TransferVirtualServices {
         data: params.toMap(),
       );
       return Right(response.data);
+    } on DioException catch (e) {
+      return Left(e.response?.data ?? "Something Gone Wrong!");
+    }
+  }
+
+  @override
+  Future<Either> deleteVirtualData(int id) async {
+    // TODO: implement deleteVirtualData
+    try {
+      var response = await sl<DioClient>().delete(
+        "${ApiUrl.deleteVirtualAccount}$id",
+      );
+      return Right(response);
     } on DioException catch (e) {
       return Left(e.response?.data ?? "Something Gone Wrong!");
     }

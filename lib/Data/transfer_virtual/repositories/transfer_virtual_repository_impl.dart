@@ -110,4 +110,17 @@ class TransferVirtualRepositoryImpl extends TransferVirtualRepository {
       },
     );
   }
+
+  @override
+  Future<Either> deleteVirtualAccountData(int id) async {
+    // TODO: implement deleteVirtualAccountData
+    final result = await sl<TransferVirtualServices>().deleteVirtualData(id);
+    return result.fold((error) {
+      return Left(error);
+    }, (data) {
+      final model = DeleteBankModel.fromJson(data);
+      final dataMapper = DeleteBankMapper.toEntity(model);
+      return Right(dataMapper);
+    });
+  }
 }
