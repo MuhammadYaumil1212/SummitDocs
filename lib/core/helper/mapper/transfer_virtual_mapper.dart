@@ -1,5 +1,9 @@
+import 'package:SummitDocs/Data/transfer_virtual/models/account_virtual_model.dart';
 import 'package:SummitDocs/Data/transfer_virtual/models/transfer_virtual_model.dart';
+import 'package:SummitDocs/Domain/transfer_virtual/entity/account_virtual_entity.dart';
 import 'package:SummitDocs/Domain/transfer_virtual/entity/transfer_virtual_entity.dart';
+
+import '../../../Domain/transfer_virtual/entity/account_virtual_entity.dart';
 
 class TransferVirtualMapper {
   static TransferVirtualEntity toEntity(TransferVirtualModel transfer) {
@@ -17,6 +21,20 @@ class TransferVirtualMapper {
       createdAt: DateTime.tryParse(transfer.createdAt ?? ''),
       updatedAt: DateTime.tryParse(transfer.updatedAt ?? ''),
       createdBy: transfer.createdBy,
+    );
+  }
+
+  static AccountVirtualEntity toEntityVirtual(AccountVirtualModel transfer) {
+    return AccountVirtualEntity(
+      id: transfer.id,
+      bankName: transfer.bankName,
+      bankBranch: transfer.bankBranch,
+      accountHolderName: transfer.accountHolderName,
+      token: transfer.token,
+      nomorVirtualAkun: transfer.nomorVirtualAkun,
+      createdBy: transfer.createdBy,
+      updatedAt: DateTime.tryParse(transfer.updatedAt ?? ''),
+      createdAt: DateTime.tryParse(transfer.createdAt ?? ''),
     );
   }
 }

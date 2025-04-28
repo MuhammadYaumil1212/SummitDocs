@@ -8,7 +8,9 @@ import 'package:SummitDocs/Domain/home/usecases/loa_usecase.dart';
 import 'package:SummitDocs/Domain/signin/usecases/signin_usecase.dart';
 import 'package:SummitDocs/Domain/transfer_virtual/repositories/transfer_virtual_repository.dart';
 import 'package:SummitDocs/Domain/transfer_virtual/usecase/delete_bank_transfer.dart';
+import 'package:SummitDocs/Domain/transfer_virtual/usecase/get_transfer_virtual_account_usecase.dart';
 import 'package:SummitDocs/Domain/transfer_virtual/usecase/save_bank_transfer_usecase.dart';
+import 'package:SummitDocs/Domain/transfer_virtual/usecase/save_virtual_account_usecase.dart';
 import 'package:SummitDocs/Domain/transfer_virtual/usecase/transfer_virtual_usecase.dart';
 
 import 'Data/signin/repositories/signin_repository.dart';
@@ -37,4 +39,7 @@ void setupServiceLocator() {
   sl.registerSingleton<SaveBankTransferUsecase>(SaveBankTransferUsecase());
   sl.registerSingleton<DeleteBankTransferUsecase>(DeleteBankTransferUsecase());
   sl.registerSingleton<DetailBankTransferUsecase>(DetailBankTransferUsecase());
+  sl.registerSingleton<GetTransferVirtualAccountUsecase>(
+      GetTransferVirtualAccountUsecase());
+  sl.registerSingleton<SaveVirtualAccountUsecase>(SaveVirtualAccountUsecase());
 }

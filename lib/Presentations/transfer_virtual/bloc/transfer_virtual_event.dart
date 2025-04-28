@@ -62,3 +62,30 @@ final class LoadDetailBank extends TransferVirtualEvent {
   // TODO: implement props
   List<Object?> get props => [id];
 }
+
+final class LoadVirtualAccount extends TransferVirtualEvent {
+  @override
+  // TODO: implement props
+  List<Object?> get props => [];
+}
+
+final class SendVirtualAccount extends TransferVirtualEvent {
+  final String noVirtualAccount;
+  final String accountHolderName;
+  final String bankName;
+  final String bankBranch;
+  SendVirtualAccount({
+    required this.noVirtualAccount,
+    required this.accountHolderName,
+    required this.bankName,
+    required this.bankBranch,
+  });
+  @override
+  // TODO: implement props
+  List<Object?> get props => [
+        noVirtualAccount,
+        accountHolderName,
+        bankName,
+        bankBranch,
+      ];
+}

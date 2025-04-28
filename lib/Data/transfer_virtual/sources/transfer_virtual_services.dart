@@ -1,4 +1,5 @@
 import 'package:SummitDocs/Data/transfer_virtual/models/bank_params.dart';
+import 'package:SummitDocs/Data/transfer_virtual/models/virtual_account_params.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 
@@ -12,6 +13,7 @@ abstract class TransferVirtualServices {
   Future<Either> sendBankTransferData(BankParams params);
   Future<Either> deleteBankTransferData(int id);
   Future<Either> detailBankTransfer(int id);
+  Future<Either> sendVirtualAccountData(VirtualAccountParams params);
 }
 
 class TransferVirtualServicesImpl extends TransferVirtualServices {
@@ -29,9 +31,16 @@ class TransferVirtualServicesImpl extends TransferVirtualServices {
   }
 
   @override
-  Future<Either> getAllVirtualTransfer() {
+  Future<Either> getAllVirtualTransfer() async {
     // TODO: implement getAllVirtualTransfer
-    throw UnimplementedError();
+    try {
+      var response = await sl<DioClient>().get(
+        ApiUrl.getDataVirtualAccount,
+      );
+      return Right(response.data);
+    } on DioException catch (e) {
+      return Left(e.response?.data ?? "Something Gone Wrong!");
+    }
   }
 
   @override
@@ -69,6 +78,20 @@ class TransferVirtualServicesImpl extends TransferVirtualServices {
         "${ApiUrl.getListBankById}$id",
       );
       return Right(response);
+    } on DioException catch (e) {
+      return Left(e.response?.data ?? "Something Gone Wrong!");
+    }
+  }
+
+  @override
+  Future<Either> sendVirtualAccountData(VirtualAccountParams params) async {
+    // TODO: implement sendVirtualAccountData
+    try {
+      var response = await sl<DioClient>().post(
+        ApiUrl.createVirtualAccount,
+        data: params.toMap(),
+      );
+      return Right(response.data);
     } on DioException catch (e) {
       return Left(e.response?.data ?? "Something Gone Wrong!");
     }

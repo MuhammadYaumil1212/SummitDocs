@@ -1,6 +1,8 @@
+import 'package:SummitDocs/Data/transfer_virtual/models/account_virtual_model.dart';
 import 'package:SummitDocs/Data/transfer_virtual/models/bank_params.dart';
 import 'package:SummitDocs/Data/transfer_virtual/models/delete_bank_model.dart';
 import 'package:SummitDocs/Data/transfer_virtual/models/detail_bank_transfer.dart';
+import 'package:SummitDocs/Data/transfer_virtual/models/virtual_account_params.dart';
 import 'package:SummitDocs/Data/transfer_virtual/sources/transfer_virtual_services.dart';
 import 'package:SummitDocs/Domain/transfer_virtual/repositories/transfer_virtual_repository.dart';
 import 'package:SummitDocs/core/helper/mapper/delete_bank_mapper.dart';
@@ -30,12 +32,6 @@ class TransferVirtualRepositoryImpl extends TransferVirtualRepository {
         return Right(dataMapper);
       },
     );
-  }
-
-  @override
-  Future<Either> getAllVirtualTransfer() {
-    // TODO: implement getAllVirtualTransfer
-    throw UnimplementedError();
   }
 
   @override
@@ -81,5 +77,37 @@ class TransferVirtualRepositoryImpl extends TransferVirtualRepository {
       final dataMapper = DetailBankMapper.toEntity(model);
       return Right(dataMapper);
     });
+  }
+
+  @override
+  Future<Either> getAllVirtualAccountTransfer() async {
+    // TODO: implement getAllVirtualAccountTransfer
+    final result = await sl<TransferVirtualServices>().getAllVirtualTransfer();
+    return result.fold((error) {
+      return Left(error);
+    }, (data) {
+      final dataMapper = List.from(data).map((item) {
+        final model = AccountVirtualModel.fromJson(
+          item as Map<String, dynamic>,
+        );
+        return TransferVirtualMapper.toEntityVirtual(model);
+      }).toList();
+      return Right(dataMapper);
+    });
+  }
+
+  @override
+  Future<Either> sendVirtualAccountData(VirtualAccountParams params) async {
+    // TODO: implement sendVirtualAccountData
+    final result =
+        await sl<TransferVirtualServices>().sendVirtualAccountData(params);
+    return result.fold(
+      (error) {
+        return Left(error['errors']);
+      },
+      (data) {
+        return Right(data['message']);
+      },
+    );
   }
 }

@@ -17,25 +17,24 @@ class AppDataTable<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      const double rowHeight = 56.0;
-      const double headerHeight = 64.0;
-      const double footerHeight = 56.0;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        const double rowHeight = 56.0;
+        const double headerHeight = 64.0;
+        const double footerHeight = 56.0;
 
-      // Pastikan nilai height valid
-      final double availableHeight = constraints.maxHeight.isFinite
-          ? constraints.maxHeight - headerHeight - footerHeight
-          : 0;
+        final double availableHeight = constraints.maxHeight.isFinite
+            ? constraints.maxHeight - headerHeight - footerHeight
+            : 0;
 
-      // Pastikan jumlah baris minimal 1 dan tidak negatif
-      final int maxRowsPerPage = availableHeight.isFinite
-          ? (availableHeight / rowHeight)
-              .floor()
-              .clamp(data.length, data.length)
-          : rowsPerPage;
+        final int maxRowsPerPage = availableHeight.isFinite
+            ? (availableHeight / rowHeight).floor().clamp(
+                  data.length >= 5 ? 5 : data.length,
+                  data.length,
+                )
+            : rowsPerPage;
 
-      return Expanded(
-        child: SingleChildScrollView(
+        return SingleChildScrollView(
           scrollDirection: Axis.vertical,
           physics: BouncingScrollPhysics(),
           child: PaginatedDataTable(
@@ -51,9 +50,9 @@ class AppDataTable<T> extends StatelessWidget {
             source: _CustomDataTableSource<T>(data, rowBuilder),
             rowsPerPage: maxRowsPerPage,
           ),
-        ),
-      );
-    });
+        );
+      },
+    );
   }
 }
 

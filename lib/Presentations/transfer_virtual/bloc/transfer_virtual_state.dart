@@ -81,3 +81,59 @@ final class DetailBankFailed extends TransferVirtualState {
   // TODO: implement props
   List<Object?> get props => [errorMessage];
 }
+
+final class LoadingVirtualAccount extends TransferVirtualState {
+  final bool isLoading;
+  LoadingVirtualAccount({required this.isLoading});
+
+  @override
+  List<Object> get props => [isLoading];
+}
+
+final class SuccessVirtualAccount extends TransferVirtualState {
+  final List<AccountVirtualEntity> accountVirtual;
+  const SuccessVirtualAccount({required this.accountVirtual});
+
+  @override
+  List<Object> get props => [accountVirtual];
+}
+
+final class FailedVirtualAccount extends TransferVirtualState {
+  final String errorMessage;
+  const FailedVirtualAccount({required this.errorMessage});
+
+  @override
+  List<Object> get props => [errorMessage];
+}
+
+final class LoadingDetailBank extends TransferVirtualState {
+  final bool isLoading;
+  LoadingDetailBank({required this.isLoading});
+
+  @override
+  List<Object> get props => [isLoading];
+}
+
+final class DetailVirtualLoaded extends TransferVirtualState {
+  final AccountVirtualEntity detailVirtualEntity;
+  const DetailVirtualLoaded({required this.detailVirtualEntity});
+
+  @override
+  List<Object?> get props => [detailVirtualEntity];
+}
+
+final class SuccessSendVirtualAccount extends TransferVirtualState {
+  final String successMessage;
+  const SuccessSendVirtualAccount({required this.successMessage});
+
+  @override
+  List<Object?> get props => [successMessage];
+}
+
+final class FailedSendVirtualAccount extends TransferVirtualState {
+  final List<String> errorMessage;
+  const FailedSendVirtualAccount({required this.errorMessage});
+
+  @override
+  List<Object?> get props => [errorMessage];
+}

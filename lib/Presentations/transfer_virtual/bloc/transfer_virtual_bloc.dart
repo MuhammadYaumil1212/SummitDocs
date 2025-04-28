@@ -1,9 +1,12 @@
 import 'package:SummitDocs/Data/transfer_virtual/models/bank_params.dart';
-import 'package:SummitDocs/Domain/transfer_virtual/entity/delete_bank_entity.dart';
+import 'package:SummitDocs/Data/transfer_virtual/models/virtual_account_params.dart';
+import 'package:SummitDocs/Domain/transfer_virtual/entity/account_virtual_entity.dart';
 import 'package:SummitDocs/Domain/transfer_virtual/entity/transfer_virtual_entity.dart';
 import 'package:SummitDocs/Domain/transfer_virtual/usecase/delete_bank_transfer.dart';
 import 'package:SummitDocs/Domain/transfer_virtual/usecase/detail_bank_transfer_usecase.dart';
+import 'package:SummitDocs/Domain/transfer_virtual/usecase/get_transfer_virtual_account_usecase.dart';
 import 'package:SummitDocs/Domain/transfer_virtual/usecase/save_bank_transfer_usecase.dart';
+import 'package:SummitDocs/Domain/transfer_virtual/usecase/save_virtual_account_usecase.dart';
 import 'package:SummitDocs/Domain/transfer_virtual/usecase/transfer_virtual_usecase.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -19,9 +22,7 @@ class TransferVirtualBloc
     on<TransferVirtualEvent>((event, emit) async {});
     on<LoadTransferBankVirtual>((event, emit) async {
       emit(LoadingTransfer(isLoading: true));
-
       var transferVirtual = await sl<TransferVirtualUsecase>().call();
-
       transferVirtual.fold((error) {
         emit(LoadingTransfer(isLoading: false));
         emit(FailedTransfer(errorMessage: error));
@@ -82,15 +83,59 @@ class TransferVirtualBloc
       });
     });
     on<LoadDetailBank>((event, emit) async {
-      emit(LoadingTransfer(isLoading: true));
+      emit(LoadingDetailBank(isLoading: true));
       final detailBank =
           await sl<DetailBankTransferUsecase>().call(params: event.id);
       detailBank.fold((error) {
-        emit(LoadingTransfer(isLoading: false));
+        emit(LoadingDetailBank(isLoading: false));
         emit(DetailBankFailed(errorMessage: error));
       }, (data) {
-        emit(LoadingTransfer(isLoading: false));
+        emit(LoadingDetailBank(isLoading: false));
         emit(DetailBankLoaded(detailBankEntity: data));
+      });
+    });
+    on<LoadVirtualAccount>((event, emit) async {
+      emit(LoadingVirtualAccount(isLoading: true));
+      final virtualAccount =
+          await sl<GetTransferVirtualAccountUsecase>().call();
+
+      virtualAccount.fold((error) {
+        emit(LoadingVirtualAccount(isLoading: false));
+        emit(FailedVirtualAccount(errorMessage: error));
+      }, (data) {
+        emit(LoadingVirtualAccount(isLoading: false));
+        emit(SuccessVirtualAccount(accountVirtual: data));
+      });
+    });
+    on<SendVirtualAccount>((event, emit) async {
+      emit(LoadingVirtualAccount(isLoading: true));
+      final sendVirtualAccount = await sl<SaveVirtualAccountUsecase>().call(
+        params: VirtualAccountParams(
+          noVirtualAccount: event.noVirtualAccount,
+          accountHolderName: event.accountHolderName,
+          bankName: event.bankName,
+          bankBranch: event.bankBranch,
+        ),
+      );
+      sendVirtualAccount.fold((error) {
+        emit(LoadingVirtualAccount(isLoading: false));
+        final List<String> errorMessages = [];
+        error.forEach((key, value) {
+          for (var entry in error.entries) {
+            final value = entry.value;
+            if (value is List) {
+              for (var msg in value) {
+                if (msg is String) {
+                  errorMessages.add(msg);
+                }
+              }
+            }
+          }
+        });
+        emit(FailedSendVirtualAccount(errorMessage: errorMessages));
+      }, (data) {
+        emit(LoadingVirtualAccount(isLoading: false));
+        emit(SuccessSendVirtualAccount(successMessage: data));
       });
     });
   }
