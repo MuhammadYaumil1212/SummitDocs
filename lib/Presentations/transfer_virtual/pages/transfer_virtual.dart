@@ -49,6 +49,22 @@ class _TransferVirtualState extends State<TransferVirtual> {
     _bloc.add(LoadVirtualAccount());
   }
 
+  void clearAll() {
+    _bankName.clear();
+    _swiftCode.clear();
+    _recipientName.clear();
+    _beneficiaryBankAccNo.clear();
+    _bankAddress.clear();
+    _bankBranch.clear();
+    _city.clear();
+    _country.clear();
+
+    _novirtualAcc.clear();
+    _accountHolderName.clear();
+    _bankNameVirtual.clear();
+    _bankBranchVirtual.clear();
+  }
+
   Widget _buildHeader(
       BuildContext context, String title, TransferVirtualState state) {
     return Row(
@@ -213,6 +229,7 @@ class _TransferVirtualState extends State<TransferVirtual> {
     setState(() {
       bankData.clear();
       virtualAccountData.clear();
+      clearAll();
       _bloc.add(LoadTransferBankVirtual());
       _bloc.add(LoadDetailBank(id: id));
       _bloc.add(LoadVirtualAccount());
