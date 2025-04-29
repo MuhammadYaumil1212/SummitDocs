@@ -20,6 +20,7 @@ class ApiUrl {
   static const getDataVirtualAccountById = "${apiV}virtual-accounts/1/";
   static const createVirtualAccount = "${apiV}virtual-accounts/create";
   static const deleteVirtualAccount = "${apiV}/virtual-accounts/delete/";
+
   //bank transfer
   static const getAllListBank = "${apiV}bank-transfer/list";
   static const getListBankById = "${apiV}bank-transfer/list/";
@@ -43,5 +44,6 @@ class ApiUrl {
   static const getSignature = "$baseUrl${apiV}signature";
   static const getSignatureWithId = "$baseUrl${apiV}signatures/";
 
-  //docs
+  //get all users
+  static const getAllUsers = "${apiV}admin/list";
 }

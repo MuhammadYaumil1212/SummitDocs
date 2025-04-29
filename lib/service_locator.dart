@@ -1,10 +1,14 @@
 import 'package:SummitDocs/Data/home/repositories/home_repository_impl.dart';
 import 'package:SummitDocs/Data/home/sources/homes_services.dart';
+import 'package:SummitDocs/Data/manage_account/repositories/manage_repository_impl.dart';
+import 'package:SummitDocs/Data/manage_account/sources/manage_account_services.dart';
 import 'package:SummitDocs/Data/transfer_virtual/models/detail_bank_transfer.dart';
 import 'package:SummitDocs/Data/transfer_virtual/repositories/transfer_virtual_repository_impl.dart';
 import 'package:SummitDocs/Data/transfer_virtual/sources/transfer_virtual_services.dart';
 import 'package:SummitDocs/Domain/home/repositories/home_repository.dart';
 import 'package:SummitDocs/Domain/home/usecases/loa_usecase.dart';
+import 'package:SummitDocs/Domain/manage_account/repositories/manage_account_repository.dart';
+import 'package:SummitDocs/Domain/manage_account/usecase/get_all_users_usecase.dart';
 import 'package:SummitDocs/Domain/signin/usecases/signin_usecase.dart';
 import 'package:SummitDocs/Domain/transfer_virtual/repositories/transfer_virtual_repository.dart';
 import 'package:SummitDocs/Domain/transfer_virtual/usecase/delete_bank_transfer.dart';
@@ -28,11 +32,14 @@ void setupServiceLocator() {
   sl.registerSingleton<SigninService>(SigninServiceImpl());
   sl.registerSingleton<HomesServices>(HomeServicesImpl());
   sl.registerSingleton<TransferVirtualServices>(TransferVirtualServicesImpl());
+  sl.registerSingleton<ManageAccountServices>(ManageAccountServicesImpl());
   //repositories
   sl.registerSingleton<SigninRepository>(SigninRepositoryImpl());
   sl.registerSingleton<HomeRepository>(HomeRepositoryImpl());
   sl.registerSingleton<TransferVirtualRepository>(
       TransferVirtualRepositoryImpl());
+  sl.registerSingleton<ManageAccountRepository>(ManageAccountRepositoryImpl());
+
   //usecases
   sl.registerSingleton<SigninUsecase>(SigninUsecase());
   sl.registerSingleton<LOAUsecase>(LOAUsecase());
@@ -47,4 +54,5 @@ void setupServiceLocator() {
   sl.registerSingleton<DeleteVirtualAccountUsecase>(
     DeleteVirtualAccountUsecase(),
   );
+  sl.registerSingleton<GetAllUsersUsecase>(GetAllUsersUsecase());
 }

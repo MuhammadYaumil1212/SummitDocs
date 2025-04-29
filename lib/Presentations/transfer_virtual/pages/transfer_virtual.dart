@@ -321,13 +321,6 @@ class _TransferVirtualState extends State<TransferVirtual> {
       ),
       appWidget: BlocBuilder<TransferVirtualBloc, TransferVirtualState>(
         builder: (context, state) {
-          if (state is LoadingTransfer) {
-            return const Center(
-              child: CircularProgressIndicator(
-                color: AppColors.primary,
-              ),
-            );
-          }
           return RefreshIndicator(
             color: AppColors.primary,
             onRefresh: _handleRefresh,
@@ -520,8 +513,8 @@ class _TransferVirtualState extends State<TransferVirtual> {
                             country: _country.text,
                           ));
                           Future.delayed(Duration(seconds: 2), () {
-                            reloadData();
                             Navigator.of(context).pop();
+                            reloadData();
                           });
                         },
                       ),
@@ -552,53 +545,63 @@ class _TransferVirtualState extends State<TransferVirtual> {
     showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          backgroundColor: Colors.white,
-          title: AppText(
-            text: "Hapus Data",
-            fontSize: 21,
-            fontWeight: FontWeight.w700,
-          ),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                AppText(
-                  text: "Apakah anda yakin ingin menghapus Bank ?",
-                  textAlign: TextAlign.center,
-                  fontSize: 20,
+        return BlocBuilder<TransferVirtualBloc, TransferVirtualState>(
+          bloc: _bloc,
+          builder: (context, state) {
+            final bool isLoading = state is LoadingTransfer && state.isLoading;
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              backgroundColor: Colors.white,
+              title: AppText(
+                text: "Hapus Data",
+                fontSize: 21,
+                fontWeight: FontWeight.w700,
+              ),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    AppText(
+                      text: "Apakah anda yakin ingin menghapus Bank ?",
+                      textAlign: TextAlign.center,
+                      fontSize: 20,
+                    ),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      child: AppButton(
+                          text: "Hapus Data",
+                          backgroundColor: AppColors.redFailed,
+                          isLoading: isLoading,
+                          action: () {
+                            _bloc.add(
+                              DeleteTransferData(id: id),
+                            );
+                            Future.delayed(Duration(seconds: 2), () {
+                              Navigator.of(context).pop();
+                              reloadData();
+                            });
+                          }),
+                    ),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      child: AppButton(
+                        action: () {
+                          Navigator.of(context).pop();
+                        },
+                        text: "Batalkan",
+                        borderColor: AppColors.grayBackground2,
+                        backgroundColor: AppColors.secondaryBackground,
+                        fontColor: Colors.red,
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 10),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  child: AppButton(
-                      text: "Hapus Data",
-                      backgroundColor: AppColors.redFailed,
-                      action: () {
-                        _bloc.add(
-                          DeleteTransferData(id: id),
-                        );
-                        Navigator.of(context).pop();
-                      }),
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  child: AppButton(
-                    action: () {
-                      Navigator.of(context).pop();
-                    },
-                    text: "Batalkan",
-                    borderColor: AppColors.grayBackground2,
-                    backgroundColor: AppColors.secondaryBackground,
-                    fontColor: Colors.red,
-                  ),
-                ),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         );
       },
     );
@@ -608,53 +611,64 @@ class _TransferVirtualState extends State<TransferVirtual> {
     showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          backgroundColor: Colors.white,
-          title: AppText(
-            text: "Hapus Data",
-            fontSize: 21,
-            fontWeight: FontWeight.w700,
-          ),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                AppText(
-                  text: "Apakah anda yakin ingin menghapus Virtual Account ?",
-                  textAlign: TextAlign.center,
-                  fontSize: 20,
+        return BlocBuilder<TransferVirtualBloc, TransferVirtualState>(
+          bloc: _bloc,
+          builder: (context, state) {
+            final bool isLoading = state is LoadingTransfer && state.isLoading;
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              backgroundColor: Colors.white,
+              title: AppText(
+                text: "Hapus Data",
+                fontSize: 21,
+                fontWeight: FontWeight.w700,
+              ),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    AppText(
+                      text:
+                          "Apakah anda yakin ingin menghapus Virtual Account ?",
+                      textAlign: TextAlign.center,
+                      fontSize: 20,
+                    ),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      child: AppButton(
+                          text: "Hapus Data",
+                          backgroundColor: AppColors.redFailed,
+                          isLoading: isLoading,
+                          action: () {
+                            _bloc.add(
+                              DeleteVirtualAccountData(id: id),
+                            );
+                            Future.delayed(Duration(seconds: 2), () {
+                              Navigator.of(context).pop();
+                              reloadData();
+                            });
+                          }),
+                    ),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      child: AppButton(
+                        action: () {
+                          Navigator.of(context).pop();
+                        },
+                        text: "Batalkan",
+                        borderColor: AppColors.grayBackground2,
+                        backgroundColor: AppColors.secondaryBackground,
+                        fontColor: Colors.red,
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 10),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  child: AppButton(
-                      text: "Hapus Data",
-                      backgroundColor: AppColors.redFailed,
-                      action: () {
-                        _bloc.add(
-                          DeleteVirtualAccountData(id: id),
-                        );
-                        Navigator.of(context).pop();
-                      }),
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  child: AppButton(
-                    action: () {
-                      Navigator.of(context).pop();
-                    },
-                    text: "Batalkan",
-                    borderColor: AppColors.grayBackground2,
-                    backgroundColor: AppColors.secondaryBackground,
-                    fontColor: Colors.red,
-                  ),
-                ),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         );
       },
     );

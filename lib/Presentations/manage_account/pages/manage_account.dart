@@ -1,16 +1,16 @@
 import 'package:SummitDocs/Presentations/manage_account/bloc/manage_account_bloc.dart';
-import 'package:SummitDocs/Presentations/manage_account/pages/user_entity.dart';
 import 'package:SummitDocs/commons/widgets/app_scaffold.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 
+import '../../../Domain/manage_account/entity/user_entity.dart';
 import '../../../commons/constants/string.dart';
 import '../../../commons/widgets/app_button.dart';
 import '../../../commons/widgets/app_datatable.dart';
 import '../../../commons/widgets/app_text.dart';
 import '../../../commons/widgets/app_textfield.dart';
 import '../../../core/config/theme/app_colors.dart';
-import '../../invoice/pages/invoice_entity.dart';
 
 class ManageAccount extends StatefulWidget {
   const ManageAccount({super.key});
@@ -21,18 +21,32 @@ class ManageAccount extends StatefulWidget {
 
 class _ManageAccountState extends State<ManageAccount> {
   final ManageAccountBloc _bloc = ManageAccountBloc();
-  //virtual acc
+  final List<UserEntity> accountPeserta = [];
+  final List<UserEntity> accountSuperAdmin = [];
+
   TextEditingController username = TextEditingController();
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
   TextEditingController fullname = TextEditingController();
   TextEditingController jabatan = TextEditingController();
 
-  final List<UserEntity> conferences = List.generate(
-    15,
-    (index) => UserEntity(
-        id: index + 1, email: "email@gmail.com", username: "username"),
-  );
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _bloc.add(LoadManageAccount());
+  }
+
+  void reloadAll() {
+    accountPeserta.clear();
+    accountSuperAdmin.clear();
+    _bloc.add(LoadManageAccount());
+  }
+
+  Future<void> _handleRefresh() async {
+    await Future.delayed(Duration(seconds: 2));
+    reloadAll();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,21 +69,42 @@ class _ManageAccountState extends State<ManageAccount> {
           ),
         ),
       ),
-      listener: (BuildContext context, ManageAccountState state) {},
-      appWidget: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildHeader(context, "Kelola Akun"),
-              const SizedBox(height: 20),
-              _buildTable("Peserta"),
-              _buildTable("Pengurus"),
-            ],
-          ),
-        ),
+      listener: (BuildContext context, ManageAccountState state) {
+        if (state is TableLoaded) {
+          setState(() {
+            accountPeserta.clear();
+            accountSuperAdmin.clear();
+            for (var user in state.userList) {
+              if (user.roleId == 1) {
+                accountSuperAdmin.add(user);
+              } else if (user.roleId == 2 || user.roleId == 3) {
+                accountPeserta.add(user);
+              }
+            }
+          });
+        }
+        if (state is FailedTable) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.errorMessage)),
+          );
+        }
+      },
+      appWidget: BlocBuilder<ManageAccountBloc, ManageAccountState>(
+        builder: (context, state) {
+          return RefreshIndicator(
+            onRefresh: _handleRefresh,
+            color: AppColors.primary,
+            child: ListView(
+              padding: const EdgeInsets.all(16.0),
+              children: [
+                _buildHeader(context, "Kelola Akun"),
+                const SizedBox(height: 20),
+                _buildTablePeserta("Peserta", accountPeserta),
+                _buildTablePeserta("Pengurus", accountSuperAdmin),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
@@ -92,7 +127,7 @@ class _ManageAccountState extends State<ManageAccount> {
     );
   }
 
-  Widget _buildTable(String title) {
+  Widget _buildTablePeserta(String title, List<UserEntity> dataList) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -102,16 +137,18 @@ class _ManageAccountState extends State<ManageAccount> {
           fontWeight: FontWeight.w700,
         ),
         const SizedBox(height: 5),
-        AppDataTable(
-          columns: _buildColumns(),
-          data: conferences,
-          rowBuilder: _buildRow,
-        ),
+        dataList.isNotEmpty
+            ? AppDataTable(
+                columns: _buildColumnsPeserta(),
+                data: dataList,
+                rowBuilder: _buildRowPeserta,
+              )
+            : Center(child: AppText(text: "Please Wait.....")),
       ],
     );
   }
 
-  List<DataColumn> _buildColumns() {
+  List<DataColumn> _buildColumnsPeserta() {
     return [
       _centeredColumn("Id"),
       _centeredColumn("Username"),
@@ -128,12 +165,12 @@ class _ManageAccountState extends State<ManageAccount> {
     );
   }
 
-  DataRow _buildRow(UserEntity conference) {
+  DataRow _buildRowPeserta(UserEntity conference) {
     return DataRow(
       cells: [
-        DataCell(Center(child: AppText(text: conference.id.toString()))),
-        DataCell(Center(child: AppText(text: conference.username))),
-        DataCell(Center(child: AppText(text: conference.email))),
+        DataCell(AppText(text: conference.id.toString())),
+        DataCell(AppText(text: conference.username ?? "")),
+        DataCell(AppText(text: conference.email ?? "")),
         DataCell(
           Center(
             child: Row(
@@ -142,7 +179,7 @@ class _ManageAccountState extends State<ManageAccount> {
                 ActionButton(
                   icon: AppString.trashIcon,
                   backgroundColor: AppColors.redFailed,
-                  action: () {},
+                  action: () => _showDeleteVirtualDialog(0),
                 ),
               ],
             ),
@@ -225,6 +262,59 @@ class _ManageAccountState extends State<ManageAccount> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width,
                   child: AppButton(text: "Masukkan", action: () {}),
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  child: AppButton(
+                    action: () {
+                      Navigator.of(context).pop();
+                    },
+                    text: "Batalkan",
+                    borderColor: AppColors.grayBackground2,
+                    backgroundColor: AppColors.secondaryBackground,
+                    fontColor: Colors.red,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _showDeleteVirtualDialog(int id) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          backgroundColor: Colors.white,
+          title: AppText(
+            text: "Hapus Data",
+            fontSize: 21,
+            fontWeight: FontWeight.w700,
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                AppText(
+                  text: "Apakah anda yakin ingin menghapus ?",
+                  textAlign: TextAlign.center,
+                  fontSize: 20,
+                ),
+                const SizedBox(height: 10),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  child: AppButton(
+                      text: "Hapus Data",
+                      backgroundColor: AppColors.redFailed,
+                      action: () {
+                        Navigator.of(context).pop();
+                      }),
                 ),
                 SizedBox(
                   width: MediaQuery.of(context).size.width,
