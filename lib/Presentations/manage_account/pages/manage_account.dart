@@ -25,6 +25,8 @@ class _ManageAccountState extends State<ManageAccount> {
   TextEditingController username = TextEditingController();
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
+  TextEditingController fullname = TextEditingController();
+  TextEditingController jabatan = TextEditingController();
 
   final List<UserEntity> conferences = List.generate(
     15,
@@ -35,7 +37,7 @@ class _ManageAccountState extends State<ManageAccount> {
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
-      bloc: ManageAccountBloc(),
+      bloc: _bloc,
       appBar: AppBar(
         surfaceTintColor: Colors.transparent,
         centerTitle: true,
@@ -200,6 +202,25 @@ class _ManageAccountState extends State<ManageAccount> {
                   onChanged: (value) {
                     print("Selected: $value");
                   },
+                ),
+                const SizedBox(height: 10),
+                AppText(text: "Biodata", fontSize: 15),
+                const SizedBox(height: 10),
+                AppTextfield(
+                  prefixIcon: Icon(
+                    Icons.person_outline,
+                    color: AppColors.grayBackground3,
+                  ),
+                  hint: "Nama Lengkap",
+                  controller: password,
+                ),
+                AppTextfield(
+                  prefixIcon: Icon(
+                    Icons.person_outline,
+                    color: AppColors.grayBackground3,
+                  ),
+                  hint: "Jabatan",
+                  controller: password,
                 ),
                 SizedBox(
                   width: MediaQuery.of(context).size.width,
