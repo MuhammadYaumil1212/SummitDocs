@@ -11,6 +11,7 @@ import '../../../commons/widgets/app_datatable.dart';
 import '../../../commons/widgets/app_text.dart';
 import '../../../commons/widgets/app_textfield.dart';
 import '../../../core/config/theme/app_colors.dart';
+import '../../../core/helper/message/message.dart';
 
 class ManageAccount extends StatefulWidget {
   const ManageAccount({super.key});
@@ -28,7 +29,7 @@ class _ManageAccountState extends State<ManageAccount> {
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
   TextEditingController fullname = TextEditingController();
-  TextEditingController jabatan = TextEditingController();
+  TextEditingController role = TextEditingController();
 
   @override
   void initState() {
@@ -87,6 +88,15 @@ class _ManageAccountState extends State<ManageAccount> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(state.errorMessage)),
           );
+        }
+        if (state is FailedSubmit) {
+          state.errorMessage.map((item) {
+            return DisplayMessage.errorMessage(item, context);
+          }).toList();
+        }
+
+        if (state is SuccessSubmit) {
+          return DisplayMessage.successMessage(state.successMessage, context);
         }
       },
       appWidget: BlocBuilder<ManageAccountBloc, ManageAccountState>(
@@ -193,91 +203,107 @@ class _ManageAccountState extends State<ManageAccount> {
     showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          backgroundColor: Colors.white,
-          title: AppText(
-            text: "Tambah Data",
-            fontSize: 21,
-            fontWeight: FontWeight.w700,
-          ),
-          content: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                AppTextfield(
-                  prefixIcon: Icon(
-                    Icons.person_outline,
-                    color: AppColors.grayBackground3,
-                  ),
-                  hint: "Username",
-                  controller: username,
+        return BlocBuilder<ManageAccountBloc, ManageAccountState>(
+          bloc: _bloc,
+          builder: (context, state) {
+            final isLoading = state is LoadingSubmit && state.isLoading;
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              backgroundColor: Colors.white,
+              title: AppText(
+                text: "Tambah Data",
+                fontSize: 21,
+                fontWeight: FontWeight.w700,
+              ),
+              content: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    AppTextfield(
+                      prefixIcon: Icon(
+                        Icons.person_outline,
+                        color: AppColors.grayBackground3,
+                      ),
+                      hint: "Username",
+                      controller: username,
+                    ),
+                    AppTextfield(
+                      prefixIcon: Icon(
+                        Icons.email_outlined,
+                        color: AppColors.grayBackground3,
+                      ),
+                      hint: "Email",
+                      controller: email,
+                    ),
+                    AppTextfield(
+                      prefixIcon: Icon(
+                        Icons.lock_outline,
+                        color: AppColors.grayBackground3,
+                      ),
+                      obscureText: true,
+                      hint: "Kata Sandi Baru",
+                      controller: password,
+                    ),
+                    AppDropdown(
+                      label: "Roles",
+                      items: ["Admin ICODSA", "Admin ICICYTA"],
+                      onChanged: (value) {
+                        role.text = value ?? "";
+                      },
+                    ),
+                    const SizedBox(height: 10),
+                    AppText(text: "Biodata", fontSize: 15),
+                    const SizedBox(height: 10),
+                    AppTextfield(
+                      prefixIcon: Icon(
+                        Icons.person_outline,
+                        color: AppColors.grayBackground3,
+                      ),
+                      hint: "Nama Lengkap",
+                      controller: fullname,
+                    ),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      child: AppButton(
+                          text: "Masukkan",
+                          isLoading: isLoading,
+                          action: () {
+                            _bloc.add(
+                              CreateAccount(
+                                name: fullname.text,
+                                username: username.text,
+                                email: email.text,
+                                password: password.text,
+                                role: role.text,
+                              ),
+                            );
+                            Future.delayed(Duration(seconds: 2), () {
+                              Navigator.of(context).pop();
+                              reloadAll();
+                            });
+                          }),
+                    ),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      child: AppButton(
+                        action: () {
+                          Navigator.of(context).pop();
+                        },
+                        text: "Batalkan",
+                        borderColor: AppColors.grayBackground2,
+                        backgroundColor: AppColors.secondaryBackground,
+                        fontColor: Colors.red,
+                      ),
+                    ),
+                  ],
                 ),
-                AppTextfield(
-                  prefixIcon: Icon(
-                    Icons.email_outlined,
-                    color: AppColors.grayBackground3,
-                  ),
-                  hint: "Email",
-                  controller: email,
-                ),
-                AppTextfield(
-                  prefixIcon: Icon(
-                    Icons.lock_outline,
-                    color: AppColors.grayBackground3,
-                  ),
-                  obscureText: true,
-                  hint: "Kata Sandi Baru",
-                  controller: password,
-                ),
-                AppDropdown(
-                  label: "Roles",
-                  items: ["Admin ICODSA", "Admin ICICYTA"],
-                  onChanged: (value) {
-                    print("Selected: $value");
-                  },
-                ),
-                const SizedBox(height: 10),
-                AppText(text: "Biodata", fontSize: 15),
-                const SizedBox(height: 10),
-                AppTextfield(
-                  prefixIcon: Icon(
-                    Icons.person_outline,
-                    color: AppColors.grayBackground3,
-                  ),
-                  hint: "Nama Lengkap",
-                  controller: password,
-                ),
-                AppTextfield(
-                  prefixIcon: Icon(
-                    Icons.person_outline,
-                    color: AppColors.grayBackground3,
-                  ),
-                  hint: "Jabatan",
-                  controller: password,
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  child: AppButton(text: "Masukkan", action: () {}),
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  child: AppButton(
-                    action: () {
-                      Navigator.of(context).pop();
-                    },
-                    text: "Batalkan",
-                    borderColor: AppColors.grayBackground2,
-                    backgroundColor: AppColors.secondaryBackground,
-                    fontColor: Colors.red,
-                  ),
-                ),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         );
       },
     );

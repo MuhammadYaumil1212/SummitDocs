@@ -11,11 +11,30 @@ final class LoadManageAccount extends ManageAccountEvent {
   List<Object?> get props => [];
 }
 
-class FilterAccountByRole extends ManageAccountEvent {
+final class FilterAccountByRole extends ManageAccountEvent {
   final List<int> roleIds;
   FilterAccountByRole(this.roleIds);
 
   @override
   // TODO: implement props
   List<Object?> get props => [roleIds];
+}
+
+final class CreateAccount extends ManageAccountEvent {
+  final String name;
+  final String username;
+  final String email;
+  final String password;
+  final String role;
+  CreateAccount({
+    required this.name,
+    required this.username,
+    required this.email,
+    required this.password,
+    required this.role,
+  });
+
+  @override
+  // TODO: implement props
+  List<Object?> get props => [name, username, email, password, role];
 }

@@ -35,3 +35,28 @@ final class TableLoaded extends ManageAccountState {
   // TODO: implement props
   List<Object?> get props => [userList];
 }
+
+final class LoadingSubmit extends ManageAccountState {
+  final bool isLoading;
+  LoadingSubmit({required this.isLoading});
+
+  @override
+  // TODO: implement props
+  List<Object?> get props => [isLoading];
+}
+
+final class SuccessSubmit extends ManageAccountState {
+  final String successMessage;
+  SuccessSubmit({required this.successMessage});
+  @override
+  // TODO: implement props
+  List<Object?> get props => [successMessage];
+}
+
+final class FailedSubmit extends ManageAccountState {
+  final List<String> errorMessage;
+  FailedSubmit({required this.errorMessage});
+  @override
+  // TODO: implement props
+  List<Object?> get props => [errorMessage];
+}

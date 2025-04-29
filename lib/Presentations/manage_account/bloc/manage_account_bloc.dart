@@ -1,7 +1,9 @@
 import 'package:SummitDocs/Domain/manage_account/entity/user_entity.dart';
+import 'package:SummitDocs/Domain/manage_account/usecase/create_account_usecase.dart';
 import 'package:SummitDocs/Domain/manage_account/usecase/get_all_users_usecase.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import '../../../Data/manage_account/models/create_account_params.dart';
 import '../../../service_locator.dart';
 
 part 'manage_account_event.dart';
@@ -35,6 +37,37 @@ class ManageAccountBloc extends Bloc<ManageAccountEvent, ManageAccountState> {
           .where((user) => event.roleIds.contains(user.roleId))
           .toList();
       emit(TableLoaded(userList: filtered));
+    });
+
+    on<CreateAccount>((event, emit) async {
+      emit(LoadingSubmit(isLoading: true));
+
+      final params = CreateAccountParams(
+        name: event.name,
+        username: event.username,
+        email: event.email,
+        password: event.password,
+        role: event.role,
+      );
+      final submit = await sl<CreateAccountUsecase>().call(params: params);
+      submit.fold((error) {
+        final List<String> errorMessages = [];
+        error.forEach((key, value) {
+          for (var entry in error.entries) {
+            final value = entry.value;
+            if (value is List) {
+              for (var msg in value) {
+                if (msg is String) {
+                  errorMessages.add(msg);
+                }
+              }
+            }
+          }
+        });
+        emit(FailedSubmit(errorMessage: errorMessages));
+      }, (data) {
+        emit(SuccessSubmit(successMessage: data));
+      });
     });
   }
 }

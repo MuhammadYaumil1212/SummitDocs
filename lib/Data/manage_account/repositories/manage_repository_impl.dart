@@ -1,9 +1,11 @@
+import 'package:SummitDocs/Data/manage_account/models/create_account_params.dart';
 import 'package:SummitDocs/Data/manage_account/models/user_model.dart';
 import 'package:SummitDocs/Domain/manage_account/repositories/manage_account_repository.dart';
 import 'package:SummitDocs/core/helper/mapper/manage_account_mapper.dart';
 import 'package:dartz/dartz.dart';
 
 import '../../../service_locator.dart';
+import '../models/create_account_model.dart';
 import '../sources/manage_account_services.dart';
 
 class ManageAccountRepositoryImpl extends ManageAccountRepository {
@@ -19,6 +21,21 @@ class ManageAccountRepositoryImpl extends ManageAccountRepository {
         return ManageAccountMapper.toEntity(model);
       }).toList();
       return Right(dataMapper);
+    });
+  }
+
+  @override
+  Future<Either> createAccount(CreateAccountParams params) async {
+    // TODO: implement createAdmin
+    final response = await sl<ManageAccountServices>().createAccount(params);
+    return response.fold((error) {
+      print("error create : ${error}");
+      return Left(error ?? "Something Gone Wrong!");
+    }, (data) {
+      final dataMapper = ManageAccountMapper.toEntityCreateAccount(
+        CreateAccountModel.fromJson(data),
+      );
+      return Right(dataMapper.message);
     });
   }
 }

@@ -14,6 +14,7 @@ class ApiUrl {
   static const createIcicyta = "${apiV}admin/icicyta/create";
   static const updateAdmin = "${apiV}admin/update/"; //add value 4/0/1..
   static const deleteAdmin = "${apiV}admin/delete/"; //add value 4/0/1..
+  static const getAllUsers = "${apiV}admin/list";
 
   //virtual account
   static const getDataVirtualAccount = "${apiV}virtual-accounts/list";
@@ -43,7 +44,4 @@ class ApiUrl {
   //docs signature
   static const getSignature = "$baseUrl${apiV}signature";
   static const getSignatureWithId = "$baseUrl${apiV}signatures/";
-
-  //get all users
-  static const getAllUsers = "${apiV}admin/list";
 }

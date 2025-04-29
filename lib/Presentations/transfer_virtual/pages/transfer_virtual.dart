@@ -301,6 +301,10 @@ class _TransferVirtualState extends State<TransferVirtual> {
             return DisplayMessage.errorMessage(item, context);
           }).toList();
         }
+
+        if (state is SuccessSendData) {
+          return DisplayMessage.successMessage(state.successMessage, context);
+        }
       },
       appBar: AppBar(
         surfaceTintColor: Colors.transparent,

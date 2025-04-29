@@ -8,6 +8,7 @@ import 'package:SummitDocs/Data/transfer_virtual/sources/transfer_virtual_servic
 import 'package:SummitDocs/Domain/home/repositories/home_repository.dart';
 import 'package:SummitDocs/Domain/home/usecases/loa_usecase.dart';
 import 'package:SummitDocs/Domain/manage_account/repositories/manage_account_repository.dart';
+import 'package:SummitDocs/Domain/manage_account/usecase/create_account_usecase.dart';
 import 'package:SummitDocs/Domain/manage_account/usecase/get_all_users_usecase.dart';
 import 'package:SummitDocs/Domain/signin/usecases/signin_usecase.dart';
 import 'package:SummitDocs/Domain/transfer_virtual/repositories/transfer_virtual_repository.dart';
@@ -55,4 +56,5 @@ void setupServiceLocator() {
     DeleteVirtualAccountUsecase(),
   );
   sl.registerSingleton<GetAllUsersUsecase>(GetAllUsersUsecase());
+  sl.registerSingleton<CreateAccountUsecase>(CreateAccountUsecase());
 }
