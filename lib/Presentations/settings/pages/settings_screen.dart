@@ -1,4 +1,3 @@
-import 'package:SummitDocs/Presentations/settings/widgets/ProfileCard.dart';
 import 'package:SummitDocs/Presentations/signin/pages/signin_screen.dart';
 import 'package:SummitDocs/commons/widgets/app_button.dart';
 import 'package:SummitDocs/core/config/theme/app_colors.dart';
@@ -7,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import '../../../commons/constants/string.dart';
 import '../../../commons/widgets/app_text.dart';
+import '../../../commons/widgets/app_textfield.dart';
 import '../../../core/helper/storage/AppStorage.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -17,21 +17,30 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  late final AppStorage? storage;
+  AppStorage? storage;
+
+  TextEditingController oldPasswordController = TextEditingController();
+  TextEditingController newPasswordController = TextEditingController();
 
   @override
   void initState() {
-    // TODO: implement initState
-    initStorage();
     super.initState();
+    initStorage();
   }
 
   void initStorage() async {
-    storage = await AppStorage.instance;
+    final instance = await AppStorage.instance;
+    setState(() {
+      storage = instance;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    if (storage == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: SingleChildScrollView(
@@ -45,16 +54,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
               fontWeight: FontWeight.w700,
             ),
             const SizedBox(height: 20),
-            ProfileCard(),
+            _buildProfileCard(),
             const SizedBox(height: 20),
             AppButton(
               text: "Logout",
-              action: () {
-                storage?.delete(AppString.TOKEN_KEY);
-                storage?.delete(AppString.ROLE);
-                storage?.delete(AppString.USERNAME);
-                AppNavigator.pushAndRemove(context, SigninScreen());
-              },
+              action: () => _showDialogLogout(),
               backgroundColor: Colors.white,
               iconColor: Colors.redAccent,
               borderColor: AppColors.grayBackground2,
@@ -65,6 +69,217 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  void _showDialogLogout() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          backgroundColor: Colors.white,
+          title: const AppText(
+            text: "Logout",
+            fontSize: 21,
+            fontWeight: FontWeight.w700,
+          ),
+          content: const AppText(
+            text: "Apakah anda yakin ingin keluar?",
+            fontSize: 20,
+            fontWeight: FontWeight.w400,
+          ),
+          actions: [
+            AppButton(
+              text: "Keluar",
+              backgroundColor: AppColors.redFailed,
+              fontColor: AppColors.background,
+              action: () async {
+                await storage?.delete(AppString.TOKEN_KEY);
+                await storage?.delete(AppString.ROLE);
+                await storage?.delete(AppString.USERNAME);
+                await storage?.delete(AppString.EMAIL);
+                AppNavigator.pushAndRemove(context, SigninScreen());
+              },
+            ),
+            AppButton(
+              text: "Batalkan",
+              borderColor: AppColors.grayBackground2,
+              action: () => Navigator.of(context).pop(),
+              backgroundColor: AppColors.background,
+              fontColor: AppColors.redFailed,
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildProfileCard() {
+    final getRole = storage?.get<int>(AppString.ROLE);
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Colors.grey.shade300),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 5,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const AppText(
+            text: "Profil Akun",
+            fontWeight: FontWeight.w700,
+            fontSize: 18,
+          ),
+          const SizedBox(height: 10),
+          _buildInfoRow("Username", storage?.get(AppString.USERNAME) ?? "-"),
+          _buildInfoRow("Email", storage?.get(AppString.EMAIL) ?? "-"),
+          _buildInfoRow(
+            "Role",
+            getRole == 1
+                ? "SuperAdmin"
+                : getRole == 2
+                    ? "ICODSA"
+                    : "ICICYTA",
+          ),
+          const SizedBox(height: 20),
+          AppButton(
+            action: () => _showUploadSignature(context),
+            text: "Upload file signature",
+            borderColor: AppColors.grayBackground2,
+            backgroundColor: AppColors.secondaryBackground,
+            fontColor: Colors.black,
+            fontWeight: FontWeight.w400,
+          ),
+          const SizedBox(height: 10),
+          AppButton(
+            action: () => _showChangePasswordDialog(context),
+            text: "Ganti Password",
+            borderColor: AppColors.grayBackground2,
+            backgroundColor: AppColors.secondaryBackground,
+            fontColor: Colors.black,
+            fontWeight: FontWeight.w400,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInfoRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        children: [
+          AppText(text: "$label :", fontWeight: FontWeight.w500),
+          const SizedBox(width: 8),
+          Expanded(child: AppText(text: value)),
+        ],
+      ),
+    );
+  }
+
+  void _showChangePasswordDialog(BuildContext context) {
+    oldPasswordController.clear();
+    newPasswordController.clear();
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          backgroundColor: Colors.white,
+          title: const AppText(
+            text: "Ganti Password",
+            fontSize: 21,
+            fontWeight: FontWeight.w700,
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                AppTextfield(
+                  prefixIcon: Icon(Icons.lock_outline,
+                      color: AppColors.grayBackground3),
+                  obscureText: true,
+                  hint: "Kata sandi lama",
+                  controller: oldPasswordController,
+                ),
+                AppTextfield(
+                  prefixIcon: Icon(Icons.lock_outline,
+                      color: AppColors.grayBackground3),
+                  obscureText: true,
+                  hint: "Kata sandi baru",
+                  controller: newPasswordController,
+                ),
+                const SizedBox(height: 10),
+                AppButton(
+                  text: "Masukkan",
+                  action: () {
+                    // Tambahkan logika update password di sini
+                    Navigator.of(context).pop();
+                  },
+                ),
+                AppButton(
+                  text: "Batalkan",
+                  action: () => Navigator.of(context).pop(),
+                  borderColor: AppColors.grayBackground2,
+                  backgroundColor: AppColors.secondaryBackground,
+                  fontColor: Colors.red,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _showUploadSignature(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          backgroundColor: Colors.white,
+          title: const AppText(
+            text: "Upload Signature",
+            fontSize: 21,
+            fontWeight: FontWeight.w700,
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(height: 10),
+                AppButton(
+                  text: "Upload",
+                  action: () {
+                    // Tambahkan logika upload signature di sini
+                    Navigator.of(context).pop();
+                  },
+                ),
+                AppButton(
+                  text: "Batalkan",
+                  action: () => Navigator.of(context).pop(),
+                  borderColor: AppColors.grayBackground2,
+                  backgroundColor: AppColors.secondaryBackground,
+                  fontColor: Colors.red,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

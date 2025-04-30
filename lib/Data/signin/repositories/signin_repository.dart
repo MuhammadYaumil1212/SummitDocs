@@ -23,6 +23,7 @@ class SigninRepositoryImpl extends SigninRepository {
         await storage.put(AppString.TOKEN_KEY, data['token']);
         await storage.put(AppString.ROLE, data['user']['role']);
         await storage.put(AppString.USERNAME, data['user']['name']);
+        await storage.put(AppString.EMAIL, data['user']['email']);
         final resultDataMapper = SigninMapper.toEntity(
           SigninModels.fromJson(data),
         );
