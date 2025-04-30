@@ -60,3 +60,11 @@ final class FailedSubmit extends ManageAccountState {
   // TODO: implement props
   List<Object?> get props => [errorMessage];
 }
+
+final class FailedDelete extends ManageAccountState {
+  final String errorMessage;
+  FailedDelete({required this.errorMessage});
+  @override
+  // TODO: implement props
+  List<Object?> get props => [errorMessage];
+}

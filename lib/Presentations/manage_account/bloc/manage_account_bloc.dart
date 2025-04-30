@@ -1,5 +1,6 @@
 import 'package:SummitDocs/Domain/manage_account/entity/user_entity.dart';
 import 'package:SummitDocs/Domain/manage_account/usecase/create_account_usecase.dart';
+import 'package:SummitDocs/Domain/manage_account/usecase/delete_account_usecase.dart';
 import 'package:SummitDocs/Domain/manage_account/usecase/get_all_users_usecase.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -66,6 +67,19 @@ class ManageAccountBloc extends Bloc<ManageAccountEvent, ManageAccountState> {
         });
         emit(FailedSubmit(errorMessage: errorMessages));
       }, (data) {
+        emit(SuccessSubmit(successMessage: data));
+      });
+    });
+
+    on<DeleteAccount>((event, emit) async {
+      emit(LoadingSubmit(isLoading: true));
+      final delete = await sl<DeleteAccountUsecase>().call(params: event.id);
+      delete.fold((error) {
+        print("delete failed : $error");
+
+        emit(FailedSubmit(errorMessage: [error]));
+      }, (data) {
+        print("delete success : $data");
         emit(SuccessSubmit(successMessage: data));
       });
     });

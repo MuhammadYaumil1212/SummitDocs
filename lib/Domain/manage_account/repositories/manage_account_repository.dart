@@ -4,4 +4,5 @@ import 'package:dartz/dartz.dart';
 abstract class ManageAccountRepository {
   Future<Either> getAllUser();
   Future<Either> createAccount(CreateAccountParams params);
+  Future<Either> deleteAccount(int params);
 }

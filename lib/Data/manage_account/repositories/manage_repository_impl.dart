@@ -29,13 +29,24 @@ class ManageAccountRepositoryImpl extends ManageAccountRepository {
     // TODO: implement createAdmin
     final response = await sl<ManageAccountServices>().createAccount(params);
     return response.fold((error) {
-      print("error create : ${error}");
       return Left(error ?? "Something Gone Wrong!");
     }, (data) {
       final dataMapper = ManageAccountMapper.toEntityCreateAccount(
         CreateAccountModel.fromJson(data),
       );
       return Right(dataMapper.message);
+    });
+  }
+
+  @override
+  Future<Either> deleteAccount(int params) async {
+    // TODO: implement deleteAccount
+    final response = await sl<ManageAccountServices>().deleteAccount(params);
+    return response.fold((error) {
+      return Left(error ?? "Something Gone Wrong!");
+    }, (data) {
+      print("data delete : ${data}");
+      return Right(data['message']);
     });
   }
 }

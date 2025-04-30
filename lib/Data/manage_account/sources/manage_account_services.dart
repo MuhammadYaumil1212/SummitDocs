@@ -9,6 +9,7 @@ import '../../../service_locator.dart';
 abstract class ManageAccountServices {
   Future<Either> getAllUser();
   Future<Either> createAccount(CreateAccountParams params);
+  Future<Either> deleteAccount(int id);
 }
 
 class ManageAccountServicesImpl extends ManageAccountServices {
@@ -36,6 +37,19 @@ class ManageAccountServicesImpl extends ManageAccountServices {
         data: params.toMap(),
       );
       return Right(response.data);
+    } on DioException catch (e) {
+      return Left(e.response?.data ?? "Something Gone Wrong!");
+    }
+  }
+
+  @override
+  Future<Either> deleteAccount(int id) async {
+    // TODO: implement deleteAccount
+    try {
+      final response = await sl<DioClient>().delete(
+        "${ApiUrl.deleteAdmin}$id",
+      );
+      return Right(response);
     } on DioException catch (e) {
       return Left(e.response?.data ?? "Something Gone Wrong!");
     }

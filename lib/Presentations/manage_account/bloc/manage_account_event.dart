@@ -38,3 +38,11 @@ final class CreateAccount extends ManageAccountEvent {
   // TODO: implement props
   List<Object?> get props => [name, username, email, password, role];
 }
+
+final class DeleteAccount extends ManageAccountEvent {
+  final int id;
+  DeleteAccount({required this.id});
+  @override
+  // TODO: implement props
+  List<Object?> get props => [id];
+}

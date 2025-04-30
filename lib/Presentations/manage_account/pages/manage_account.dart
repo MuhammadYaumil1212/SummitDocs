@@ -99,6 +99,10 @@ class _ManageAccountState extends State<ManageAccount> {
           }).toList();
         }
 
+        if (state is FailedDelete) {
+          return DisplayMessage.errorMessage(state.errorMessage, context);
+        }
+
         if (state is SuccessSubmit) {
           return DisplayMessage.successMessage(state.successMessage, context);
         }
@@ -193,7 +197,7 @@ class _ManageAccountState extends State<ManageAccount> {
                 ActionButton(
                   icon: AppString.trashIcon,
                   backgroundColor: AppColors.redFailed,
-                  action: () => _showDeleteVirtualDialog(0),
+                  action: () => _showDeleteVirtualDialog(conference.id!),
                 ),
               ],
             ),
@@ -317,50 +321,61 @@ class _ManageAccountState extends State<ManageAccount> {
     showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          backgroundColor: Colors.white,
-          title: AppText(
-            text: "Hapus Data",
-            fontSize: 21,
-            fontWeight: FontWeight.w700,
-          ),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                AppText(
-                  text: "Apakah anda yakin ingin menghapus ?",
-                  textAlign: TextAlign.center,
-                  fontSize: 20,
+        return BlocBuilder<ManageAccountBloc, ManageAccountState>(
+          bloc: _bloc,
+          builder: (context, state) {
+            final isLoading = state is LoadingSubmit && state.isLoading;
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              backgroundColor: Colors.white,
+              title: AppText(
+                text: "Hapus Data",
+                fontSize: 21,
+                fontWeight: FontWeight.w700,
+              ),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    AppText(
+                      text: "Apakah anda yakin ingin menghapus ?",
+                      textAlign: TextAlign.center,
+                      fontSize: 20,
+                    ),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      child: AppButton(
+                          text: "Hapus Data",
+                          backgroundColor: AppColors.redFailed,
+                          isLoading: isLoading,
+                          action: () {
+                            _bloc.add(DeleteAccount(id: id));
+                            Future.delayed(Duration(seconds: 2), () {
+                              Navigator.of(context).pop();
+                              reloadAll();
+                            });
+                          }),
+                    ),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      child: AppButton(
+                        action: () {
+                          Navigator.of(context).pop();
+                        },
+                        text: "Batalkan",
+                        borderColor: AppColors.grayBackground2,
+                        backgroundColor: AppColors.secondaryBackground,
+                        fontColor: Colors.red,
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 10),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  child: AppButton(
-                      text: "Hapus Data",
-                      backgroundColor: AppColors.redFailed,
-                      action: () {
-                        Navigator.of(context).pop();
-                      }),
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  child: AppButton(
-                    action: () {
-                      Navigator.of(context).pop();
-                    },
-                    text: "Batalkan",
-                    borderColor: AppColors.grayBackground2,
-                    backgroundColor: AppColors.secondaryBackground,
-                    fontColor: Colors.red,
-                  ),
-                ),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         );
       },
     );
