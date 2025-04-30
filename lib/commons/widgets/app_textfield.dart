@@ -1,9 +1,11 @@
+import 'dart:typed_data';
+
 import 'package:SummitDocs/commons/widgets/app_button.dart';
 import 'package:SummitDocs/commons/widgets/app_text.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:logger/logger.dart';
-import 'package:table_calendar/table_calendar.dart';
 
 import '../../core/config/theme/app_colors.dart';
 
@@ -264,6 +266,107 @@ class _AppDatePickerState extends State<AppDatePicker> {
       readOnly: widget.readOnly,
       prefixIcon: Icon(Icons.date_range_outlined),
       onTap: () => _pickDate(context),
+    );
+  }
+}
+
+class AppUploadTextfield extends StatefulWidget {
+  final String hint;
+  final void Function(PlatformFile file) onFileSelected;
+
+  const AppUploadTextfield({
+    Key? key,
+    required this.hint,
+    required this.onFileSelected,
+  }) : super(key: key);
+
+  @override
+  State<AppUploadTextfield> createState() => _AppUploadTextfieldState();
+}
+
+class _AppUploadTextfieldState extends State<AppUploadTextfield> {
+  PlatformFile? _selectedFile;
+  bool _isDeleting = false;
+
+  Future<void> _pickFile(BuildContext context) async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.image,
+      withData: true,
+    );
+    if (result != null && result.files.isNotEmpty) {
+      setState(() {
+        _selectedFile = result.files.first;
+        _isDeleting = false;
+      });
+      widget.onFileSelected(_selectedFile!);
+    }
+  }
+
+  void _deleteWithEffect() async {
+    setState(() => _isDeleting = true);
+    HapticFeedback.lightImpact();
+    await Future.delayed(const Duration(milliseconds: 300));
+    setState(() {
+      _selectedFile = null;
+      _isDeleting = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_selectedFile != null && _selectedFile!.bytes != null) {
+      return GestureDetector(
+        onLongPress: _deleteWithEffect,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+          height: 150,
+          width: double.infinity,
+          margin: const EdgeInsets.symmetric(vertical: 5),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              color:
+                  _isDeleting ? Colors.transparent : AppColors.grayBackground3,
+              width: _isDeleting ? 3 : 1,
+            ),
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Image.memory(
+              _selectedFile!.bytes!,
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+      );
+    }
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5),
+      child: GestureDetector(
+        onTap: () => _pickFile(context),
+        child: Container(
+          height: 60,
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            border: Border.all(color: Colors.grey),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Row(
+            children: [
+              const Icon(Icons.upload_file_outlined),
+              const SizedBox(width: 10),
+              Expanded(
+                  child: AppText(
+                text: widget.hint,
+                fontColor: AppColors.grayBackground3,
+              ))
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

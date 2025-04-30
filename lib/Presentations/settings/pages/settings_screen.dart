@@ -21,6 +21,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   TextEditingController oldPasswordController = TextEditingController();
   TextEditingController newPasswordController = TextEditingController();
+  TextEditingController namaPenandatangan = TextEditingController();
+  TextEditingController jabatanPenandatangan = TextEditingController();
+  TextEditingController tanggalDibuat = TextEditingController();
 
   @override
   void initState() {
@@ -261,6 +264,30 @@ class _SettingsScreenState extends State<SettingsScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 const SizedBox(height: 10),
+                AppTextfield(
+                  prefixIcon: Icon(Icons.person_outline),
+                  hint: "Nama Penandatangan",
+                  controller: namaPenandatangan,
+                ),
+                AppTextfield(
+                  prefixIcon: Icon(Icons.person_outline),
+                  hint: "Jabatan Penandatangan",
+                  controller: jabatanPenandatangan,
+                ),
+                AppDatePicker(
+                  hint: "Tanggal Dibuat",
+                  readOnly: true,
+                  value: (value) {
+                    print("value tanggal: ${value}");
+                  },
+                  dateController: tanggalDibuat,
+                ),
+                AppUploadTextfield(
+                  hint: "Upload Signature",
+                  onFileSelected: (file) {
+                    print("File signature : ${file}");
+                  },
+                ),
                 AppButton(
                   text: "Upload",
                   action: () {

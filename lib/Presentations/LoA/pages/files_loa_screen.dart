@@ -4,12 +4,12 @@ import 'package:SummitDocs/commons/widgets/app_button.dart';
 import 'package:SummitDocs/commons/widgets/app_text.dart';
 import 'package:SummitDocs/core/config/theme/app_colors.dart';
 import 'package:SummitDocs/Presentations/LoA/bloc/loa_bloc.dart';
-import 'package:SummitDocs/Presentations/LoA/pages/loa_entity.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../commons/constants/string.dart';
 import '../../../commons/widgets/app_datatable.dart';
 import '../../../commons/widgets/app_scaffold.dart';
+import 'loa_entity.dart';
 
 class FilesLoaScreen extends StatefulWidget {
   final int roleId;
@@ -28,18 +28,7 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
   TextEditingController writerController = TextEditingController();
   TextEditingController timeController = TextEditingController();
   TextEditingController datePlaceController = TextEditingController();
-  final List<LOAEntity> conferences = List.generate(
-    15,
-    (index) => LOAEntity(
-      index + 1,
-      "title",
-      "ConferenceTitle",
-      "John Doe",
-      "10:00",
-      "Bandung, Coblong",
-      "Accepted",
-    ),
-  );
+  final List<LOAEntity> conferences = [];
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +59,6 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
               _buildHeader(widget.title),
               const SizedBox(height: 20),
               _buildTable("Peserta"),
-              _buildTable("Pengurus"),
             ],
           ),
         ),
