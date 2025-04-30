@@ -94,16 +94,20 @@ class _ManageAccountState extends State<ManageAccount> {
           );
         }
         if (state is FailedSubmit) {
+          Navigator.of(context).pop();
           state.errorMessage.map((item) {
             return DisplayMessage.errorMessage(item, context);
           }).toList();
         }
 
         if (state is FailedDelete) {
+          Navigator.of(context).pop();
           return DisplayMessage.errorMessage(state.errorMessage, context);
         }
 
         if (state is SuccessSubmit) {
+          reloadAll();
+          Navigator.of(context).pop();
           return DisplayMessage.successMessage(state.successMessage, context);
         }
       },
@@ -277,7 +281,7 @@ class _ManageAccountState extends State<ManageAccount> {
                     SizedBox(
                       width: MediaQuery.of(context).size.width,
                       child: AppButton(
-                          text: "Masukkan",
+                          text: "Buat Akun",
                           isLoading: isLoading,
                           action: () {
                             _bloc.add(
@@ -289,10 +293,6 @@ class _ManageAccountState extends State<ManageAccount> {
                                 role: role.text,
                               ),
                             );
-                            Future.delayed(Duration(seconds: 2), () {
-                              Navigator.of(context).pop();
-                              reloadAll();
-                            });
                           }),
                     ),
                     SizedBox(
@@ -353,10 +353,6 @@ class _ManageAccountState extends State<ManageAccount> {
                           isLoading: isLoading,
                           action: () {
                             _bloc.add(DeleteAccount(id: id));
-                            Future.delayed(Duration(seconds: 2), () {
-                              Navigator.of(context).pop();
-                              reloadAll();
-                            });
                           }),
                     ),
                     SizedBox(
