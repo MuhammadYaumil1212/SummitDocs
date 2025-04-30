@@ -2,6 +2,8 @@ import 'package:SummitDocs/Data/home/repositories/home_repository_impl.dart';
 import 'package:SummitDocs/Data/home/sources/homes_services.dart';
 import 'package:SummitDocs/Data/manage_account/repositories/manage_repository_impl.dart';
 import 'package:SummitDocs/Data/manage_account/sources/manage_account_services.dart';
+import 'package:SummitDocs/Data/settings/repositories/settings_repository.dart';
+import 'package:SummitDocs/Data/settings/source/settings_services.dart';
 import 'package:SummitDocs/Data/transfer_virtual/models/detail_bank_transfer.dart';
 import 'package:SummitDocs/Data/transfer_virtual/repositories/transfer_virtual_repository_impl.dart';
 import 'package:SummitDocs/Data/transfer_virtual/sources/transfer_virtual_services.dart';
@@ -11,6 +13,8 @@ import 'package:SummitDocs/Domain/manage_account/repositories/manage_account_rep
 import 'package:SummitDocs/Domain/manage_account/usecase/create_account_usecase.dart';
 import 'package:SummitDocs/Domain/manage_account/usecase/delete_account_usecase.dart';
 import 'package:SummitDocs/Domain/manage_account/usecase/get_all_users_usecase.dart';
+import 'package:SummitDocs/Domain/settings/repositories/settings_repository.dart';
+import 'package:SummitDocs/Domain/settings/usecases/create_signature_usecase.dart';
 import 'package:SummitDocs/Domain/signin/usecases/signin_usecase.dart';
 import 'package:SummitDocs/Domain/transfer_virtual/repositories/transfer_virtual_repository.dart';
 import 'package:SummitDocs/Domain/transfer_virtual/usecase/delete_bank_transfer.dart';
@@ -35,12 +39,16 @@ void setupServiceLocator() {
   sl.registerSingleton<HomesServices>(HomeServicesImpl());
   sl.registerSingleton<TransferVirtualServices>(TransferVirtualServicesImpl());
   sl.registerSingleton<ManageAccountServices>(ManageAccountServicesImpl());
+  sl.registerSingleton<SettingsServices>(SettingServicesImpl());
+
   //repositories
   sl.registerSingleton<SigninRepository>(SigninRepositoryImpl());
   sl.registerSingleton<HomeRepository>(HomeRepositoryImpl());
   sl.registerSingleton<TransferVirtualRepository>(
-      TransferVirtualRepositoryImpl());
+    TransferVirtualRepositoryImpl(),
+  );
   sl.registerSingleton<ManageAccountRepository>(ManageAccountRepositoryImpl());
+  sl.registerSingleton<SettingsRepository>(SettingsRepositoryImpl());
 
   //usecases
   sl.registerSingleton<SigninUsecase>(SigninUsecase());
@@ -59,4 +67,5 @@ void setupServiceLocator() {
   sl.registerSingleton<GetAllUsersUsecase>(GetAllUsersUsecase());
   sl.registerSingleton<CreateAccountUsecase>(CreateAccountUsecase());
   sl.registerSingleton<DeleteAccountUsecase>(DeleteAccountUsecase());
+  sl.registerSingleton<CreateSignatureUsecase>(CreateSignatureUsecase());
 }

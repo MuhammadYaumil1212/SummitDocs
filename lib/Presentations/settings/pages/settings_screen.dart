@@ -1,13 +1,20 @@
+import 'dart:io';
+
 import 'package:SummitDocs/Presentations/signin/pages/signin_screen.dart';
 import 'package:SummitDocs/commons/widgets/app_button.dart';
 import 'package:SummitDocs/core/config/theme/app_colors.dart';
+import 'package:SummitDocs/core/helper/formatter/date_formatter.dart';
+import 'package:SummitDocs/core/helper/message/message.dart';
 import 'package:SummitDocs/core/helper/navigation/app_navigation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 import '../../../commons/constants/string.dart';
 import '../../../commons/widgets/app_text.dart';
 import '../../../commons/widgets/app_textfield.dart';
 import '../../../core/helper/storage/AppStorage.dart';
+import '../bloc/settings_bloc.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -18,12 +25,15 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   AppStorage? storage;
+  final _bloc = SettingsBloc();
 
   TextEditingController oldPasswordController = TextEditingController();
   TextEditingController newPasswordController = TextEditingController();
   TextEditingController namaPenandatangan = TextEditingController();
   TextEditingController jabatanPenandatangan = TextEditingController();
   TextEditingController tanggalDibuat = TextEditingController();
+
+  File? selectedSignatureFile;
 
   @override
   void initState() {
@@ -44,34 +54,39 @@ class _SettingsScreenState extends State<SettingsScreen> {
       return const Center(child: CircularProgressIndicator());
     }
 
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            AppText(
-              text: "Pengaturan",
-              fontSize: 28,
-              fontWeight: FontWeight.w700,
+    return BlocBuilder<SettingsBloc, SettingsState>(
+      bloc: _bloc,
+      builder: (context, state) {
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AppText(
+                  text: "Pengaturan",
+                  fontSize: 28,
+                  fontWeight: FontWeight.w700,
+                ),
+                const SizedBox(height: 20),
+                _buildProfileCard(),
+                const SizedBox(height: 20),
+                AppButton(
+                  text: "Logout",
+                  action: () => _showDialogLogout(),
+                  backgroundColor: Colors.white,
+                  iconColor: Colors.redAccent,
+                  borderColor: AppColors.grayBackground2,
+                  icon: Icons.logout,
+                  fontColor: AppColors.redFailed,
+                  fontWeight: FontWeight.w400,
+                )
+              ],
             ),
-            const SizedBox(height: 20),
-            _buildProfileCard(),
-            const SizedBox(height: 20),
-            AppButton(
-              text: "Logout",
-              action: () => _showDialogLogout(),
-              backgroundColor: Colors.white,
-              iconColor: Colors.redAccent,
-              borderColor: AppColors.grayBackground2,
-              icon: Icons.logout,
-              fontColor: AppColors.redFailed,
-              fontWeight: FontWeight.w400,
-            )
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
@@ -247,62 +262,113 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   void _showUploadSignature(BuildContext context) {
+    namaPenandatangan.clear();
+    jabatanPenandatangan.clear();
+    tanggalDibuat.clear();
+    selectedSignatureFile = null;
+
     showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          backgroundColor: Colors.white,
-          title: const AppText(
-            text: "Upload Signature",
-            fontSize: 21,
-            fontWeight: FontWeight.w700,
-          ),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const SizedBox(height: 10),
-                AppTextfield(
-                  prefixIcon: Icon(Icons.person_outline),
-                  hint: "Nama Penandatangan",
-                  controller: namaPenandatangan,
-                ),
-                AppTextfield(
-                  prefixIcon: Icon(Icons.person_outline),
-                  hint: "Jabatan Penandatangan",
-                  controller: jabatanPenandatangan,
-                ),
-                AppDatePicker(
-                  hint: "Tanggal Dibuat",
-                  readOnly: true,
-                  value: (value) {
-                    print("value tanggal: ${value}");
-                  },
-                  dateController: tanggalDibuat,
-                ),
-                AppUploadTextfield(
-                  hint: "Upload Signature",
-                  onFileSelected: (file) {
-                    print("File signature : ${file}");
-                  },
-                ),
-                AppButton(
-                  text: "Upload",
-                  action: () {
-                    // Tambahkan logika upload signature di sini
-                    Navigator.of(context).pop();
-                  },
-                ),
-                AppButton(
-                  text: "Batalkan",
-                  action: () => Navigator.of(context).pop(),
-                  borderColor: AppColors.grayBackground2,
-                  backgroundColor: AppColors.secondaryBackground,
-                  fontColor: Colors.red,
-                ),
-              ],
+        return BlocListener<SettingsBloc, SettingsState>(
+          bloc: _bloc,
+          listener: (context, state) {
+            if (state is SuccessState) {
+              Navigator.of(context).pop();
+              DisplayMessage.successMessage(state.message, context);
+            } else if (state is ErrorState) {
+              Navigator.of(context).pop();
+              for (var item in state.errorMessage) {
+                DisplayMessage.errorMessage(item, context);
+              }
+            }
+          },
+          child: AlertDialog(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            backgroundColor: Colors.white,
+            title: const AppText(
+              text: "Upload Signature",
+              fontSize: 21,
+              fontWeight: FontWeight.w700,
+            ),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const SizedBox(height: 10),
+                  AppTextfield(
+                    prefixIcon: Icon(Icons.person_outline),
+                    hint: "Nama Penandatangan",
+                    controller: namaPenandatangan,
+                  ),
+                  AppTextfield(
+                    prefixIcon: Icon(Icons.work_outline),
+                    hint: "Jabatan Penandatangan",
+                    controller: jabatanPenandatangan,
+                  ),
+                  AppDatePicker(
+                    hint: "Tanggal Dibuat",
+                    readOnly: true,
+                    value: (value) {
+                      tanggalDibuat.text = value;
+                    },
+                    dateController: tanggalDibuat,
+                  ),
+                  AppUploadTextfield(
+                    hint: "Upload Signature",
+                    onFileSelected: (platformFile) {
+                      setState(() {
+                        selectedSignatureFile = File(platformFile.path ?? "");
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 10),
+                  BlocBuilder<SettingsBloc, SettingsState>(
+                    bloc: _bloc,
+                    builder: (context, state) {
+                      final isLoading =
+                          state is LoadingState && state.isLoading;
+                      return AppButton(
+                        text: "Upload",
+                        isLoading: isLoading,
+                        action: () {
+                          if (selectedSignatureFile == null ||
+                              namaPenandatangan.text.isEmpty ||
+                              jabatanPenandatangan.text.isEmpty ||
+                              tanggalDibuat.text.isEmpty) {
+                            Navigator.of(context).pop();
+                            DisplayMessage.errorMessage(
+                              "Semua field wajib diisi",
+                              context,
+                            );
+                            return;
+                          }
+
+                          _bloc.add(
+                            CreateSignatureEvent(
+                              signatureName: namaPenandatangan.text,
+                              signaturePosition: jabatanPenandatangan.text,
+                              signatureFile: selectedSignatureFile!,
+                              createdDate: DateFormatter.parseFromString(
+                                tanggalDibuat.text,
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 10),
+                  AppButton(
+                    text: "Batalkan",
+                    action: () => Navigator.of(context).pop(),
+                    borderColor: AppColors.grayBackground2,
+                    backgroundColor: AppColors.secondaryBackground,
+                    fontColor: Colors.red,
+                  ),
+                ],
+              ),
             ),
           ),
         );

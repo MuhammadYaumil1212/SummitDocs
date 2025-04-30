@@ -292,6 +292,9 @@ class _AppUploadTextfieldState extends State<AppUploadTextfield> {
     final result = await FilePicker.platform.pickFiles(
       type: FileType.image,
       withData: true,
+      allowMultiple: false,
+      compressionQuality: 80,
+      readSequential: true,
     );
     if (result != null && result.files.isNotEmpty) {
       setState(() {

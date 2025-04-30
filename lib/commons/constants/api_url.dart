@@ -42,6 +42,7 @@ class ApiUrl {
   static const getDataReceipt = "$baseUrl${apiV}payments";
 
   //docs signature
-  static const getSignature = "$baseUrl${apiV}signature";
-  static const getSignatureWithId = "$baseUrl${apiV}signatures/";
+  static const getSignature = "${apiV}signature";
+  static const getSignatureWithId = "${apiV}signatures/";
+  static const createSignature = "${apiV}signatures/create";
 }

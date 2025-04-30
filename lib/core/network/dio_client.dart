@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../../Data/settings/models/signature_params.dart';
 import '../../commons/constants/api_url.dart';
 import 'interceptors.dart';
 
@@ -59,6 +62,41 @@ class DioClient {
         onReceiveProgress: onReceiveProgress,
       );
       return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // UPLOAD IMAGE
+  Future<Response> uploadFormData({
+    required String url,
+    required Map<String, dynamic> formFields,
+    ProgressCallback? onSendProgress,
+  }) async {
+    try {
+      final formDataMap = <String, dynamic>{};
+
+      for (final entry in formFields.entries) {
+        final key = entry.key;
+        final value = entry.value;
+
+        if (value is File) {
+          final fileName = value.path.split('/').last;
+          formDataMap[key] =
+              await MultipartFile.fromFile(value.path, filename: fileName);
+        } else {
+          formDataMap[key] = value;
+        }
+      }
+
+      final formData = FormData.fromMap(formDataMap);
+
+      return await _dio.post(
+        url,
+        data: formData,
+        options: Options(contentType: 'multipart/form-data'),
+        onSendProgress: onSendProgress,
+      );
     } catch (e) {
       rethrow;
     }
