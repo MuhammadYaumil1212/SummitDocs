@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../../commons/constants/api_url.dart';
 import 'interceptors.dart';
@@ -106,6 +107,31 @@ class DioClient {
         cancelToken: cancelToken,
       );
       return response.data;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<String> downloadFile(
+    String url,
+    String fileName, {
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    try {
+      final dir = await getApplicationDocumentsDirectory();
+      final filePath = '${dir.path}/$fileName';
+
+      await _dio.download(
+        url,
+        filePath,
+        onReceiveProgress: onReceiveProgress,
+        options: Options(
+            responseType: ResponseType.bytes,
+            followRedirects: false,
+            receiveTimeout: const Duration(minutes: 1)),
+      );
+
+      return filePath;
     } catch (e) {
       rethrow;
     }
