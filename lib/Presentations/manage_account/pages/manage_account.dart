@@ -75,7 +75,11 @@ class _ManageAccountState extends State<ManageAccount> {
           setState(() {
             accountPeserta.clear();
             accountSuperAdmin.clear();
-            for (var user in state.userList) {
+
+            final sortedUsers = List<UserEntity>.from(state.userList)
+              ..sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
+
+            for (var user in sortedUsers) {
               if (user.roleId == 1) {
                 accountSuperAdmin.add(user);
               } else if (user.roleId == 2 || user.roleId == 3) {
