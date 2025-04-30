@@ -282,27 +282,34 @@ class _TransferVirtualState extends State<TransferVirtual> {
         }
 
         if (state is SuccessSendVirtualAccount) {
+          reloadData();
+          Navigator.of(context).pop();
           DisplayMessage.successMessage(state.successMessage, context);
         }
 
         if (state is SuccessDeleteData) {
           reloadData();
+          Navigator.of(context).pop();
           return DisplayMessage.successMessage(state.successMessage, context);
         }
 
         if (state is FailedSendData) {
+          Navigator.of(context).pop();
           state.errorMessage.map((item) {
             return DisplayMessage.errorMessage(item, context);
           }).toList();
         }
 
         if (state is FailedSendVirtualAccount) {
+          Navigator.of(context).pop();
           state.errorMessage.map((item) {
             return DisplayMessage.errorMessage(item, context);
           }).toList();
         }
 
         if (state is SuccessSendData) {
+          reloadData();
+          Navigator.of(context).pop();
           return DisplayMessage.successMessage(state.successMessage, context);
         }
       },
@@ -414,10 +421,6 @@ class _TransferVirtualState extends State<TransferVirtual> {
                               bankBranch: _bankBranchVirtual.text,
                             ),
                           );
-                          Future.delayed(Duration(seconds: 2), () {
-                            reloadData();
-                            Navigator.of(context).pop();
-                          });
                         },
                       ),
                     ),
@@ -516,10 +519,6 @@ class _TransferVirtualState extends State<TransferVirtual> {
                             city: _city.text,
                             country: _country.text,
                           ));
-                          Future.delayed(Duration(seconds: 2), () {
-                            Navigator.of(context).pop();
-                            reloadData();
-                          });
                         },
                       ),
                     ),
@@ -583,10 +582,6 @@ class _TransferVirtualState extends State<TransferVirtual> {
                             _bloc.add(
                               DeleteTransferData(id: id),
                             );
-                            Future.delayed(Duration(seconds: 2), () {
-                              Navigator.of(context).pop();
-                              reloadData();
-                            });
                           }),
                     ),
                     SizedBox(
@@ -650,10 +645,6 @@ class _TransferVirtualState extends State<TransferVirtual> {
                             _bloc.add(
                               DeleteVirtualAccountData(id: id),
                             );
-                            Future.delayed(Duration(seconds: 2), () {
-                              Navigator.of(context).pop();
-                              reloadData();
-                            });
                           }),
                     ),
                     SizedBox(
