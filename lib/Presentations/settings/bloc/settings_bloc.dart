@@ -30,9 +30,8 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         (error) {
           emit(LoadingState(isLoading: false));
           final List<String> errorMessages = [];
-          error.forEach((key, value) {
-            for (var entry in error.entries) {
-              final value = entry.value;
+          if (error != null && error is Map<String, dynamic>) {
+            error.forEach((key, value) {
               if (value is List) {
                 for (var msg in value) {
                   if (msg is String) {
@@ -40,8 +39,13 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
                   }
                 }
               }
-            }
-          });
+            });
+          } else if (error != null && error is String) {
+            errorMessages.add(error);
+          } else {
+            errorMessages.add("Terjadi kesalahan yang tidak diketahui.");
+          }
+
           emit(ErrorState(errorMessage: errorMessages));
         },
         (data) {
