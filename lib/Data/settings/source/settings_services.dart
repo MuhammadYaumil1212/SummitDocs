@@ -34,7 +34,11 @@ class SettingServicesImpl extends SettingsServices {
     // TODO: implement resetPassword
     try {
       final response = await sl<DioClient>().put(
-        ApiUrl.updateAdmin + "${params.id}",
+        params.roleId == 1
+            ? ApiUrl.updateAdmin + "${params.id}"
+            : params.roleId == 2
+                ? ApiUrl.updateicodsaAdmin + "${params.id}"
+                : ApiUrl.updateicicytaAdmin + "${params.id}",
         data: params.toMap(),
       );
       return Right(response.data);

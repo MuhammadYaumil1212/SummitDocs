@@ -32,6 +32,7 @@ final class ResetPasswordEvent extends SettingsEvent {
   final String username;
   final String email;
   final String password;
+  final int roleId;
 
   ResetPasswordEvent({
     required this.id,
@@ -39,8 +40,9 @@ final class ResetPasswordEvent extends SettingsEvent {
     required this.username,
     required this.email,
     required this.password,
+    required this.roleId,
   });
 
   @override
-  List<Object?> get props => [id, name, username, email, password];
+  List<Object?> get props => [id, name, username, email, password, roleId];
 }

@@ -63,6 +63,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         id: event.id,
         email: event.email,
         name: event.name,
+        roleId: event.roleId,
         password: event.password,
         username: event.username,
       ));

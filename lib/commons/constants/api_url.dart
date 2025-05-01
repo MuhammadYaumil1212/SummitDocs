@@ -12,9 +12,11 @@ class ApiUrl {
   static const listAllAdmin = "${apiV}admin/list";
   static const createIcodsa = "${apiV}admin/icodsa/create";
   static const createIcicyta = "${apiV}admin/icicyta/create";
-  static const updateAdmin = "${apiV}admin/update/"; //add value 4/0/1..
-  static const deleteAdmin = "${apiV}admin/delete/"; //add value 4/0/1..
+  static const updateAdmin = "${apiV}admin/update/";
+  static const deleteAdmin = "${apiV}admin/delete/";
   static const getAllUsers = "${apiV}admin/list";
+  static const updateicicytaAdmin = "${apiV}icicyta/adminicicyta/update/";
+  static const updateicodsaAdmin = "${apiV}icodsa/adminicodsa/update/";
 
   //virtual account
   static const getDataVirtualAccount = "${apiV}virtual-accounts/list";

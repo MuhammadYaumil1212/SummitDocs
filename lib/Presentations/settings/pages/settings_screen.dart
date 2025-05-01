@@ -282,6 +282,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   ) ??
                                   "",
                               password: newPasswordController.text,
+                              roleId: storage?.get<int>(
+                                    AppString.ROLE,
+                                  ) ??
+                                  -1,
                             ),
                           );
                         },
