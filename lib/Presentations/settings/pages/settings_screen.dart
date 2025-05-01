@@ -8,7 +8,6 @@ import 'package:SummitDocs/core/helper/message/message.dart';
 import 'package:SummitDocs/core/helper/navigation/app_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 
 import '../../../commons/constants/string.dart';
 import '../../../commons/widgets/app_text.dart';
@@ -118,6 +117,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 await storage?.delete(AppString.ROLE);
                 await storage?.delete(AppString.USERNAME);
                 await storage?.delete(AppString.EMAIL);
+                await storage?.delete(AppString.NAME);
+                await storage?.delete(AppString.ID);
                 AppNavigator.pushAndRemove(context, SigninScreen());
               },
             ),
@@ -160,7 +161,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           const SizedBox(height: 10),
           _buildInfoRow("Username", storage?.get(AppString.USERNAME) ?? "-"),
-          _buildInfoRow("Email", storage?.get(AppString.EMAIL) ?? "-"),
           _buildInfoRow(
             "Role",
             getRole == 1
@@ -170,14 +170,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     : "ICICYTA",
           ),
           const SizedBox(height: 20),
-          AppButton(
-            action: () => _showUploadSignature(context),
-            text: "Upload file signature",
-            borderColor: AppColors.grayBackground2,
-            backgroundColor: AppColors.secondaryBackground,
-            fontColor: Colors.black,
-            fontWeight: FontWeight.w400,
-          ),
+          getRole == 1
+              ? AppButton(
+                  action: () => _showUploadSignature(context),
+                  text: "Upload file signature",
+                  borderColor: AppColors.grayBackground2,
+                  backgroundColor: AppColors.secondaryBackground,
+                  fontColor: Colors.black,
+                  fontWeight: FontWeight.w400,
+                )
+              : Container(),
           const SizedBox(height: 10),
           AppButton(
             action: () => _showChangePasswordDialog(context),
@@ -211,49 +213,90 @@ class _SettingsScreenState extends State<SettingsScreen> {
     showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          backgroundColor: Colors.white,
-          title: const AppText(
-            text: "Ganti Password",
-            fontSize: 21,
-            fontWeight: FontWeight.w700,
-          ),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                AppTextfield(
-                  prefixIcon: Icon(Icons.lock_outline,
-                      color: AppColors.grayBackground3),
-                  obscureText: true,
-                  hint: "Kata sandi lama",
-                  controller: oldPasswordController,
-                ),
-                AppTextfield(
-                  prefixIcon: Icon(Icons.lock_outline,
-                      color: AppColors.grayBackground3),
-                  obscureText: true,
-                  hint: "Kata sandi baru",
-                  controller: newPasswordController,
-                ),
-                const SizedBox(height: 10),
-                AppButton(
-                  text: "Masukkan",
-                  action: () {
-                    // Tambahkan logika update password di sini
-                    Navigator.of(context).pop();
-                  },
-                ),
-                AppButton(
-                  text: "Batalkan",
-                  action: () => Navigator.of(context).pop(),
-                  borderColor: AppColors.grayBackground2,
-                  backgroundColor: AppColors.secondaryBackground,
-                  fontColor: Colors.red,
-                ),
-              ],
+        return BlocListener<SettingsBloc, SettingsState>(
+          bloc: _bloc,
+          listener: (context, state) {
+            if (state is SuccessState) {
+              Navigator.of(context).pop();
+              DisplayMessage.successMessage(state.message, context);
+            } else if (state is ErrorState) {
+              Navigator.of(context).pop();
+              for (var item in state.errorMessage) {
+                DisplayMessage.errorMessage(item, context);
+              }
+            }
+          },
+          child: AlertDialog(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            backgroundColor: Colors.white,
+            title: const AppText(
+              text: "Ganti Password",
+              fontSize: 21,
+              fontWeight: FontWeight.w700,
+            ),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  AppTextfield(
+                    prefixIcon: Icon(Icons.lock_outline,
+                        color: AppColors.grayBackground3),
+                    obscureText: true,
+                    hint: "Kata sandi lama",
+                    controller: oldPasswordController,
+                  ),
+                  AppTextfield(
+                    prefixIcon: Icon(Icons.lock_outline,
+                        color: AppColors.grayBackground3),
+                    obscureText: true,
+                    hint: "Kata sandi baru",
+                    controller: newPasswordController,
+                  ),
+                  const SizedBox(height: 10),
+                  BlocBuilder<SettingsBloc, SettingsState>(
+                    bloc: _bloc,
+                    builder: (context, state) {
+                      final isLoading =
+                          state is LoadingState && state.isLoading;
+                      return AppButton(
+                        text: "Ubah Password",
+                        isLoading: isLoading,
+                        action: () {
+                          _bloc.add(
+                            ResetPasswordEvent(
+                              id: storage?.get<int>(
+                                    AppString.ID,
+                                  ) ??
+                                  -1,
+                              name: storage?.get<String>(
+                                    AppString.NAME,
+                                  ) ??
+                                  "",
+                              username: storage?.get<String>(
+                                    AppString.USERNAME,
+                                  ) ??
+                                  "",
+                              email: storage?.get<String>(
+                                    AppString.EMAIL,
+                                  ) ??
+                                  "",
+                              password: newPasswordController.text,
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                  AppButton(
+                    text: "Batalkan",
+                    action: () => Navigator.of(context).pop(),
+                    borderColor: AppColors.grayBackground2,
+                    backgroundColor: AppColors.secondaryBackground,
+                    fontColor: Colors.red,
+                  ),
+                ],
+              ),
             ),
           ),
         );
@@ -344,7 +387,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             );
                             return;
                           }
-
                           _bloc.add(
                             CreateSignatureEvent(
                               signatureName: namaPenandatangan.text,

@@ -25,3 +25,22 @@ final class CreateSignatureEvent extends SettingsEvent {
         signatureFile,
       ];
 }
+
+final class ResetPasswordEvent extends SettingsEvent {
+  final int id;
+  final String name;
+  final String username;
+  final String email;
+  final String password;
+
+  ResetPasswordEvent({
+    required this.id,
+    required this.name,
+    required this.username,
+    required this.email,
+    required this.password,
+  });
+
+  @override
+  List<Object?> get props => [id, name, username, email, password];
+}

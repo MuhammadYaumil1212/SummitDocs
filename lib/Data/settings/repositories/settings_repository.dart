@@ -1,3 +1,4 @@
+import 'package:SummitDocs/Data/settings/models/new_password_params.dart';
 import 'package:SummitDocs/Data/settings/models/signature_params.dart';
 import 'package:SummitDocs/Domain/settings/repositories/settings_repository.dart';
 import 'package:dartz/dartz.dart';
@@ -18,5 +19,16 @@ class SettingsRepositoryImpl extends SettingsRepository {
         return Right(data['message']);
       },
     );
+  }
+
+  @override
+  Future<Either> resetPassword(NewPasswordParams params) async {
+    // TODO: implement resetPassword
+    final response = await sl<SettingsServices>().resetPassword(params);
+    return response.fold((error) {
+      return Left(error);
+    }, (data) {
+      return Right(data['message']);
+    });
   }
 }

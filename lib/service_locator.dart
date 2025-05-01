@@ -15,6 +15,7 @@ import 'package:SummitDocs/Domain/manage_account/usecase/delete_account_usecase.
 import 'package:SummitDocs/Domain/manage_account/usecase/get_all_users_usecase.dart';
 import 'package:SummitDocs/Domain/settings/repositories/settings_repository.dart';
 import 'package:SummitDocs/Domain/settings/usecases/create_signature_usecase.dart';
+import 'package:SummitDocs/Domain/settings/usecases/update_password_usecase.dart';
 import 'package:SummitDocs/Domain/signin/usecases/signin_usecase.dart';
 import 'package:SummitDocs/Domain/transfer_virtual/repositories/transfer_virtual_repository.dart';
 import 'package:SummitDocs/Domain/transfer_virtual/usecase/delete_bank_transfer.dart';
@@ -68,4 +69,5 @@ void setupServiceLocator() {
   sl.registerSingleton<CreateAccountUsecase>(CreateAccountUsecase());
   sl.registerSingleton<DeleteAccountUsecase>(DeleteAccountUsecase());
   sl.registerSingleton<CreateSignatureUsecase>(CreateSignatureUsecase());
+  sl.registerSingleton<UpdatePasswordUsecase>(UpdatePasswordUsecase());
 }
