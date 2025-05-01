@@ -5,7 +5,6 @@ import 'package:SummitDocs/Presentations/files/pages/files_screen.dart';
 import 'package:SummitDocs/Presentations/settings/pages/settings_screen.dart';
 import 'package:SummitDocs/commons/constants/string.dart';
 import 'package:SummitDocs/commons/widgets/app_navbar.dart';
-import 'package:SummitDocs/commons/widgets/app_text.dart';
 import 'package:SummitDocs/core/config/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,7 +13,6 @@ import 'package:flutter_svg/svg.dart';
 import '../../../commons/widgets/app_scaffold.dart';
 import '../../../core/helper/message/message.dart';
 import '../../../core/helper/storage/AppStorage.dart';
-import '../../manage_account/pages/manage_account.dart';
 import '../bloc/home_bloc.dart';
 
 class HomeScreen extends StatefulWidget {
