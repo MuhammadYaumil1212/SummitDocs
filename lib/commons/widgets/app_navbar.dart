@@ -47,31 +47,38 @@ class AppNavbar extends StatelessWidget {
         "Beranda",
         0,
       ),
-      _buildNavItem(
-        AppString.icFilesSolid,
-        AppString.icFilesOutlined,
-        "Berkas",
-        1,
-      ),
-      _buildNavItem(
-        AppString.icSettingSolid,
-        AppString.icSettingOutlined,
-        "Pengaturan",
-        roleId == 1 ? 3 : 2,
-      ),
     ];
 
+    if (roleId != 1) {
+      items.add(
+        _buildNavItem(
+          AppString.icFilesSolid,
+          AppString.icFilesOutlined,
+          "Berkas",
+          1,
+        ),
+      );
+    }
+
     if (roleId != 2 && roleId != 3) {
-      items.insert(
-        2,
+      items.add(
         _buildNavItem(
           AppString.personOutline,
           AppString.personSolid,
           "Admin",
-          2,
+          1,
         ),
       );
     }
+
+    items.add(
+      _buildNavItem(
+        AppString.icSettingSolid,
+        AppString.icSettingOutlined,
+        "Pengaturan",
+        2,
+      ),
+    );
 
     return items;
   }
