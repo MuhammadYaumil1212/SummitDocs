@@ -16,7 +16,6 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   final _bloc = DashboardBloc();
   final ValueNotifier<bool> _isExpandedIcodsa = ValueNotifier(true);
-
   final ValueNotifier<bool> _isExpandedIcicyta = ValueNotifier(true);
   @override
   Widget build(BuildContext context) {
@@ -35,8 +34,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     title: "Selamat Datang",
                     description: "Di Dashboard Super Admin",
                   ),
-                  _buildExpansionTile("ICODSA", _isExpandedIcodsa),
-                  _buildExpansionTile("ICICYTA", _isExpandedIcicyta),
                 ],
               ),
             ),
