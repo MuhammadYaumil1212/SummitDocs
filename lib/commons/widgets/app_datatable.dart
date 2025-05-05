@@ -19,6 +19,10 @@ class AppDataTable<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
+        if (data.isEmpty) {
+          return Center(child: Text('Tidak ada data'));
+        }
+
         const double rowHeight = 56.0;
         const double headerHeight = 64.0;
         const double footerHeight = 56.0;
@@ -27,12 +31,10 @@ class AppDataTable<T> extends StatelessWidget {
             ? constraints.maxHeight - headerHeight - footerHeight
             : 0;
 
-        final int maxRowsPerPage = availableHeight.isFinite
-            ? (availableHeight / rowHeight).floor().clamp(
-                  data.length >= 5 ? 5 : data.length,
-                  data.length,
-                )
-            : rowsPerPage;
+        // Rule sesuai permintaan kamu:
+        // - data.length <= 5 ➔ rowsPerPage = data.length
+        // - data.length > 5 ➔ rowsPerPage = 5
+        final int rowsPerPage = data.length <= 5 ? data.length : 5;
 
         return SingleChildScrollView(
           scrollDirection: Axis.vertical,
@@ -48,7 +50,7 @@ class AppDataTable<T> extends StatelessWidget {
             showFirstLastButtons: false,
             columns: columns,
             source: _CustomDataTableSource<T>(data, rowBuilder),
-            rowsPerPage: maxRowsPerPage,
+            rowsPerPage: rowsPerPage,
           ),
         );
       },
