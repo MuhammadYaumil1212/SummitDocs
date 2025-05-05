@@ -89,9 +89,6 @@ class _HomeScreenState extends State<HomeScreen> {
             controller: pageController,
             children: [
               DashboardScreen(),
-              FilesScreen(
-                roleId: _storage.get<int>(AppString.ROLE) ?? 0,
-              ),
               AdminBank(
                 roleId: _storage.get<int>(AppString.ROLE) ?? 0,
               ),
