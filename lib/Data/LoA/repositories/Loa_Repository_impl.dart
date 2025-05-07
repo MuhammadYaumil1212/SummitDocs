@@ -44,4 +44,31 @@ class LoaRepositoryImpl extends LoaRepository {
       return Right(data['message']);
     });
   }
+
+  @override
+  Future<Either> createIcodsaLOA(UpdateLoaParams params) {
+    // TODO: implement createIcodsaLOA
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Either> getAllIcodsaLoa() async {
+    // TODO: implement getAllIcodsaLoa
+    final response = await sl<LoaServices>().getAllLoa();
+    return response.fold((error) {
+      return Left(error['messages']);
+    }, (data) {
+      final dataMapper = List.from(data).map((element) {
+        final model = LoaModel.fromJson(element);
+        return LoaMapper.toEntity(model);
+      }).toList();
+      return Right(dataMapper);
+    });
+  }
+
+  @override
+  Future<Either> updateIcodsaLOA(UpdateLoaParams params) {
+    // TODO: implement updateIcodsaLOA
+    throw UnimplementedError();
+  }
 }

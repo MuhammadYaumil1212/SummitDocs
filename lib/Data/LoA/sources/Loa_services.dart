@@ -7,9 +7,15 @@ import '../../../service_locator.dart';
 import '../models/update_loa_params.dart';
 
 abstract class LoaServices {
+  //icicyta
   Future<Either> updateLOA(UpdateLoaParams params);
   Future<Either> createLOA(UpdateLoaParams params);
   Future<Either> getAllLoa();
+
+  //icodsa
+  Future<Either> getAllIcodsaLoa();
+  Future<Either> updateIcodsaLOA(UpdateLoaParams params);
+  Future<Either> createIcodsaLOA(UpdateLoaParams params);
 }
 
 class LoaServicesImpl extends LoaServices {
@@ -50,5 +56,28 @@ class LoaServicesImpl extends LoaServices {
     } on DioException catch (e) {
       return Left(e.response?.data ?? "Something Gone Wrong!");
     }
+  }
+
+  @override
+  Future<Either> createIcodsaLOA(UpdateLoaParams params) {
+    // TODO: implement createIcodsaLOA
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Either> getAllIcodsaLoa() async {
+    // TODO: implement getAllIcodsaLoa
+    try {
+      var response = await sl<DioClient>().get(ApiUrl.getDocsIcodsaLoa);
+      return Right(response.data);
+    } on DioException catch (e) {
+      return Left(e.response?.data ?? "Something Gone Wrong!");
+    }
+  }
+
+  @override
+  Future<Either> updateIcodsaLOA(UpdateLoaParams params) {
+    // TODO: implement updateIcodsaLOA
+    throw UnimplementedError();
   }
 }

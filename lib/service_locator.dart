@@ -32,6 +32,7 @@ import 'package:SummitDocs/Domain/transfer_virtual/usecase/transfer_virtual_usec
 
 import 'Data/signin/repositories/signin_repository.dart';
 import 'Data/signin/sources/signin_service.dart';
+import 'Domain/LoA/usecase/get_all_loa_icodsa_usecase.dart';
 import 'Domain/signin/repositories/signin_repository.dart';
 import 'Domain/transfer_virtual/usecase/detail_bank_transfer_usecase.dart';
 import 'core/network/dio_client.dart';
@@ -79,4 +80,5 @@ void setupServiceLocator() {
   sl.registerSingleton<UpdatePasswordUsecase>(UpdatePasswordUsecase());
   sl.registerSingleton<GetAllLoaUsecase>(GetAllLoaUsecase());
   sl.registerSingleton<CreateLoaUsecase>(CreateLoaUsecase());
+  sl.registerSingleton<GetAllLoaIcodsaUsecase>(GetAllLoaIcodsaUsecase());
 }

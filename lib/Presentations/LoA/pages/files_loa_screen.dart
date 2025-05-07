@@ -39,7 +39,9 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
 
   void reloadAll() {
     conferences.clear();
-    _bloc.add(GetAllLoaEvent());
+    widget.roleId == 3
+        ? _bloc.add(GetAllLoaEvent())
+        : _bloc.add(GetAllIcodsaLoaEvent());
   }
 
   Future<void> _handleRefresh() async {
@@ -64,7 +66,9 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _bloc.add(GetAllLoaEvent());
+    widget.roleId == 3
+        ? _bloc.add(GetAllLoaEvent())
+        : _bloc.add(GetAllIcodsaLoaEvent());
   }
 
   @override
@@ -353,16 +357,18 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
                                     context);
                                 return;
                               }
-                              _bloc.add(
-                                CreateLoaEvent(
-                                  paperIdController.text,
-                                  titleController.text,
-                                  authorNames,
-                                  statusController.text,
-                                  datePlaceController.text,
-                                  int.parse(signatureController.text),
-                                ),
-                              );
+                              widget.roleId == 3
+                                  ? _bloc.add(
+                                      CreateLoaEvent(
+                                        paperIdController.text,
+                                        titleController.text,
+                                        authorNames,
+                                        statusController.text,
+                                        datePlaceController.text,
+                                        int.parse(signatureController.text),
+                                      ),
+                                    )
+                                  : null;
                             },
                           ),
                         ),

@@ -44,6 +44,7 @@ class ApiUrl {
 
   //icodsa
   static const postDataLoaIcodsa = "${apiV}icodsa/loas/create";
+  static const getDocsIcodsaLoa = "${apiV}icodsa/loas";
 
   //docs signature
   static const getSignature = "${apiV}signature";

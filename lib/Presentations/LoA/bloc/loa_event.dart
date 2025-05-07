@@ -11,6 +11,13 @@ final class GetAllLoaEvent extends LoaEvent {
   List<Object?> get props => [];
 }
 
+final class GetAllIcodsaLoaEvent extends LoaEvent {
+  const GetAllIcodsaLoaEvent();
+
+  @override
+  List<Object?> get props => [];
+}
+
 final class UpdateLoaEvent extends LoaEvent {
   final UpdateLoaParams params;
 
