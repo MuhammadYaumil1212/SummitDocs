@@ -148,7 +148,7 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
     );
   }
 
-  Widget _buildTable(String title, List<LoaEntity> dataList) {
+  Widget _buildTable(String title, List<dynamic> dataList) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -204,7 +204,11 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              ActionButton(icon: AppString.infoIcon, action: () {}),
+              ActionButton(
+                  icon: AppString.infoIcon,
+                  action: () {
+                    _showDetailLoaIcicyta(conference);
+                  }),
               const SizedBox(width: 10),
               ActionButton(icon: AppString.downloadIcon, action: () {}),
             ],
@@ -383,6 +387,64 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
           },
         );
       },
+    );
+  }
+
+  void _showDetailLoaIcicyta(LoaEntity detail) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          backgroundColor: Colors.white,
+          title: AppText(
+            text: "Detail LOA",
+            fontSize: 21,
+            fontWeight: FontWeight.w700,
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildDetailRow("Judul Paper", detail.paperTitle ?? "-"),
+                _buildDetailRow(
+                    "Penulis", detail.authorNames?.join(', ') ?? ""),
+                _buildDetailRow(
+                    "Waktu",
+                    detail.createdAt != null
+                        ? DateFormat('HH:mm').format(detail.createdAt!)
+                        : ""),
+                _buildDetailRow(
+                    "Tanggal & tempat", detail.tempatTanggal ?? "-"),
+                const SizedBox(height: 20),
+                SizedBox(
+                  width: double.infinity,
+                  child: AppButton(
+                    action: () {
+                      Navigator.of(context).pop();
+                    },
+                    text: "Tutup",
+                    borderColor: AppColors.grayBackground2,
+                    backgroundColor: AppColors.secondaryBackground,
+                    fontColor: Colors.red,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildDetailRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: AppText(
+        text: "$label: $value",
+      ),
     );
   }
 }

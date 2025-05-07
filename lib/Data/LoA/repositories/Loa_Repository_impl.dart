@@ -24,7 +24,7 @@ class LoaRepositoryImpl extends LoaRepository {
     // TODO: implement getAllLoa
     final response = await sl<LoaServices>().getAllLoa();
     return response.fold((error) {
-      return Left(error['message']);
+      return Left(error['messages']);
     }, (data) {
       final dataMapper = List.from(data).map((element) {
         final model = LoaModel.fromJson(element);
