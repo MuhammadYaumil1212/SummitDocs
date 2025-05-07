@@ -36,12 +36,14 @@ class ApiUrl {
   static const updateDataIcodsa = "${apiV}icodsa/invoices/update/";
 
   //docs LOA
-  static const getDocsLOA = "${apiV}info?id=";
-  static const postDataIcodsa = "${apiV}icodsa/loas/create";
-  static const postDataIcicyta = "${apiV}icicyta/loas/create";
 
-  //docs receipt
-  static const getDataReceipt = "$baseUrl${apiV}payments";
+  //icicyta
+  static const getDocsLOA = "${apiV}icicyta/loas";
+  static const getDocsIDLOA = "${apiV}icicyta/loas/";
+  static const postDataLoaIcicyta = "${apiV}icicyta/loas/create";
+
+  //icodsa
+  static const postDataLoaIcodsa = "${apiV}icodsa/loas/create";
 
   //docs signature
   static const getSignature = "${apiV}signature";

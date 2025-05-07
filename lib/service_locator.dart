@@ -1,3 +1,5 @@
+import 'package:SummitDocs/Data/LoA/repositories/Loa_Repository_impl.dart';
+import 'package:SummitDocs/Data/LoA/sources/Loa_services.dart';
 import 'package:SummitDocs/Data/home/repositories/home_repository_impl.dart';
 import 'package:SummitDocs/Data/home/sources/homes_services.dart';
 import 'package:SummitDocs/Data/manage_account/repositories/manage_repository_impl.dart';
@@ -7,6 +9,9 @@ import 'package:SummitDocs/Data/settings/source/settings_services.dart';
 import 'package:SummitDocs/Data/transfer_virtual/models/detail_bank_transfer.dart';
 import 'package:SummitDocs/Data/transfer_virtual/repositories/transfer_virtual_repository_impl.dart';
 import 'package:SummitDocs/Data/transfer_virtual/sources/transfer_virtual_services.dart';
+import 'package:SummitDocs/Domain/LoA/repositories/Loa_repository.dart';
+import 'package:SummitDocs/Domain/LoA/usecase/create_loa_usecase.dart';
+import 'package:SummitDocs/Domain/LoA/usecase/get_all_loa_usecase.dart';
 import 'package:SummitDocs/Domain/home/repositories/home_repository.dart';
 import 'package:SummitDocs/Domain/home/usecases/loa_usecase.dart';
 import 'package:SummitDocs/Domain/manage_account/repositories/manage_account_repository.dart';
@@ -41,6 +46,7 @@ void setupServiceLocator() {
   sl.registerSingleton<TransferVirtualServices>(TransferVirtualServicesImpl());
   sl.registerSingleton<ManageAccountServices>(ManageAccountServicesImpl());
   sl.registerSingleton<SettingsServices>(SettingServicesImpl());
+  sl.registerSingleton<LoaServices>(LoaServicesImpl());
 
   //repositories
   sl.registerSingleton<SigninRepository>(SigninRepositoryImpl());
@@ -50,6 +56,7 @@ void setupServiceLocator() {
   );
   sl.registerSingleton<ManageAccountRepository>(ManageAccountRepositoryImpl());
   sl.registerSingleton<SettingsRepository>(SettingsRepositoryImpl());
+  sl.registerSingleton<LoaRepository>(LoaRepositoryImpl());
 
   //usecases
   sl.registerSingleton<SigninUsecase>(SigninUsecase());
@@ -70,4 +77,6 @@ void setupServiceLocator() {
   sl.registerSingleton<DeleteAccountUsecase>(DeleteAccountUsecase());
   sl.registerSingleton<CreateSignatureUsecase>(CreateSignatureUsecase());
   sl.registerSingleton<UpdatePasswordUsecase>(UpdatePasswordUsecase());
+  sl.registerSingleton<GetAllLoaUsecase>(GetAllLoaUsecase());
+  sl.registerSingleton<CreateLoaUsecase>(CreateLoaUsecase());
 }

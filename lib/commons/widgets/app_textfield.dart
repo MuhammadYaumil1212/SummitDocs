@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:SummitDocs/commons/widgets/app_button.dart';
 import 'package:SummitDocs/commons/widgets/app_text.dart';
 import 'package:file_picker/file_picker.dart';
@@ -19,19 +17,23 @@ class AppTextfield extends StatefulWidget {
   final Function()? onTap;
   final bool readOnly;
   final String? Function(String?)? validator;
+  final bool deleteTextfield;
+  final void Function()? onDelete;
 
-  const AppTextfield({
-    Key? key,
-    required this.hint,
-    required this.controller,
-    this.keyboardType,
-    this.obscureText = false,
-    this.prefixIcon,
-    this.onChanged,
-    this.onTap,
-    this.readOnly = false,
-    this.validator,
-  }) : super(key: key);
+  const AppTextfield(
+      {Key? key,
+      required this.hint,
+      required this.controller,
+      this.keyboardType,
+      this.obscureText = false,
+      this.prefixIcon,
+      this.onChanged,
+      this.onTap,
+      this.readOnly = false,
+      this.validator,
+      this.deleteTextfield = false,
+      this.onDelete})
+      : super(key: key);
 
   @override
   _AppTextfieldState createState() => _AppTextfieldState();
@@ -54,7 +56,12 @@ class _AppTextfieldState extends State<AppTextfield> {
         controller: widget.controller,
         keyboardType: widget.keyboardType,
         obscureText: _obscureText,
-        onChanged: widget.onChanged,
+        onChanged: (value) {
+          setState(() {}); // biar suffixIcon update saat ketik/hapus
+          if (widget.onChanged != null) {
+            widget.onChanged!(value);
+          }
+        },
         onTap: widget.onTap,
         readOnly: widget.readOnly,
         validator: widget.validator,
@@ -84,8 +91,11 @@ class _AppTextfieldState extends State<AppTextfield> {
             borderRadius: BorderRadius.all(Radius.circular(10)),
           ),
           prefixIcon: widget.prefixIcon,
-          suffixIcon: widget.obscureText
-              ? IconButton(
+          suffixIcon: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (widget.obscureText)
+                IconButton(
                   icon: Icon(
                     _obscureText
                         ? Icons.visibility_off_outlined
@@ -96,8 +106,29 @@ class _AppTextfieldState extends State<AppTextfield> {
                       _obscureText = !_obscureText;
                     });
                   },
-                )
-              : null,
+                ),
+              if (widget.deleteTextfield)
+                IconButton(
+                  icon: Icon(Icons.close, color: Colors.grey),
+                  onPressed: () {
+                    widget.onDelete?.call();
+                    setState(() {});
+                  },
+                ),
+              if (widget.controller.text.isNotEmpty)
+                IconButton(
+                  icon: Icon(Icons.close, color: Colors.grey),
+                  onPressed: () {
+                    setState(() {
+                      widget.controller.clear();
+                    });
+                    if (widget.onChanged != null) {
+                      widget.onChanged!('');
+                    }
+                  },
+                ),
+            ],
+          ),
         ),
       ),
     );

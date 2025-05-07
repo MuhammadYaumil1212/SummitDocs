@@ -1,15 +1,19 @@
+import 'package:SummitDocs/Domain/LoA/entity/loa_entity.dart';
+import 'package:SummitDocs/Presentations/manage_account/bloc/manage_account_bloc.dart';
 import 'package:SummitDocs/commons/widgets/app_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:SummitDocs/commons/widgets/app_button.dart';
 import 'package:SummitDocs/commons/widgets/app_text.dart';
 import 'package:SummitDocs/core/config/theme/app_colors.dart';
 import 'package:SummitDocs/Presentations/LoA/bloc/loa_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 
 import '../../../commons/constants/string.dart';
 import '../../../commons/widgets/app_datatable.dart';
 import '../../../commons/widgets/app_scaffold.dart';
-import 'loa_entity.dart';
+import '../../../core/helper/message/message.dart';
 
 class FilesLoaScreen extends StatefulWidget {
   final int roleId;
@@ -27,14 +31,72 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
   TextEditingController conferenceTitleController = TextEditingController();
   TextEditingController writerController = TextEditingController();
   TextEditingController timeController = TextEditingController();
+  TextEditingController signatureController = TextEditingController();
   TextEditingController datePlaceController = TextEditingController();
-  final List<LOAEntity> conferences = [];
+  List<TextEditingController> authorControllers = [TextEditingController()];
+  TextEditingController statusController = TextEditingController();
+  final List<LoaEntity> conferences = [];
+
+  void reloadAll() {
+    conferences.clear();
+    _bloc.add(GetAllLoaEvent());
+  }
+
+  Future<void> _handleRefresh() async {
+    await Future.delayed(Duration(seconds: 2));
+    reloadAll();
+  }
+
+  void clearAll() {
+    paperIdController.clear();
+    titleController.clear();
+    conferenceTitleController.clear();
+    timeController.clear();
+    datePlaceController.clear();
+    statusController.clear();
+    signatureController.clear();
+    for (var controller in authorControllers) {
+      controller.clear();
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _bloc.add(GetAllLoaEvent());
+  }
 
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
       bloc: _bloc,
-      listener: (context, state) {},
+      listener: (context, state) {
+        if (state is SuccessLoaCreate) {
+          clearAll();
+          reloadAll();
+          Navigator.of(context).pop();
+          return DisplayMessage.successMessage(state.message, context);
+        }
+
+        if (state is FailedState) {
+          Navigator.of(context).pop();
+          state.message.map((item) {
+            return DisplayMessage.errorMessage(item, context);
+          }).toList();
+        }
+        if (state is SuccessState) {
+          setState(() {
+            conferences.clear();
+            final sortedUsers = List<LoaEntity>.from(state.data)
+              ..sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
+
+            for (var user in sortedUsers) {
+              conferences.add(user);
+            }
+          });
+        }
+      },
       appBar: AppBar(
         surfaceTintColor: Colors.transparent,
         centerTitle: true,
@@ -49,19 +111,21 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
           child: Container(color: AppColors.grayBackground, height: 4.0),
         ),
       ),
-      appWidget: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildHeader(widget.title),
-              const SizedBox(height: 20),
-              _buildTable("Peserta"),
-            ],
-          ),
-        ),
+      appWidget: BlocBuilder<LoaBloc, LoaState>(
+        builder: (context, state) {
+          return RefreshIndicator(
+            onRefresh: _handleRefresh,
+            color: AppColors.primary,
+            child: ListView(
+              padding: const EdgeInsets.all(16.0),
+              children: [
+                _buildHeader(widget.title),
+                const SizedBox(height: 20),
+                _buildTable("Peserta", conferences),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
@@ -84,7 +148,7 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
     );
   }
 
-  Widget _buildTable(String title) {
+  Widget _buildTable(String title, List<LoaEntity> dataList) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -94,20 +158,20 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
           fontWeight: FontWeight.w700,
         ),
         const SizedBox(height: 5),
-        AppDataTable(
-          columns: _buildColumns(),
-          data: conferences,
-          rowBuilder: _buildRow,
-        ),
+        dataList.isNotEmpty
+            ? AppDataTable(
+                columns: _buildColumns(),
+                data: conferences,
+                rowBuilder: _buildRow,
+              )
+            : Center(child: AppText(text: "Please Wait.....")),
       ],
     );
   }
 
   List<DataColumn> _buildColumns() {
     return [
-      _centeredColumn("Paper ID"),
       _centeredColumn("Judul Paper"),
-      _centeredColumn("Judul Conference"),
       _centeredColumn("Penulis"),
       _centeredColumn("Waktu"),
       _centeredColumn("Tanggal dan Tempat"),
@@ -122,16 +186,20 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
     );
   }
 
-  DataRow _buildRow(LOAEntity conference) {
+  DataRow _buildRow(LoaEntity conference) {
     return DataRow(
       cells: [
-        DataCell(Center(child: AppText(text: conference.paperId.toString()))),
-        DataCell(Center(child: AppText(text: conference.paperTitle))),
-        DataCell(Center(child: AppText(text: conference.conferenceTitle))),
-        DataCell(Center(child: AppText(text: conference.writer))),
-        DataCell(Center(child: AppText(text: conference.time))),
-        DataCell(Center(child: AppText(text: conference.dateAndPlace))),
-        DataCell(Center(child: AppText(text: conference.status))),
+        DataCell(AppText(text: conference.paperTitle ?? "")),
+        DataCell(AppText(text: conference.authorNames?.join(', ') ?? "")),
+        DataCell(Center(
+          child: AppText(
+            text: conference.createdAt != null
+                ? DateFormat('HH:mm').format(conference.createdAt!)
+                : "",
+          ),
+        )),
+        DataCell(AppText(text: conference.tempatTanggal ?? "")),
+        DataCell(AppText(text: conference.status ?? "")),
         DataCell(
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -150,95 +218,169 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
     showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          backgroundColor: Colors.white,
-          title: AppText(
-            text: "Tambah Data",
-            fontSize: 21,
-            fontWeight: FontWeight.w700,
-          ),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                AppTextfield(
-                  prefixIcon: Icon(
-                    Icons.pin_outlined,
-                    color: AppColors.grayBackground3,
-                  ),
-                  hint: "Paper ID",
-                  controller: paperIdController,
-                ),
-                AppTextfield(
-                  prefixIcon: Icon(
-                    Icons.title,
-                    color: AppColors.grayBackground3,
-                  ),
-                  hint: "Judul Paper",
-                  controller: titleController,
-                ),
-                AppTextfield(
-                  prefixIcon: Icon(
-                    Icons.title,
-                    color: AppColors.grayBackground3,
-                  ),
-                  hint: "Judul Conference",
-                  controller: conferenceTitleController,
-                ),
-                AppTextfield(
-                  prefixIcon: Icon(
-                    Icons.person_outline,
-                    color: AppColors.grayBackground3,
-                  ),
-                  hint: "Penulis",
-                  controller: writerController,
-                ),
-                AppTextfield(
-                  prefixIcon: Icon(
-                    Icons.access_time_outlined,
-                    color: AppColors.grayBackground3,
-                  ),
-                  hint: "Waktu",
-                  controller: timeController,
-                ),
-                AppTextfield(
-                  prefixIcon: Icon(
-                    Icons.calendar_today_outlined,
-                    color: AppColors.grayBackground3,
-                  ),
-                  hint: "Tanggal dan Tempat",
-                  controller: datePlaceController,
-                ),
-                AppDropdown(
-                  label: "Accepted/Rejected",
-                  items: ["Accepted", "Rejected"],
-                  onChanged: (value) {
-                    print("Selected: $value");
-                  },
-                ),
-                const SizedBox(height: 10),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  child: AppButton(text: "Masukkan", action: () {}),
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  child: AppButton(
-                    action: () {
-                      Navigator.of(context).pop();
-                    },
-                    text: "Batalkan",
-                    borderColor: AppColors.grayBackground2,
-                    backgroundColor: AppColors.secondaryBackground,
-                    fontColor: Colors.red,
-                  ),
-                ),
-              ],
-            ),
-          ),
+        return BlocBuilder<LoaBloc, LoaState>(
+          bloc: _bloc,
+          builder: (context, state) {
+            final bool isLoading = state is LoadingState && state.isLoading;
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              backgroundColor: Colors.white,
+              title: AppText(
+                text: "Tambah Data",
+                fontSize: 21,
+                fontWeight: FontWeight.w700,
+              ),
+              content: StatefulBuilder(
+                builder: (BuildContext context, StateSetter setStateDialog) {
+                  return SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        AppTextfield(
+                          prefixIcon: Icon(
+                            Icons.pin_outlined,
+                            color: AppColors.grayBackground3,
+                          ),
+                          hint: "Paper ID",
+                          controller: paperIdController,
+                        ),
+                        AppTextfield(
+                          prefixIcon: Icon(
+                            Icons.title,
+                            color: AppColors.grayBackground3,
+                          ),
+                          hint: "Judul Paper",
+                          controller: titleController,
+                        ),
+                        AppTextfield(
+                          prefixIcon: Icon(
+                            Icons.title,
+                            color: AppColors.grayBackground3,
+                          ),
+                          hint: "Judul Conference",
+                          controller: conferenceTitleController,
+                        ),
+                        ...authorControllers.asMap().entries.map((entry) {
+                          int index = entry.key;
+                          TextEditingController controller = entry.value;
+                          return Row(
+                            children: [
+                              Expanded(
+                                child: AppTextfield(
+                                  prefixIcon: Icon(
+                                    Icons.person_outline,
+                                    color: AppColors.grayBackground3,
+                                  ),
+                                  hint: "Penulis ${index + 1}",
+                                  controller: controller,
+                                  deleteTextfield: true,
+                                  onDelete: () {
+                                    if (authorControllers.length > 1) {
+                                      setStateDialog(() {
+                                        authorControllers.removeAt(index);
+                                      });
+                                    }
+                                  },
+                                ),
+                              ),
+                            ],
+                          );
+                        }).toList(),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: TextButton.icon(
+                            onPressed: () {
+                              setStateDialog(() {
+                                authorControllers.add(TextEditingController());
+                              });
+                            },
+                            style: ButtonStyle(
+                                splashFactory: NoSplash.splashFactory,
+                                backgroundColor: WidgetStateProperty.all<Color>(
+                                  Colors.transparent,
+                                )),
+                            icon: Icon(Icons.add),
+                            label: Text("Tambah Penulis"),
+                          ),
+                        ),
+                        AppTextfield(
+                          prefixIcon: Icon(
+                            Icons.calendar_today_outlined,
+                            color: AppColors.grayBackground3,
+                          ),
+                          hint: "Tanggal dan Tempat",
+                          controller: datePlaceController,
+                        ),
+                        AppDropdown(
+                          label: "Accepted/Rejected",
+                          items: ["Accepted", "Rejected"],
+                          onChanged: (value) {
+                            statusController.text = value ?? "Accepted";
+                            print("Selected: $value");
+                          },
+                        ),
+                        AppTextfield(
+                          prefixIcon: Icon(
+                            Icons.access_time_outlined,
+                            color: AppColors.grayBackground3,
+                          ),
+                          hint: "Signature ID",
+                          controller: signatureController,
+                        ),
+                        const SizedBox(height: 10),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                          child: AppButton(
+                            text: "Simpan LOA",
+                            isLoading: isLoading,
+                            action: () {
+                              final signatureText =
+                                  signatureController.text.trim();
+                              List<String> authorNames = authorControllers
+                                  .map((controller) => controller.text)
+                                  .toList();
+                              if (signatureText.isEmpty ||
+                                  int.tryParse(signatureText) == null) {
+                                Navigator.pop(context);
+                                DisplayMessage.errorMessage(
+                                    "Signature ID harus berupa angka!",
+                                    context);
+                                return;
+                              }
+                              _bloc.add(
+                                CreateLoaEvent(
+                                  paperIdController.text,
+                                  titleController.text,
+                                  authorNames,
+                                  statusController.text,
+                                  datePlaceController.text,
+                                  int.parse(signatureController.text),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                          child: AppButton(
+                            action: () {
+                              Navigator.of(context).pop();
+                            },
+                            text: "Batalkan",
+                            borderColor: AppColors.grayBackground2,
+                            backgroundColor: AppColors.secondaryBackground,
+                            fontColor: Colors.red,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            );
+          },
         );
       },
     );
