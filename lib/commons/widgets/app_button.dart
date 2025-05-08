@@ -107,6 +107,10 @@ class ActionButton extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: SvgPicture.asset(
             icon,
+            colorFilter: ColorFilter.mode(
+              Colors.white,
+              BlendMode.srcIn,
+            ),
             width: 20,
             height: 20,
           ),

@@ -27,7 +27,7 @@ class FilesReceiptScreen extends StatelessWidget {
   final List<ReceiptEntity> conferences = List.generate(
     15,
     (index) => ReceiptEntity(
-      "index + 1",
+      "Received From",
       "title",
       "ConferenceTitle",
       "John Doe",
@@ -67,7 +67,6 @@ class FilesReceiptScreen extends StatelessWidget {
               _buildHeader(context, title),
               const SizedBox(height: 20),
               _buildTable("Peserta"),
-              _buildTable("Pengurus"),
             ],
           ),
         ),
@@ -84,11 +83,6 @@ class FilesReceiptScreen extends StatelessWidget {
           fontWeight: FontWeight.w700,
           fontSize: 30,
         ),
-        FileAddButton(
-          onTap: () => _showAddDataDialog(context),
-          color: AppColors.primary,
-          text: "Tambah Data",
-        )
       ],
     );
   }
@@ -183,102 +177,5 @@ class FilesReceiptScreen extends StatelessWidget {
     ));
 
     return DataRow(cells: cells);
-  }
-
-  void _showAddDataDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          backgroundColor: Colors.white,
-          title: AppText(
-            text: "Tambah Data",
-            fontSize: 21,
-            fontWeight: FontWeight.w700,
-          ),
-          content: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                AppTextfield(
-                  prefixIcon: Icon(
-                    Icons.title,
-                    color: AppColors.grayBackground3,
-                  ),
-                  hint: "Received From",
-                  controller: virtualAccountNumber,
-                ),
-                AppTextfield(
-                  prefixIcon: Icon(
-                    Icons.pin_outlined,
-                    color: AppColors.grayBackground3,
-                  ),
-                  hint: "Amount",
-                  controller: holderName,
-                ),
-                AppTextfield(
-                  prefixIcon: Icon(
-                    Icons.title,
-                    color: AppColors.grayBackground3,
-                  ),
-                  hint: "In payment of",
-                  controller: nameBank,
-                ),
-                AppDatePicker(
-                  dateController: paymentDate,
-                  hint: "Payment Date",
-                  value: (String value) {},
-                ),
-                AppTextfield(
-                  prefixIcon: Icon(
-                    Icons.title,
-                    color: AppColors.grayBackground3,
-                  ),
-                  hint: "Conference Title",
-                  controller: holderName,
-                ),
-                AppTextfield(
-                  prefixIcon: Icon(
-                    Icons.date_range_outlined,
-                    color: AppColors.grayBackground3,
-                  ),
-                  hint: "Place and Title",
-                  controller: placeAndTitle,
-                ),
-                AppTextfield(
-                  prefixIcon: Icon(
-                    Icons.person_outline,
-                    color: AppColors.grayBackground3,
-                  ),
-                  hint: "Signature",
-                  controller: placeAndTitle,
-                ),
-                const SizedBox(height: 10),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  child: AppButton(text: "Masukkan", action: () {}),
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  child: AppButton(
-                    action: () {
-                      Navigator.of(context).pop();
-                    },
-                    text: "Batalkan",
-                    borderColor: AppColors.grayBackground2,
-                    backgroundColor: AppColors.secondaryBackground,
-                    fontColor: Colors.red,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
   }
 }

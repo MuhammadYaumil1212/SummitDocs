@@ -42,4 +42,6 @@ class AppString {
   static const trashIcon = "${appIcons}trash_icon.svg";
 
   static const plusIcon = "${appIcons}plus_icon.svg";
+
+  static const editIcon = "${appIcons}edit_icon.svg";
 }

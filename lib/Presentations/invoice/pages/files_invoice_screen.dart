@@ -141,6 +141,74 @@ class _FilesInvoiceScreenState extends State<FilesInvoiceScreen> {
     );
   }
 
+  void _showDetailInvoiceIcicyta(InvoiceEntity detail) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          backgroundColor: Colors.white,
+          title: AppText(
+            text: "Detail Invoice",
+            fontSize: 21,
+            fontWeight: FontWeight.w700,
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildDetailRow("No.Invoice", detail.invoiceNo ?? "-"),
+                _buildDetailRow(
+                  "LOA ID",
+                  detail.loaId != null ? detail.loaId.toString() : "-",
+                ),
+                _buildDetailRow("Institusi", detail.institution ?? "-"),
+                _buildDetailRow(
+                    "Virtual Account ID",
+                    detail.virtualAccountId != null
+                        ? detail.virtualAccountId.toString()
+                        : "-"),
+                _buildDetailRow(
+                    "Bank Transfer ID",
+                    detail.bankTransferId != null
+                        ? detail.bankTransferId.toString()
+                        : "-"),
+                _buildDetailRow("Email", detail.email ?? "-"),
+                _buildDetailRow("Tanggal", detail.dateOfIssue ?? "-"),
+                _buildDetailRow("Status", detail.status ?? "-"),
+                _buildDetailRow("amount", detail.amount ?? "Rp.0"),
+                const SizedBox(height: 20),
+                SizedBox(
+                  width: double.infinity,
+                  child: AppButton(
+                    action: () {
+                      Navigator.of(context).pop();
+                    },
+                    text: "Tutup",
+                    borderColor: AppColors.grayBackground2,
+                    backgroundColor: AppColors.secondaryBackground,
+                    fontColor: Colors.red,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildDetailRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: AppText(
+        text: "$label: $value",
+      ),
+    );
+  }
+
   List<DataColumn> _buildColumns() {
     return [
       _centeredColumn("No.Invoice"),
@@ -171,7 +239,17 @@ class _FilesInvoiceScreenState extends State<FilesInvoiceScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                ActionButton(icon: AppString.infoIcon, action: () {}),
+                ActionButton(
+                    icon: AppString.infoIcon,
+                    action: () {
+                      _showDetailInvoiceIcicyta(conference);
+                    }),
+                const SizedBox(width: 10),
+                ActionButton(
+                    icon: AppString.editIcon,
+                    action: () {
+                      _showDetailInvoiceIcicyta(conference);
+                    }),
                 const SizedBox(width: 10),
                 ActionButton(icon: AppString.downloadIcon, action: () {}),
               ],
