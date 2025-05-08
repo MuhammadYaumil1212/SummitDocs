@@ -1,8 +1,8 @@
 import 'package:SummitDocs/Presentations/invoice/bloc/invoice_bloc.dart';
-import 'package:SummitDocs/Presentations/invoice/pages/invoice_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
+import '../../../Domain/home/entities/invoice_entity.dart';
 import '../../../commons/constants/string.dart';
 import '../../../commons/widgets/app_button.dart';
 import '../../../commons/widgets/app_datatable.dart';
@@ -35,24 +35,41 @@ class _FilesInvoiceScreenState extends State<FilesInvoiceScreen> {
   TextEditingController nameBranchAddressTransfer = TextEditingController();
   TextEditingController cityName = TextEditingController();
   TextEditingController countryName = TextEditingController();
-  final List<InvoiceEntity> conferences = List.generate(
-    15,
-    (index) => InvoiceEntity(
-      index + 1,
-      "title",
-      "ConferenceTitle",
-      "John Doe",
-      "10:00",
-      "Bandung, Coblong",
-      "Accepted",
-    ),
-  );
+  final List<InvoiceEntity> conferences = [];
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _bloc.add(GetInvoiceIcicytaListEvent());
+  }
+
+  void reloadAll() {
+    conferences.clear();
+    _bloc.add(GetInvoiceIcicytaListEvent());
+  }
+
+  Future<void> _handleRefresh() async {
+    await Future.delayed(Duration(seconds: 2));
+    reloadAll();
+  }
 
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
       bloc: _bloc,
-      listener: (context, state) {},
+      listener: (context, state) {
+        if (state is SuccessState) {
+          setState(() {
+            conferences.addAll(state.data);
+          });
+        } else if (state is FailedState) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: AppText(text: state.message),
+            ),
+          );
+        }
+      },
       appBar: AppBar(
         surfaceTintColor: Colors.transparent,
         centerTitle: true,
@@ -67,18 +84,21 @@ class _FilesInvoiceScreenState extends State<FilesInvoiceScreen> {
           child: Container(color: AppColors.grayBackground, height: 4.0),
         ),
       ),
-      appWidget: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildHeader(context, widget.title),
-              const SizedBox(height: 20),
-              _buildTable("Peserta"),
-              _buildTable("Pengurus"),
-            ],
+      appWidget: RefreshIndicator(
+        onRefresh: _handleRefresh,
+        color: AppColors.primary,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildHeader(context, widget.title),
+                const SizedBox(height: 20),
+                _buildTable("Peserta", conferences),
+              ],
+            ),
           ),
         ),
       ),
@@ -94,16 +114,11 @@ class _FilesInvoiceScreenState extends State<FilesInvoiceScreen> {
           fontWeight: FontWeight.w700,
           fontSize: 30,
         ),
-        FileAddButton(
-          onTap: () => _showAddDataDialog(context),
-          color: AppColors.primary,
-          text: "Tambah Data",
-        )
       ],
     );
   }
 
-  Widget _buildTable(String title) {
+  Widget _buildTable(String title, List<dynamic> dataList) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -113,23 +128,25 @@ class _FilesInvoiceScreenState extends State<FilesInvoiceScreen> {
           fontWeight: FontWeight.w700,
         ),
         const SizedBox(height: 5),
-        AppDataTable(
-          columns: _buildColumns(),
-          data: conferences,
-          rowBuilder: _buildRow,
-        ),
+        dataList.isNotEmpty
+            ? AppDataTable(
+                columns: _buildColumns(),
+                data: conferences,
+                rowBuilder: _buildRow,
+              )
+            : Center(
+                child: AppText(text: "Please wait......"),
+              ),
       ],
     );
   }
 
   List<DataColumn> _buildColumns() {
     return [
-      _centeredColumn("Paper ID"),
-      _centeredColumn("Judul Paper"),
-      _centeredColumn("Judul Conference"),
-      _centeredColumn("Penulis"),
-      _centeredColumn("Waktu"),
-      _centeredColumn("Tanggal dan Tempat"),
+      _centeredColumn("No.Invoice"),
+      _centeredColumn("Institusi"),
+      _centeredColumn("Email"),
+      _centeredColumn("Tanggal"),
       _centeredColumn("Status"),
       _centeredColumn("Tindakan"),
     ];
@@ -144,13 +161,11 @@ class _FilesInvoiceScreenState extends State<FilesInvoiceScreen> {
   DataRow _buildRow(InvoiceEntity conference) {
     return DataRow(
       cells: [
-        DataCell(Center(child: AppText(text: conference.paperId.toString()))),
-        DataCell(Center(child: AppText(text: conference.paperTitle))),
-        DataCell(Center(child: AppText(text: conference.conferenceTitle))),
-        DataCell(Center(child: AppText(text: conference.writer))),
-        DataCell(Center(child: AppText(text: conference.time))),
-        DataCell(Center(child: AppText(text: conference.dateAndPlace))),
-        DataCell(Center(child: AppText(text: conference.status))),
+        DataCell(AppText(text: conference.invoiceNo ?? "-")),
+        DataCell(AppText(text: conference.institution ?? "-")),
+        DataCell(AppText(text: conference.email ?? "-")),
+        DataCell(AppText(text: conference.dateOfIssue ?? "-")),
+        DataCell(AppText(text: conference.status ?? "-")),
         DataCell(
           Center(
             child: Row(
@@ -164,149 +179,6 @@ class _FilesInvoiceScreenState extends State<FilesInvoiceScreen> {
           ),
         ),
       ],
-    );
-  }
-
-  void _showAddDataDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          backgroundColor: Colors.white,
-          title: AppText(
-            text: "Tambah Data",
-            fontSize: 21,
-            fontWeight: FontWeight.w700,
-          ),
-          content: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                AppText(
-                  text: "Virtual Account",
-                  fontSize: 14,
-                ),
-                const SizedBox(height: 10),
-                AppTextfield(
-                  prefixIcon: Icon(
-                    Icons.pin_outlined,
-                    color: AppColors.grayBackground3,
-                  ),
-                  hint: "No. Virtual Account",
-                  controller: virtualAccountNumber,
-                ),
-                AppTextfield(
-                  prefixIcon: Icon(
-                    Icons.person_outline,
-                    color: AppColors.grayBackground3,
-                  ),
-                  hint: "Account Holder Name",
-                  controller: holderName,
-                ),
-                AppTextfield(
-                  prefixIcon: Icon(
-                    Icons.title,
-                    color: AppColors.grayBackground3,
-                  ),
-                  hint: "Bank Name",
-                  controller: nameBank,
-                ),
-                AppTextfield(
-                  prefixIcon: Icon(
-                    Icons.title,
-                    color: AppColors.grayBackground3,
-                  ),
-                  hint: "Bank Branch",
-                  controller: nameBranch,
-                ),
-                const SizedBox(height: 10),
-                AppText(
-                  text: "Bank Transfer",
-                  fontSize: 14,
-                ),
-                const SizedBox(height: 10),
-                AppTextfield(
-                  prefixIcon: Icon(
-                    Icons.title,
-                    color: AppColors.grayBackground3,
-                  ),
-                  hint: "Bank Name",
-                  controller: nameBankTransfer,
-                ),
-                AppTextfield(
-                  prefixIcon: Icon(
-                    Icons.pin_outlined,
-                    color: AppColors.grayBackground3,
-                  ),
-                  hint: "Swift Code",
-                  controller: swiftCode,
-                ),
-                AppTextfield(
-                  prefixIcon: Icon(
-                    Icons.person_outline,
-                    color: AppColors.grayBackground3,
-                  ),
-                  hint: "Beneficiary Name",
-                  controller: beneficiaryName,
-                ),
-                AppTextfield(
-                  prefixIcon: Icon(
-                    Icons.pin_outlined,
-                    color: AppColors.grayBackground3,
-                  ),
-                  hint: "Beneficiary Bank Account",
-                  controller: beneficiaryBankAcc,
-                ),
-                AppTextfield(
-                  prefixIcon: Icon(
-                    Icons.title,
-                    color: AppColors.grayBackground3,
-                  ),
-                  hint: "Bank Branch",
-                  controller: nameBranchTransfer,
-                ),
-                AppTextfield(
-                  prefixIcon: Icon(
-                    Icons.title,
-                    color: AppColors.grayBackground3,
-                  ),
-                  hint: "Bank Address",
-                  controller: nameBranchAddressTransfer,
-                ),
-                AppTextfield(
-                  hint: "City",
-                  controller: cityName,
-                ),
-                AppTextfield(
-                  hint: "Country",
-                  controller: countryName,
-                ),
-                const SizedBox(height: 10),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  child: AppButton(text: "Masukkan", action: () {}),
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  child: AppButton(
-                    action: () {
-                      Navigator.of(context).pop();
-                    },
-                    text: "Batalkan",
-                    borderColor: AppColors.grayBackground2,
-                    backgroundColor: AppColors.secondaryBackground,
-                    fontColor: Colors.red,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
     );
   }
 }

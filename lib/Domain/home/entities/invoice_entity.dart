@@ -12,7 +12,7 @@ class InvoiceEntity {
   int? signatureId;
   int? virtualAccountId;
   int? bankTransferId;
-  String? createdBy;
+  int? createdBy;
   String? status;
 
   InvoiceEntity({

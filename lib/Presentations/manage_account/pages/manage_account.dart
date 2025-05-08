@@ -172,7 +172,6 @@ class _ManageAccountState extends State<ManageAccount> {
 
   List<DataColumn> _buildColumnsPeserta() {
     return [
-      _centeredColumn("Id"),
       _centeredColumn("Username"),
       _centeredColumn("Email"),
       _centeredColumn("Tindakan"),
@@ -190,7 +189,6 @@ class _ManageAccountState extends State<ManageAccount> {
   DataRow _buildRowPeserta(UserEntity conference) {
     return DataRow(
       cells: [
-        DataCell(AppText(text: conference.id.toString())),
         DataCell(AppText(text: conference.username ?? "")),
         DataCell(AppText(text: conference.email ?? "")),
         DataCell(

@@ -31,8 +31,12 @@ class ApiUrl {
   static const deleteTransferBank = "${apiV}bank-transfer/delete/";
 
   //docs invoice
+
+  //icicyta
+  static const getIcicytaInvoice = "${apiV}icicyta/invoices";
+
+  //icodsa
   static const getIcodsaInvoice = "${apiV}icodsa/invoices";
-  static const updateIcodsaDataSuperAdmin = "${apiV}icodsa/invoices";
   static const updateDataIcodsa = "${apiV}icodsa/invoices/update/";
 
   //docs LOA

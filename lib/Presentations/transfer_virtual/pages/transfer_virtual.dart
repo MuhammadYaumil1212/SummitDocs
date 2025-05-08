@@ -97,7 +97,6 @@ class _TransferVirtualState extends State<TransferVirtual> {
 
   List<DataColumn> _buildVirtualColumns() {
     return [
-      _centeredColumn("ID"),
       _centeredColumn("No.Virtual acc"),
       _centeredColumn("Account Holder Name"),
       _centeredColumn("Bank Name"),
@@ -108,7 +107,6 @@ class _TransferVirtualState extends State<TransferVirtual> {
 
   List<DataColumn> _buildBankColumns() {
     return [
-      _centeredColumn("ID"),
       _centeredColumn("Bank Name"),
       _centeredColumn("Swift Code"),
       _centeredColumn("Recipient Name"),
@@ -149,7 +147,6 @@ class _TransferVirtualState extends State<TransferVirtual> {
   DataRow _buildBankRow(TransferVirtualEntity tve) {
     return DataRow(
       cells: [
-        DataCell(AppText(text: tve.id.toString())),
         DataCell(AppText(text: tve.namaBank ?? "-")),
         DataCell(AppText(text: tve.swiftCode ?? "-")),
         DataCell(AppText(text: tve.recipientName ?? "-")),
@@ -183,7 +180,6 @@ class _TransferVirtualState extends State<TransferVirtual> {
   DataRow _buildVirtualRow(AccountVirtualEntity tve) {
     return DataRow(
       cells: [
-        DataCell(AppText(text: tve.id.toString())),
         DataCell(AppText(text: tve.nomorVirtualAkun ?? "-")),
         DataCell(AppText(text: tve.accountHolderName ?? "-")),
         DataCell(AppText(text: tve.bankName ?? "-")),

@@ -116,18 +116,19 @@ class _AppTextfieldState extends State<AppTextfield> {
                   },
                 ),
               if (widget.deleteTextfield != true)
-                if (widget.controller.text.isNotEmpty)
-                  IconButton(
-                    icon: Icon(Icons.close, color: Colors.grey),
-                    onPressed: () {
-                      setState(() {
-                        widget.controller.clear();
-                      });
-                      if (widget.onChanged != null) {
-                        widget.onChanged!('');
-                      }
-                    },
-                  ),
+                if (widget.obscureText != true)
+                  if (widget.controller.text.isNotEmpty)
+                    IconButton(
+                      icon: Icon(Icons.close, color: Colors.grey),
+                      onPressed: () {
+                        setState(() {
+                          widget.controller.clear();
+                        });
+                        if (widget.onChanged != null) {
+                          widget.onChanged!('');
+                        }
+                      },
+                    ),
             ],
           ),
         ),

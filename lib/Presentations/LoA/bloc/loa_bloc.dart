@@ -27,6 +27,7 @@ class LoaBloc extends Bloc<LoaEvent, LoaState> {
         emit(SuccessState(data));
       });
     });
+
     on<GetAllIcodsaLoaEvent>((event, emit) async {
       print("Loaded");
     });
