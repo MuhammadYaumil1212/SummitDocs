@@ -55,4 +55,12 @@ class ApiUrl {
   static const getSignature = "${apiV}signature";
   static const getSignatureWithId = "${apiV}signatures/";
   static const createSignature = "${apiV}signatures/create";
+
+  //receipt
+
+  //icicyta
+  static const getReceiptIcicyta = "${apiV}icicyta/payments";
+
+  //icodsa
+  static const getReceiptIcodsa = "${apiV}icodsa/payments";
 }
