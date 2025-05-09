@@ -34,6 +34,7 @@ class ApiUrl {
 
   //icicyta
   static const getIcicytaInvoice = "${apiV}icicyta/invoices";
+  static const updateIcicytaInvoice = "${apiV}icicyta/invoices/update/";
 
   //icodsa
   static const getIcodsaInvoice = "${apiV}icodsa/invoices";

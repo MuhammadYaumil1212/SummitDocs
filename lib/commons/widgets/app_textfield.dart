@@ -139,14 +139,18 @@ class _AppTextfieldState extends State<AppTextfield> {
 
 class AppDropdown extends StatefulWidget {
   final String label;
+  final Color? labelColor;
   final List<String> items;
+  final String? initialValue;
   final ValueChanged<String?> onChanged;
 
   const AppDropdown({
     Key? key,
     required this.label,
     required this.items,
+    this.initialValue,
     required this.onChanged,
+    this.labelColor,
   }) : super(key: key);
 
   @override
@@ -155,6 +159,12 @@ class AppDropdown extends StatefulWidget {
 
 class _AppDropdownState extends State<AppDropdown> {
   String? selectedValue;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedValue = widget.initialValue;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -195,14 +205,17 @@ class _AppDropdownState extends State<AppDropdown> {
           ),
           hint: AppText(
             text: widget.label,
-            fontColor: Colors.grey,
+            fontColor:
+                widget.labelColor != null ? widget.labelColor : Colors.grey,
           ),
           value: selectedValue,
           items: widget.items
-              .map((value) => DropdownMenuItem(
-                    value: value,
-                    child: Text(value),
-                  ))
+              .map(
+                (value) => DropdownMenuItem(
+                  value: value,
+                  child: Text(value),
+                ),
+              )
               .toList(),
           onChanged: (newValue) {
             setState(() {

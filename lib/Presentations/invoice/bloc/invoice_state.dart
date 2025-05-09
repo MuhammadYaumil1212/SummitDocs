@@ -34,3 +34,39 @@ final class FailedState extends InvoiceState {
   @override
   List<Object> get props => [message];
 }
+
+final class UpdateInvoiceIcicytaState extends InvoiceState {
+  final String message;
+
+  const UpdateInvoiceIcicytaState(this.message);
+
+  @override
+  List<Object> get props => [message];
+}
+
+final class UpdateInvoiceIcicytaLoadingState extends InvoiceState {
+  final bool isLoading;
+
+  const UpdateInvoiceIcicytaLoadingState(this.isLoading);
+
+  @override
+  List<Object> get props => [isLoading];
+}
+
+final class FailedUpdateInvoiceIcicyta extends InvoiceState {
+  final List<String> message;
+
+  const FailedUpdateInvoiceIcicyta(this.message);
+
+  @override
+  List<Object> get props => [message];
+}
+
+final class SuccessUpdateInvoiceIcicyta extends InvoiceState {
+  final String message;
+
+  const SuccessUpdateInvoiceIcicyta(this.message);
+
+  @override
+  List<Object> get props => [message];
+}

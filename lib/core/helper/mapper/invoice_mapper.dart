@@ -22,4 +22,24 @@ class InvoiceMapper {
       createdBy: entity.createdBy,
     );
   }
+
+  static InvoiceEntity toEntityIcodsa(InvoiceModel invoiceModel) {
+    return InvoiceEntity(
+      id: invoiceModel.id,
+      email: invoiceModel.email,
+      status: invoiceModel.status,
+      amount: invoiceModel.amount,
+      dateOfIssue: invoiceModel.dateOfIssue,
+      institution: invoiceModel.institution,
+      invoiceNo: invoiceModel.invoiceNo,
+      loaId: invoiceModel.loaId,
+      presentationType: invoiceModel.presentationType,
+      memberType: invoiceModel.memberType,
+      authorType: invoiceModel.authorType,
+      signatureId: invoiceModel.signatureId,
+      virtualAccountId: invoiceModel.virtualAccountId,
+      bankTransferId: invoiceModel.bankTransferId,
+      createdBy: invoiceModel.createdBy,
+    );
+  }
 }

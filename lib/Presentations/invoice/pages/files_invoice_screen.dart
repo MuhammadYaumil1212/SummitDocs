@@ -1,6 +1,10 @@
 import 'package:SummitDocs/Presentations/invoice/bloc/invoice_bloc.dart';
+import 'package:SummitDocs/core/helper/message/message.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:intl/intl.dart';
 
 import '../../../Domain/home/entities/invoice_entity.dart';
 import '../../../commons/constants/string.dart';
@@ -23,19 +27,57 @@ class FilesInvoiceScreen extends StatefulWidget {
 
 class _FilesInvoiceScreenState extends State<FilesInvoiceScreen> {
   final InvoiceBloc _bloc = InvoiceBloc();
-  TextEditingController virtualAccountNumber = TextEditingController();
-  TextEditingController holderName = TextEditingController();
-  TextEditingController nameBank = TextEditingController();
-  TextEditingController nameBranch = TextEditingController();
-  TextEditingController nameBankTransfer = TextEditingController();
-  TextEditingController swiftCode = TextEditingController();
-  TextEditingController beneficiaryName = TextEditingController();
-  TextEditingController beneficiaryBankAcc = TextEditingController();
-  TextEditingController nameBranchTransfer = TextEditingController();
-  TextEditingController nameBranchAddressTransfer = TextEditingController();
-  TextEditingController cityName = TextEditingController();
-  TextEditingController countryName = TextEditingController();
+  TextEditingController invoiceNumber = TextEditingController();
+  TextEditingController LoaID = TextEditingController();
+  TextEditingController institution = TextEditingController();
+  TextEditingController virtualAccID = TextEditingController();
+  TextEditingController bankTransferID = TextEditingController();
+  TextEditingController email = TextEditingController();
+  TextEditingController dateOfIssue = TextEditingController();
+  TextEditingController status = TextEditingController();
+  TextEditingController amount = TextEditingController();
+  TextEditingController presentationType = TextEditingController();
+  TextEditingController memberType = TextEditingController();
+  TextEditingController authorType = TextEditingController();
+
   final List<InvoiceEntity> conferences = [];
+
+  void textfieldValueEdit(InvoiceEntity entity) {
+    invoiceNumber.text = entity.invoiceNo ?? "";
+    LoaID.text = entity.loaId.toString();
+    institution.text = entity.institution ?? "";
+    virtualAccID.text = entity.virtualAccountId != null
+        ? entity.virtualAccountId.toString()
+        : "";
+    bankTransferID.text =
+        entity.bankTransferId != null ? entity.bankTransferId.toString() : "";
+    email.text = entity.email ?? "";
+    dateOfIssue.text = entity.dateOfIssue ?? "";
+    status.text = entity.status ?? "";
+    amount.text = (entity.amount != null && entity.amount != 0)
+        ? entity.amount.toString()
+        : "0";
+    presentationType.text = entity.presentationType.toString();
+    memberType.text = entity.memberType.toString();
+    authorType.text = entity.authorType ?? "";
+  }
+
+  void clearAll() {
+    conferences.clear();
+    invoiceNumber.clear();
+    LoaID.clear();
+    institution.clear();
+    virtualAccID.clear();
+    bankTransferID.clear();
+    email.clear();
+    dateOfIssue.clear();
+    status.clear();
+    amount.clear();
+    presentationType.clear();
+    memberType.clear();
+    authorType.clear();
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -44,7 +86,12 @@ class _FilesInvoiceScreenState extends State<FilesInvoiceScreen> {
   }
 
   void reloadAll() {
-    conferences.clear();
+    setState(() {
+      conferences.clear();
+      conferences.map((element) {
+        textfieldValueEdit(element);
+      });
+    });
     _bloc.add(GetInvoiceIcicytaListEvent());
   }
 
@@ -60,7 +107,12 @@ class _FilesInvoiceScreenState extends State<FilesInvoiceScreen> {
       listener: (context, state) {
         if (state is SuccessState) {
           setState(() {
-            conferences.addAll(state.data);
+            conferences
+              ..clear()
+              ..addAll(state.data);
+          });
+          conferences.map((element) {
+            textfieldValueEdit(element);
           });
         } else if (state is FailedState) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -68,6 +120,22 @@ class _FilesInvoiceScreenState extends State<FilesInvoiceScreen> {
               content: AppText(text: state.message),
             ),
           );
+        }
+        if (state is FailedUpdateInvoiceIcicyta) {
+          Navigator.of(context).pop();
+          state.message.map((item) {
+            return DisplayMessage.errorMessage(item, context);
+          }).toList();
+        }
+
+        if (state is SuccessUpdateInvoiceIcicyta) {
+          Navigator.of(context).pop();
+          return DisplayMessage.successMessage(state.message, context);
+        }
+        if (state is UpdateInvoiceIcicytaState) {
+          Navigator.of(context).pop();
+          reloadAll();
+          return DisplayMessage.successMessage(state.message, context);
         }
       },
       appBar: AppBar(
@@ -85,23 +153,23 @@ class _FilesInvoiceScreenState extends State<FilesInvoiceScreen> {
         ),
       ),
       appWidget: RefreshIndicator(
-        onRefresh: _handleRefresh,
-        color: AppColors.primary,
-        child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildHeader(context, widget.title),
-                const SizedBox(height: 20),
-                _buildTable("Peserta", conferences),
-              ],
+          onRefresh: _handleRefresh,
+          color: AppColors.primary,
+          child: SingleChildScrollView(
+            physics: AlwaysScrollableScrollPhysics(),
+            scrollDirection: Axis.vertical,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildHeader(context, widget.title),
+                  const SizedBox(height: 20),
+                  _buildTable("Peserta", conferences),
+                ],
+              ),
             ),
-          ),
-        ),
-      ),
+          )),
     );
   }
 
@@ -248,7 +316,7 @@ class _FilesInvoiceScreenState extends State<FilesInvoiceScreen> {
                 ActionButton(
                     icon: AppString.editIcon,
                     action: () {
-                      _showDetailInvoiceIcicyta(conference);
+                      _showEditInvoice(context, conference);
                     }),
                 const SizedBox(width: 10),
                 ActionButton(icon: AppString.downloadIcon, action: () {}),
@@ -257,6 +325,217 @@ class _FilesInvoiceScreenState extends State<FilesInvoiceScreen> {
           ),
         ),
       ],
+    );
+  }
+
+  void _showEditInvoice(BuildContext context, InvoiceEntity invoice) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return BlocBuilder<InvoiceBloc, InvoiceState>(
+          bloc: _bloc,
+          builder: (context, state) {
+            final bool isLoading =
+                state is UpdateInvoiceIcicytaLoadingState && state.isLoading;
+            textfieldValueEdit(invoice);
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              backgroundColor: Colors.white,
+              title: AppText(
+                text: "Edit Data",
+                fontSize: 21,
+                fontWeight: FontWeight.w700,
+              ),
+              content: StatefulBuilder(
+                builder: (BuildContext context, StateSetter setStateDialog) {
+                  return SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        AppTextfield(
+                          prefixIcon: Icon(
+                            Icons.numbers_outlined,
+                            color: AppColors.grayBackground3,
+                          ),
+                          keyboardType: TextInputType.number,
+                          hint: "Virtual Account ID",
+                          controller: virtualAccID,
+                        ),
+                        AppTextfield(
+                          prefixIcon: Icon(
+                            Icons.numbers_outlined,
+                            color: AppColors.grayBackground3,
+                          ),
+                          keyboardType: TextInputType.number,
+                          hint: "Bank Transfer ID",
+                          controller: bankTransferID,
+                        ),
+                        AppTextfield(
+                          prefixIcon: Icon(
+                            Icons.pin_outlined,
+                            color: AppColors.grayBackground3,
+                          ),
+                          hint: "No Invoice",
+                          controller: invoiceNumber,
+                        ),
+                        AppTextfield(
+                          prefixIcon: Icon(
+                            Icons.school_outlined,
+                            color: AppColors.grayBackground3,
+                          ),
+                          hint: "Institusi",
+                          controller: institution,
+                        ),
+                        AppTextfield(
+                          prefixIcon: Icon(
+                            Icons.email_outlined,
+                            color: AppColors.grayBackground3,
+                          ),
+                          hint: "Email",
+                          controller: email,
+                        ),
+                        AppDatePicker(
+                          dateController: dateOfIssue,
+                          hint: "Tanggal",
+                          value: (value) {
+                            value = value.trim();
+                            DateFormat inputFormat = DateFormat('dd/MM/yyyy');
+                            DateTime selectedDate =
+                                inputFormat.parseStrict(value);
+
+                            String formattedDate =
+                                DateFormat('yyyy-MM-dd').format(selectedDate);
+
+                            dateOfIssue.text = formattedDate;
+                            print("tanggal : $formattedDate");
+                          },
+                        ),
+                        AppTextfield(
+                          prefixIcon: Icon(
+                            Icons.numbers_outlined,
+                            color: AppColors.grayBackground3,
+                          ),
+                          keyboardType: TextInputType.number,
+                          hint: "Amount",
+                          controller: amount,
+                        ),
+                        AppTextfield(
+                          prefixIcon: Icon(
+                            Icons.edit_outlined,
+                            color: AppColors.grayBackground3,
+                          ),
+                          hint: "Tipe Penulis",
+                          controller: authorType,
+                        ),
+                        AppDropdown(
+                          label: status.text.isEmpty || status.text == "null"
+                              ? "Status"
+                              : status.text,
+                          labelColor:
+                              status.text.isEmpty || status.text == "null"
+                                  ? Colors.grey
+                                  : Colors.black,
+                          items: status.text == "Pending"
+                              ? ["Pending", "Paid", "Unpaid"]
+                              : status.text == "Paid"
+                                  ? ["Paid", "Pending", "Unpaid"]
+                                  : status.text == "Unpaid"
+                                      ? ["Unpaid", "Pending", "Paid"]
+                                      : ["Pending", "Paid", "Unpaid"],
+                          onChanged: (value) {
+                            status.text = value ?? "";
+                            print("Selected: $value");
+                          },
+                        ),
+                        AppDropdown(
+                          label: memberType.text.isEmpty ||
+                                  memberType.text == "null"
+                              ? "Tipe Member"
+                              : memberType.text,
+                          labelColor: memberType.text.isEmpty ||
+                                  memberType.text == "null"
+                              ? Colors.grey
+                              : Colors.black,
+                          items: memberType.text == "IEEE Member"
+                              ? ["IEEE Member", "IEEE Non Member"]
+                              : memberType.text == "IEEE Non Member"
+                                  ? ["IEEE Non Member", "IEEE Member"]
+                                  : ["IEEE Member", "IEEE Non Member"],
+                          onChanged: (value) {
+                            memberType.text = value ?? "";
+                            print("Selected: $value");
+                          },
+                        ),
+                        AppDropdown(
+                          label: presentationType.text.isEmpty ||
+                                  presentationType.text == "null"
+                              ? "Tipe Presentasi"
+                              : presentationType.text,
+                          labelColor: presentationType.text.isEmpty ||
+                                  presentationType.text == "null"
+                              ? Colors.grey
+                              : Colors.black,
+                          items: presentationType.text == "Online"
+                              ? ["Online", "Onsite"]
+                              : presentationType.text == "Onsite"
+                                  ? ["Onsite", "Online"]
+                                  : ["Online", "Onsite"],
+                          onChanged: (value) {
+                            presentationType.text = value ?? "";
+                            print("Selected: $value");
+                          },
+                        ),
+                        const SizedBox(height: 10),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                          child: AppButton(
+                            text: "Ubah",
+                            isLoading: isLoading,
+                            action: () {
+                              widget.roleId == 3
+                                  ? _bloc.add(
+                                      SubmitUpdateInvoiceIcicyta(
+                                        invoice.id ?? -1,
+                                        institution.text,
+                                        email.text,
+                                        presentationType.text,
+                                        memberType.text,
+                                        authorType.text,
+                                        amount.text,
+                                        dateOfIssue.text,
+                                        int.tryParse(virtualAccID.text),
+                                        int.tryParse(bankTransferID.text),
+                                        status.text,
+                                      ),
+                                    )
+                                  : null;
+                            },
+                          ),
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                          child: AppButton(
+                            action: () {
+                              Navigator.of(context).pop();
+                              clearAll();
+                            },
+                            text: "Batalkan",
+                            borderColor: AppColors.grayBackground2,
+                            backgroundColor: AppColors.secondaryBackground,
+                            fontColor: Colors.red,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }
