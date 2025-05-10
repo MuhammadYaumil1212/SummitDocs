@@ -29,3 +29,24 @@ final class FailedTable extends DashboardIcycitaState {
   @override
   List<Object> get props => [message];
 }
+
+final class LoadingTableLoa extends DashboardIcycitaState {
+  final isLoading;
+  LoadingTableLoa({this.isLoading = false});
+  @override
+  List<Object> get props => [isLoading];
+}
+
+final class SuccessTableLoa extends DashboardIcycitaState {
+  final List<LoaEntity> data;
+  SuccessTableLoa({required this.data});
+  @override
+  List<Object> get props => [data];
+}
+
+final class FailedTableLoa extends DashboardIcycitaState {
+  final String message;
+  FailedTableLoa({required this.message});
+  @override
+  List<Object> get props => [message];
+}

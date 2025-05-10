@@ -56,6 +56,13 @@ class HomeServicesImpl extends HomesServices {
   @override
   Future<Either> getHistoryIcicytaLOA() async {
     // TODO: implement getHistoryIcicytaLOA
-    throw UnimplementedError();
+    try {
+      var response = await sl<DioClient>().get(
+        ApiUrl.getDocsLOA,
+      );
+      return Right(response.data);
+    } on DioException catch (e) {
+      return Left(e.response?.data ?? "Something Gone Wrong!");
+    }
   }
 }

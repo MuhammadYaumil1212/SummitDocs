@@ -1,8 +1,11 @@
+import 'package:SummitDocs/Data/home/models/loa_model.dart';
 import 'package:SummitDocs/Data/home/sources/homes_services.dart';
 import 'package:SummitDocs/Domain/home/repositories/home_repository.dart';
 import 'package:SummitDocs/core/helper/mapper/invoice_mapper.dart';
+import 'package:SummitDocs/core/helper/mapper/loa_mapper_home.dart';
 import 'package:dartz/dartz.dart';
 
+import '../../../core/helper/mapper/loa_mapper.dart';
 import '../../../service_locator.dart';
 import '../models/invoice_model.dart';
 
@@ -49,7 +52,6 @@ class HomeRepositoryImpl extends HomeRepository {
       (data) async {
         final dataMapper = List.from(data).map((item) {
           final model = InvoiceModel.fromJson(item);
-          print("data mapper : ${model.createdAt}");
           return InvoiceMapper.toEntity(model);
         }).toList();
         return Right(dataMapper);
@@ -58,8 +60,17 @@ class HomeRepositoryImpl extends HomeRepository {
   }
 
   @override
-  Future<Either> getHistoryIcicytaLOA() {
+  Future<Either> getHistoryIcicytaLOA() async {
     // TODO: implement getHistoryIcicytaLOA
-    throw UnimplementedError();
+    final response = await sl<HomesServices>().getHistoryIcicytaLOA();
+    return response.fold((error) {
+      return Left(error['message']);
+    }, (data) {
+      final dataMapper = List.from(data).map((item) {
+        final model = LoaModel.fromJson(item);
+        return LoaMapperHome.toEntity(model);
+      });
+      return Right(dataMapper);
+    });
   }
 }

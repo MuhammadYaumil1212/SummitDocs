@@ -18,7 +18,7 @@ import 'package:SummitDocs/Domain/LoA/usecase/get_all_loa_usecase.dart';
 import 'package:SummitDocs/Domain/home/repositories/home_repository.dart';
 import 'package:SummitDocs/Domain/home/usecases/get_invoice_icicyta.dart';
 import 'package:SummitDocs/Domain/home/usecases/get_invoice_icodsa_usecase.dart';
-import 'package:SummitDocs/Domain/home/usecases/loa_usecase.dart';
+import 'package:SummitDocs/Domain/home/usecases/get_loa_icicyta_usecase.dart';
 import 'package:SummitDocs/Domain/invoice/repository/invoice_repository.dart';
 import 'package:SummitDocs/Domain/invoice/usecase/get_all_invoice_icicyta_usecase.dart';
 import 'package:SummitDocs/Domain/invoice/usecase/update_invoice_icicyta_usecase.dart';
@@ -75,7 +75,7 @@ void setupServiceLocator() {
 
   //usecases
   sl.registerSingleton<SigninUsecase>(SigninUsecase());
-  sl.registerSingleton<LOAUsecase>(LOAUsecase());
+  sl.registerSingleton<GetLoaIcicytaUsecase>(GetLoaIcicytaUsecase());
   sl.registerSingleton<TransferVirtualUsecase>(TransferVirtualUsecase());
   sl.registerSingleton<SaveBankTransferUsecase>(SaveBankTransferUsecase());
   sl.registerSingleton<DeleteBankTransferUsecase>(DeleteBankTransferUsecase());

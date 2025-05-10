@@ -28,6 +28,7 @@ class _DashboardIcycitaScreenState extends State<DashboardIcycitaScreen> {
       GlobalKey<RefreshIndicatorState>();
   Completer<void>? _refreshCompleter;
   final List<InvoiceEntity> conferences = [];
+  final List<LoaEntity> conferenceLoa = [];
 
   @override
   void initState() {
@@ -35,6 +36,7 @@ class _DashboardIcycitaScreenState extends State<DashboardIcycitaScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _bloc.add(GetHistoryInvoiceIcicyta());
+      _bloc.add(GetHistoryLOAIcicyta());
       _refreshKey.currentState?.show();
     });
   }
@@ -44,11 +46,13 @@ class _DashboardIcycitaScreenState extends State<DashboardIcycitaScreen> {
       conferences.clear();
     });
     _bloc.add(GetHistoryInvoiceIcicyta());
+    _bloc.add(GetHistoryLOAIcicyta());
   }
 
   Future<void> _handleRefresh() {
     _refreshCompleter = Completer<void>();
     _bloc.add(GetHistoryInvoiceIcicyta());
+    _bloc.add(GetHistoryLOAIcicyta());
     return _refreshCompleter!.future;
   }
 
@@ -70,7 +74,28 @@ class _DashboardIcycitaScreenState extends State<DashboardIcycitaScreen> {
           }
         }
 
+        if (state is SuccessTableLoa) {
+          setState(() {
+            print("data table loa : ${state.data.length}");
+            final sortedEntity = List<LoaEntity>.from(state.data)
+              ..sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
+
+            conferenceLoa
+              ..clear()
+              ..addAll(sortedEntity);
+          });
+          if (!(_refreshCompleter?.isCompleted ?? true)) {
+            _refreshCompleter?.complete();
+          }
+        }
+
         if (state is FailedTable) {
+          DisplayMessage.errorMessage(state.message, context);
+          if (!(_refreshCompleter?.isCompleted ?? true)) {
+            _refreshCompleter?.complete();
+          }
+        }
+        if (state is FailedTableLoa) {
           DisplayMessage.errorMessage(state.message, context);
           if (!(_refreshCompleter?.isCompleted ?? true)) {
             _refreshCompleter?.complete();
@@ -137,20 +162,41 @@ class _DashboardIcycitaScreenState extends State<DashboardIcycitaScreen> {
               const SizedBox(height: 10),
               DashboardCard(
                 title: "History LoA",
-                historyItems: List.generate(
-                  50,
-                  (index) => HistoryItem(
-                    text: "00${index + 1} - Nama - 1/1/2025",
-                    statusText: index % 4 == 0 ? "Rejected" : "Accepted",
-                    status: index % 4 != 0,
-                  ),
-                ),
+                historyItems: _mapHistoryLoaItems(),
               ),
             ],
           ),
         );
       },
     );
+  }
+
+  List<HistoryItem> _mapHistoryLoaItems() {
+    if (conferenceLoa.isEmpty) {
+      return [
+        HistoryItem(
+          text: "Belum ada data LoA",
+          statusText: "-",
+          status: false,
+        ),
+      ];
+    }
+
+    final sortedConferences = conferenceLoa
+      ..sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
+
+    return sortedConferences.map((e) {
+      final formattedDate = e.createdAt != null
+          ? DateFormat('dd/MM/yyyy').format(e.createdAt!)
+          : 'Unknown Date';
+
+      return HistoryItem(
+        text:
+            "${e.paperId ?? 'No ID'} - ${e.paperTitle ?? 'Tidak ada Paper'} - $formattedDate",
+        statusText: _mapStatusLoaText(e.status),
+        status: e.status != 'Rejected',
+      );
+    }).toList();
   }
 
   List<HistoryItem> _mapHistoryInvoiceItems() {
@@ -190,6 +236,17 @@ class _DashboardIcycitaScreenState extends State<DashboardIcycitaScreen> {
         return "Paid";
       case "Unpaid":
         return "Unpaid";
+      default:
+        return "Unknown";
+    }
+  }
+
+  String _mapStatusLoaText(String? status) {
+    switch (status) {
+      case "Accepted":
+        return "Accepted";
+      case "Rejected":
+        return "Rejected";
       default:
         return "Unknown";
     }

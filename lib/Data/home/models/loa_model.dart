@@ -1,16 +1,18 @@
-class LOAModel {
-  int? paperId;
+class LoaModel {
+  int? id;
+  String? paperId;
   String? paperTitle;
-  String? authorNames;
+  List<String>? authorNames;
   String? status;
   String? tempatTanggal;
   int? signatureId;
-  String? createdBy;
+  int? createdBy;
   String? createdAt;
   String? updatedAt;
 
-  LOAModel(
-      {this.paperId,
+  LoaModel(
+      {this.id,
+      this.paperId,
       this.paperTitle,
       this.authorNames,
       this.status,
@@ -20,10 +22,11 @@ class LOAModel {
       this.createdAt,
       this.updatedAt});
 
-  LOAModel.fromJson(Map<String, dynamic> json) {
+  LoaModel.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
     paperId = json['paper_id'];
     paperTitle = json['paper_title'];
-    authorNames = json['author_names'];
+    authorNames = json['author_names'].cast<String>();
     status = json['status'];
     tempatTanggal = json['tempat_tanggal'];
     signatureId = json['signature_id'];
@@ -34,6 +37,7 @@ class LOAModel {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
     data['paper_id'] = this.paperId;
     data['paper_title'] = this.paperTitle;
     data['author_names'] = this.authorNames;

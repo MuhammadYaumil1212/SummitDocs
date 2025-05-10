@@ -1,14 +1,14 @@
 import 'package:SummitDocs/Data/home/models/loa_model.dart';
-import 'package:SummitDocs/core/usecase/usecase.dart';
 import 'package:dartz/dartz.dart';
 
+import '../../../core/usecase/usecase.dart';
 import '../../../service_locator.dart';
 import '../repositories/home_repository.dart';
 
-class LOAUsecase extends Usecase<Either, LOAModel> {
+class GetLoaIcicytaUsecase extends Usecase<Either, LoaModel> {
   @override
-  Future<Either> call({LOAModel? params}) async {
+  Future<Either> call({LoaModel? params}) async {
     // TODO: implement call
-    return await sl<HomeRepository>().getHistoryIcodsaLOA();
+    return await sl<HomeRepository>().getHistoryIcicytaLOA();
   }
 }
