@@ -4,6 +4,7 @@ import 'package:SummitDocs/core/helper/mapper/invoice_mapper.dart';
 import 'package:dartz/dartz.dart';
 
 import '../../../service_locator.dart';
+import '../models/invoice_model.dart';
 
 class HomeRepositoryImpl extends HomeRepository {
   @override
@@ -15,7 +16,6 @@ class HomeRepositoryImpl extends HomeRepository {
         return Left(error);
       },
       (data) async {
-        print("data invoice : ${data}");
         final dataMapper = List.from(data).map((item) {
           InvoiceMapper.toEntityIcodsa(item);
         }).toList();
@@ -25,10 +25,10 @@ class HomeRepositoryImpl extends HomeRepository {
   }
 
   @override
-  Future<Either> getHistoryLOA() async {
+  Future<Either> getHistoryIcodsaLOA() async {
     // TODO: implement getHistoryLOA
-    var result = await sl<HomesServices>().getHistoryLOA();
-    return result.fold(
+    final response = await sl<HomesServices>().getHistoryLOA();
+    return response.fold(
       (error) {
         return Left(error);
       },
@@ -36,5 +36,30 @@ class HomeRepositoryImpl extends HomeRepository {
         return Right(data);
       },
     );
+  }
+
+  @override
+  Future<Either> getHistoryIcicytaInvoice() async {
+    // TODO: implement getHistoryIcicytaInvoice
+    final response = await sl<HomesServices>().getHistoryIcicytaInvoice();
+    return response.fold(
+      (error) {
+        return Left(error);
+      },
+      (data) async {
+        final dataMapper = List.from(data).map((item) {
+          final model = InvoiceModel.fromJson(item);
+          print("data mapper : ${model.createdAt}");
+          return InvoiceMapper.toEntity(model);
+        }).toList();
+        return Right(dataMapper);
+      },
+    );
+  }
+
+  @override
+  Future<Either> getHistoryIcicytaLOA() {
+    // TODO: implement getHistoryIcicytaLOA
+    throw UnimplementedError();
   }
 }

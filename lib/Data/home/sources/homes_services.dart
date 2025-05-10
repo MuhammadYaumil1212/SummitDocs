@@ -8,6 +8,9 @@ import '../../../service_locator.dart';
 abstract class HomesServices {
   Future<Either> getHistoryLOA();
   Future<Either> getHistoryIcodsaInvoice();
+
+  Future<Either> getHistoryIcicytaLOA();
+  Future<Either> getHistoryIcicytaInvoice();
 }
 
 class HomeServicesImpl extends HomesServices {
@@ -35,5 +38,24 @@ class HomeServicesImpl extends HomesServices {
     } on DioException catch (e) {
       return Left(e.response?.data ?? "Something Gone Wrong!");
     }
+  }
+
+  @override
+  Future<Either> getHistoryIcicytaInvoice() async {
+    // TODO: implement getHistoryIcicytaInvoice
+    try {
+      var response = await sl<DioClient>().get(
+        ApiUrl.getIcicytaInvoice,
+      );
+      return Right(response.data);
+    } on DioException catch (e) {
+      return Left(e.response?.data ?? "Something Gone Wrong!");
+    }
+  }
+
+  @override
+  Future<Either> getHistoryIcicytaLOA() async {
+    // TODO: implement getHistoryIcicytaLOA
+    throw UnimplementedError();
   }
 }

@@ -9,6 +9,6 @@ class LOAUsecase extends Usecase<Either, LOAModel> {
   @override
   Future<Either> call({LOAModel? params}) async {
     // TODO: implement call
-    return await sl<HomeRepository>().getHistoryLOA();
+    return await sl<HomeRepository>().getHistoryIcodsaLOA();
   }
 }

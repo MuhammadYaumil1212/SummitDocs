@@ -14,6 +14,7 @@ class InvoiceEntity {
   int? bankTransferId;
   int? createdBy;
   String? status;
+  DateTime? createdAt;
 
   InvoiceEntity({
     this.id,
@@ -31,5 +32,6 @@ class InvoiceEntity {
     this.bankTransferId,
     this.createdBy,
     this.status,
+    this.createdAt,
   });
 }

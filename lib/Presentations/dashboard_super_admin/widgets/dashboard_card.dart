@@ -58,7 +58,7 @@ class _DashboardCardState extends State<DashboardCard> {
           ),
           const SizedBox(height: 12),
           ...List.generate(
-            itemsToShow,
+            widget.historyItems.length.clamp(0, itemsToShow),
             (index) => HistoryItemTile(item: widget.historyItems[index]),
           ),
           const SizedBox(height: 8),
@@ -85,12 +85,13 @@ class HistoryItem {
   final String text;
   final String statusText;
   final bool status;
+  final bool? isPending;
 
-  const HistoryItem({
-    required this.text,
-    required this.statusText,
-    required this.status,
-  });
+  const HistoryItem(
+      {required this.text,
+      required this.statusText,
+      required this.status,
+      this.isPending});
 }
 
 class HistoryItemTile extends StatelessWidget {
@@ -106,6 +107,7 @@ class HistoryItemTile extends StatelessWidget {
       trailing: StatusFile(
         statusText: item.statusText,
         status: item.status,
+        isPending: item.isPending,
       ),
     );
   }

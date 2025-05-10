@@ -14,6 +14,7 @@ class InvoiceModel {
   int? bankTransferId;
   int? createdBy;
   String? status;
+  String? createdAt;
 
   InvoiceModel({
     this.id,
@@ -49,6 +50,7 @@ class InvoiceModel {
     bankTransferId = json['bank_transfer_id'];
     createdBy = json['created_by'];
     status = json['status'];
+    createdAt = json['created_at'];
   }
 
   Map<String, dynamic> toJson() {
@@ -68,6 +70,7 @@ class InvoiceModel {
     data['bank_transfer_id'] = this.bankTransferId;
     data['created_by'] = this.createdBy;
     data['status'] = this.status;
+    data['created_at'] = this.createdAt;
     return data;
   }
 }

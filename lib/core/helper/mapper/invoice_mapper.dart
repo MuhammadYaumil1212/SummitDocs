@@ -20,6 +20,7 @@ class InvoiceMapper {
       amount: entity.amount,
       status: entity.status,
       createdBy: entity.createdBy,
+      createdAt: DateTime.tryParse(entity.createdAt ?? ""),
     );
   }
 

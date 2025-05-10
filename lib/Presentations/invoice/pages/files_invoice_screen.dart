@@ -115,11 +115,7 @@ class _FilesInvoiceScreenState extends State<FilesInvoiceScreen> {
             textfieldValueEdit(element);
           });
         } else if (state is FailedState) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: AppText(text: state.message),
-            ),
-          );
+          return DisplayMessage.errorMessage(state.message, context);
         }
         if (state is FailedUpdateInvoiceIcicyta) {
           Navigator.of(context).pop();
