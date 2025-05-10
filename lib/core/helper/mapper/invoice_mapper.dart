@@ -41,6 +41,7 @@ class InvoiceMapper {
       virtualAccountId: invoiceModel.virtualAccountId,
       bankTransferId: invoiceModel.bankTransferId,
       createdBy: invoiceModel.createdBy,
+      createdAt: DateTime.tryParse(invoiceModel.createdAt ?? ""),
     );
   }
 }

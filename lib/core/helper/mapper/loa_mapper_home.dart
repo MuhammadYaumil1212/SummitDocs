@@ -2,8 +2,8 @@ import 'package:SummitDocs/Data/home/models/loa_model.dart';
 import 'package:SummitDocs/Domain/home/entities/LoaEntity.dart';
 
 class LoaMapperHome {
-  static LoaEntity toEntity(LoaModel loaModel) {
-    return LoaEntity(
+  static LoaEntityHome toEntity(LoaModel loaModel) {
+    return LoaEntityHome(
       id: loaModel.id,
       paperId: loaModel.paperId,
       signatureId: loaModel.signatureId,

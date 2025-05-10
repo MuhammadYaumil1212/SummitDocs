@@ -38,7 +38,7 @@ final class LoadingTableLoa extends DashboardIcycitaState {
 }
 
 final class SuccessTableLoa extends DashboardIcycitaState {
-  final List<LoaEntity> data;
+  final List<LoaEntityHome> data;
   SuccessTableLoa({required this.data});
   @override
   List<Object> get props => [data];

@@ -5,7 +5,6 @@ import 'package:SummitDocs/core/helper/mapper/invoice_mapper.dart';
 import 'package:SummitDocs/core/helper/mapper/loa_mapper_home.dart';
 import 'package:dartz/dartz.dart';
 
-import '../../../core/helper/mapper/loa_mapper.dart';
 import '../../../service_locator.dart';
 import '../models/invoice_model.dart';
 
@@ -20,7 +19,8 @@ class HomeRepositoryImpl extends HomeRepository {
       },
       (data) async {
         final dataMapper = List.from(data).map((item) {
-          InvoiceMapper.toEntityIcodsa(item);
+          final model = InvoiceModel.fromJson(item);
+          return InvoiceMapper.toEntityIcodsa(model);
         }).toList();
         return Right(dataMapper);
       },
@@ -36,7 +36,11 @@ class HomeRepositoryImpl extends HomeRepository {
         return Left(error);
       },
       (data) async {
-        return Right(data);
+        final dataMapper = List.from(data).map((item) {
+          final model = LoaModel.fromJson(item);
+          return LoaMapperHome.toEntity(model);
+        }).toList();
+        return Right(dataMapper);
       },
     );
   }

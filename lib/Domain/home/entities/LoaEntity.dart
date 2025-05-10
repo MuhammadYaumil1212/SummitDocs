@@ -1,4 +1,4 @@
-class LoaEntity {
+class LoaEntityHome {
   int? id;
   String? paperId;
   String? paperTitle;
@@ -10,7 +10,7 @@ class LoaEntity {
   DateTime? createdAt;
   DateTime? updatedAt;
 
-  LoaEntity({
+  LoaEntityHome({
     this.id,
     this.paperId,
     this.paperTitle,

@@ -19,7 +19,7 @@ class HomeServicesImpl extends HomesServices {
     // TODO: implement getHistoryLOA
     try {
       var response = await sl<DioClient>().get(
-        ApiUrl.getDocsLOA,
+        ApiUrl.getDocsIcodsaLoa,
       );
       return Right(response.data);
     } on DioException catch (e) {

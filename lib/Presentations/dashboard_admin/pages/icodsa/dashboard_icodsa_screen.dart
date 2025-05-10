@@ -1,10 +1,18 @@
+import 'dart:async';
+
 import 'package:SummitDocs/Presentations/dashboard_super_admin/widgets/dashboard_card.dart';
 import 'package:SummitDocs/commons/widgets/app_scaffold.dart';
 import 'package:SummitDocs/commons/widgets/app_text.dart';
 import 'package:SummitDocs/commons/widgets/title.dart';
+import 'package:SummitDocs/core/config/theme/app_colors.dart';
+import 'package:SummitDocs/core/helper/message/message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
+import '../../../../Domain/LoA/entity/loa_entity.dart';
+import '../../../../Domain/home/entities/LoaEntity.dart';
+import '../../../../Domain/home/entities/invoice_entity.dart';
 import '../../bloc/icodsa/dashboard_icodsa_bloc.dart';
 
 class DashboardIcodsaScreen extends StatefulWidget {
@@ -17,25 +25,103 @@ class DashboardIcodsaScreen extends StatefulWidget {
 class _DashboardIcodsaScreenState extends State<DashboardIcodsaScreen> {
   final DashboardIcodsaBloc _bloc = DashboardIcodsaBloc();
   final ValueNotifier<bool> _isExpandedIcodsa = ValueNotifier(true);
+  final GlobalKey<RefreshIndicatorState> _refreshKey =
+      GlobalKey<RefreshIndicatorState>();
+  Completer<void>? _refreshCompleter;
+  final List<InvoiceEntity> conferences = [];
+  final List<LoaEntityHome> conferenceLoa = [];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _bloc.add(GetHistoryLoAIcodsa());
+      _bloc.add(GetHistoryInvoiceIcodsa());
+      _refreshKey.currentState?.show();
+    });
+  }
+
+  void reloadAll() {
+    setState(() {
+      conferences.clear();
+    });
+    _bloc.add(GetHistoryLoAIcodsa());
+    _bloc.add(GetHistoryInvoiceIcodsa());
+  }
+
+  Future<void> _handleRefresh() {
+    _refreshCompleter = Completer<void>();
+    _bloc.add(GetHistoryLoAIcodsa());
+    _bloc.add(GetHistoryInvoiceIcodsa());
+    return _refreshCompleter!.future;
+  }
+
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
       bloc: _bloc,
-      listener: (BuildContext context, state) {},
+      listener: (BuildContext context, state) {
+        if (state is SuccessTableInvoice) {
+          setState(() {
+            final sortedEntity = List<InvoiceEntity>.from(state.data)
+              ..sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
+            conferences
+              ..clear()
+              ..addAll(sortedEntity);
+          });
+          if (!(_refreshCompleter?.isCompleted ?? true)) {
+            _refreshCompleter?.complete();
+          }
+        }
+
+        if (state is FailedTableInvoice) {
+          if (!(_refreshCompleter?.isCompleted ?? true)) {
+            _refreshCompleter?.complete();
+          }
+          return DisplayMessage.errorMessage(state.message, context);
+        }
+
+        if (state is SuccessTableLoa) {
+          setState(() {
+            final sortedEntity = List<LoaEntityHome>.from(state.data)
+              ..sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
+            conferenceLoa
+              ..clear()
+              ..addAll(sortedEntity);
+          });
+          if (!(_refreshCompleter?.isCompleted ?? true)) {
+            _refreshCompleter?.complete();
+          }
+        }
+
+        if (state is FailedTableLoa) {
+          if (!(_refreshCompleter?.isCompleted ?? true)) {
+            _refreshCompleter?.complete();
+          }
+          return DisplayMessage.errorMessage(state.message, context);
+        }
+      },
       appWidget: BlocBuilder<DashboardIcodsaBloc, DashboardIcodsaState>(
         builder: (context, state) {
-          return SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const HomeTitle(
-                    title: "Selamat Datang",
-                    description: "Di Dashboard ICODSA",
-                  ),
-                  _buildExpansionTile("ICODSA", _isExpandedIcodsa),
-                ],
+          return RefreshIndicator(
+            key: _refreshKey,
+            onRefresh: _handleRefresh,
+            color: AppColors.primary,
+            child: SingleChildScrollView(
+              physics: AlwaysScrollableScrollPhysics(),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const HomeTitle(
+                      title: "Selamat Datang",
+                      description: "Di Dashboard ICODSA",
+                    ),
+                    _buildExpansionTile("ICODSA", _isExpandedIcodsa),
+                  ],
+                ),
               ),
             ),
           );
@@ -70,32 +156,98 @@ class _DashboardIcodsaScreenState extends State<DashboardIcodsaScreen> {
             initiallyExpanded: true,
             children: [
               DashboardCard(
-                title: "History LoA",
-                historyItems: List.generate(
-                  50,
-                  (index) => HistoryItem(
-                    text: "00${index + 1} - Nama - 1/1/2025",
-                    statusText: index % 4 == 0 ? "Rejected" : "Accepted",
-                    status: index % 4 != 0,
-                  ),
-                ),
+                title: "History Invoice",
+                historyItems: _mapHistoryInvoiceItems(),
               ),
               const SizedBox(height: 10),
               DashboardCard(
-                title: "History Invoice",
-                historyItems: List.generate(
-                  10,
-                  (index) => HistoryItem(
-                    text: "00${index + 1} - Nama - 1/1/2025",
-                    statusText: index % 4 == 0 ? "Rejected" : "Accepted",
-                    status: index % 4 != 0,
-                  ),
-                ),
+                title: "History LoA",
+                historyItems: _mapHistoryLoaItems(),
               ),
             ],
           ),
         );
       },
     );
+  }
+
+  List<HistoryItem> _mapHistoryLoaItems() {
+    if (conferenceLoa.isEmpty) {
+      return [
+        HistoryItem(
+          text: "Belum ada data LoA",
+          statusText: "-",
+          status: false,
+        ),
+      ];
+    }
+
+    final sortedConferences = conferenceLoa
+      ..sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
+    return sortedConferences.map((e) {
+      final formattedDate = e.createdAt != null
+          ? DateFormat('dd/MM/yyyy').format(e.createdAt!)
+          : 'Unknown Date';
+
+      return HistoryItem(
+        text:
+            "${e.paperId ?? 'No ID'} - ${e.paperTitle ?? 'Tidak ada Paper'} - $formattedDate",
+        statusText: _mapStatusLoaText(e.status),
+        status: e.status != 'Rejected',
+      );
+    }).toList();
+  }
+
+  List<HistoryItem> _mapHistoryInvoiceItems() {
+    if (conferences.isEmpty) {
+      return [
+        HistoryItem(
+          text: "Belum ada data invoice",
+          statusText: "-",
+          status: false,
+        ),
+      ];
+    }
+
+    final sortedConferences = conferences
+      ..sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
+
+    return sortedConferences.map((e) {
+      final formattedDate = e.createdAt != null
+          ? DateFormat('dd/MM/yyyy').format(e.createdAt!)
+          : 'Unknown Date';
+
+      return HistoryItem(
+        text:
+            "${e.invoiceNo ?? 'No ID'} - ${e.institution ?? 'Tidak ada institusi'} - $formattedDate",
+        statusText: _mapStatusText(e.status),
+        status: e.status != 'Pending',
+        isPending: e.status == 'Pending',
+      );
+    }).toList();
+  }
+
+  String _mapStatusText(String? status) {
+    switch (status) {
+      case "Pending":
+        return "Pending";
+      case "Paid":
+        return "Paid";
+      case "Unpaid":
+        return "Unpaid";
+      default:
+        return "Unknown";
+    }
+  }
+
+  String _mapStatusLoaText(String? status) {
+    switch (status) {
+      case "Accepted":
+        return "Accepted";
+      case "Rejected":
+        return "Rejected";
+      default:
+        return "Unknown";
+    }
   }
 }

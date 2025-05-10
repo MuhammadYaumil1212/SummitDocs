@@ -27,7 +27,7 @@ class _DashboardIcycitaScreenState extends State<DashboardIcycitaScreen> {
       GlobalKey<RefreshIndicatorState>();
   Completer<void>? _refreshCompleter;
   final List<InvoiceEntity> conferences = [];
-  final List<LoaEntity> conferenceLoa = [];
+  final List<LoaEntityHome> conferenceLoa = [];
 
   @override
   void initState() {
@@ -76,7 +76,7 @@ class _DashboardIcycitaScreenState extends State<DashboardIcycitaScreen> {
         if (state is SuccessTableLoa) {
           setState(() {
             print("data table loa : ${state.data.length}");
-            final sortedEntity = List<LoaEntity>.from(state.data)
+            final sortedEntity = List<LoaEntityHome>.from(state.data)
               ..sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
 
             conferenceLoa
