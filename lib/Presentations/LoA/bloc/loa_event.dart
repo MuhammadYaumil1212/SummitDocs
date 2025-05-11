@@ -54,3 +54,31 @@ final class CreateLoaEvent extends LoaEvent {
         this.signatureId,
       ];
 }
+
+final class CreateLoaIcodsa extends LoaEvent {
+  final String paperId;
+  final String paperTitle;
+  final List<String> paperAuthors;
+  final String status;
+  final String tempatTanggal;
+  final int signatureId;
+
+  const CreateLoaIcodsa(
+    this.paperId,
+    this.paperTitle,
+    this.paperAuthors,
+    this.status,
+    this.tempatTanggal,
+    this.signatureId,
+  );
+
+  @override
+  List<Object?> get props => [
+        this.paperId,
+        this.paperTitle,
+        this.paperAuthors,
+        this.status,
+        this.tempatTanggal,
+        this.signatureId,
+      ];
+}

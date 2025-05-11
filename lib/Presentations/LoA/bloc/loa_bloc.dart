@@ -1,4 +1,5 @@
 import 'package:SummitDocs/Domain/LoA/entity/loa_entity.dart';
+import 'package:SummitDocs/Domain/LoA/usecase/get_all_loa_icodsa_usecase.dart';
 import 'package:SummitDocs/Domain/LoA/usecase/get_all_loa_usecase.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -27,11 +28,29 @@ class LoaBloc extends Bloc<LoaEvent, LoaState> {
         emit(SuccessState(data));
       });
     });
-
     on<GetAllIcodsaLoaEvent>((event, emit) async {
-      print("Loaded");
+      emit(LoadingState(isLoading: true));
+      final response = await sl<GetAllLoaIcodsaUsecase>().call();
+      response.fold((error) {
+        final List<String> errorMessages = [];
+        error.forEach((key, value) {
+          for (var entry in error.entries) {
+            final value = entry.value;
+            if (value is List) {
+              for (var msg in value) {
+                if (msg is String) {
+                  errorMessages.add(msg);
+                }
+              }
+            }
+          }
+        });
+        emit(FailedState(errorMessages));
+      }, (data) {
+        emit(LoadingState(isLoading: true));
+        emit(SuccessState(data));
+      });
     });
-
     on<CreateLoaEvent>((event, emit) async {
       emit(LoadingState(isLoading: true));
       final response = await sl<CreateLoaUsecase>().call(

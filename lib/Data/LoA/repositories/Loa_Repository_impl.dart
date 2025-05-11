@@ -54,9 +54,9 @@ class LoaRepositoryImpl extends LoaRepository {
   @override
   Future<Either> getAllIcodsaLoa() async {
     // TODO: implement getAllIcodsaLoa
-    final response = await sl<LoaServices>().getAllLoa();
+    final response = await sl<LoaServices>().getAllIcodsaLoa();
     return response.fold((error) {
-      return Left(error['messages']);
+      return Left(error['message']);
     }, (data) {
       final dataMapper = List.from(data).map((element) {
         final model = LoaModel.fromJson(element);
