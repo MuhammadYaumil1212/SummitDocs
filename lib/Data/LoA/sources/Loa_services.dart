@@ -8,31 +8,15 @@ import '../models/update_loa_params.dart';
 
 abstract class LoaServices {
   //icicyta
-  Future<Either> updateLOA(UpdateLoaParams params);
   Future<Either> createLOA(UpdateLoaParams params);
   Future<Either> getAllLoa();
 
   //icodsa
   Future<Either> getAllIcodsaLoa();
-  Future<Either> updateIcodsaLOA(UpdateLoaParams params);
   Future<Either> createIcodsaLOA(UpdateLoaParams params);
 }
 
 class LoaServicesImpl extends LoaServices {
-  @override
-  Future<Either> updateLOA(UpdateLoaParams params) async {
-    // TODO: implement updateLOA
-    try {
-      var response = await sl<DioClient>().put(
-        "",
-        data: params.toMap(),
-      );
-      return Right(response.data);
-    } on DioException catch (e) {
-      return Left(e.response?.data ?? "Something Gone Wrong!");
-    }
-  }
-
   @override
   Future<Either> getAllLoa() async {
     // TODO: implement getAllLoa
@@ -59,9 +43,17 @@ class LoaServicesImpl extends LoaServices {
   }
 
   @override
-  Future<Either> createIcodsaLOA(UpdateLoaParams params) {
+  Future<Either> createIcodsaLOA(UpdateLoaParams params) async {
     // TODO: implement createIcodsaLOA
-    throw UnimplementedError();
+    try {
+      var response = await sl<DioClient>().post(
+        ApiUrl.postDataLoaIcodsa,
+        data: params.toMap(),
+      );
+      return Right(response.data);
+    } on DioException catch (e) {
+      return Left(e.response?.data ?? "Something Gone Wrong!");
+    }
   }
 
   @override
@@ -73,11 +65,5 @@ class LoaServicesImpl extends LoaServices {
     } on DioException catch (e) {
       return Left(e.response?.data ?? "Something Gone Wrong!");
     }
-  }
-
-  @override
-  Future<Either> updateIcodsaLOA(UpdateLoaParams params) {
-    // TODO: implement updateIcodsaLOA
-    throw UnimplementedError();
   }
 }

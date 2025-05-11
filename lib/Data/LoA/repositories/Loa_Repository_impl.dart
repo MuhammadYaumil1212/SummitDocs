@@ -9,17 +9,6 @@ import '../../../service_locator.dart';
 
 class LoaRepositoryImpl extends LoaRepository {
   @override
-  Future<Either> updateLOA(UpdateLoaParams params) async {
-    // TODO: implement updateLOA
-    final response = await sl<LoaServices>().updateLOA(params);
-    return response.fold((error) {
-      return Left(error);
-    }, (data) {
-      return Right(data['message']);
-    });
-  }
-
-  @override
   Future<Either> getAllLoa() async {
     // TODO: implement getAllLoa
     final response = await sl<LoaServices>().getAllLoa();
@@ -46,9 +35,24 @@ class LoaRepositoryImpl extends LoaRepository {
   }
 
   @override
-  Future<Either> createIcodsaLOA(UpdateLoaParams params) {
-    // TODO: implement createIcodsaLOA
-    throw UnimplementedError();
+  Future<Either> createIcodsaLOA(UpdateLoaParams params) async {
+    final response = await sl<LoaServices>().createIcodsaLOA(params);
+    return response.fold((error) {
+      print("error create icodsa : $error");
+      final errors = error['errors'];
+      String errorMessage;
+      if (errors is List) {
+        errorMessage = errors.join(', ');
+      } else if (errors is String) {
+        errorMessage = errors;
+      } else {
+        errorMessage = errors?.toString() ?? error.toString();
+      }
+
+      return Left(errorMessage);
+    }, (data) {
+      return Right(data['message']);
+    });
   }
 
   @override
@@ -64,11 +68,5 @@ class LoaRepositoryImpl extends LoaRepository {
       }).toList();
       return Right(dataMapper);
     });
-  }
-
-  @override
-  Future<Either> updateIcodsaLOA(UpdateLoaParams params) {
-    // TODO: implement updateIcodsaLOA
-    throw UnimplementedError();
   }
 }

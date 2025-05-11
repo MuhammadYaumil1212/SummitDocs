@@ -368,7 +368,16 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
                                         int.parse(signatureController.text),
                                       ),
                                     )
-                                  : null;
+                                  : _bloc.add(
+                                      CreateLoaIcodsa(
+                                        paperIdController.text,
+                                        titleController.text,
+                                        authorNames,
+                                        statusController.text,
+                                        datePlaceController.text,
+                                        int.parse(signatureController.text),
+                                      ),
+                                    );
                             },
                           ),
                         ),
