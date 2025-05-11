@@ -7,10 +7,10 @@ import '../../../core/usecase/usecase.dart';
 import '../../../service_locator.dart';
 import '../../LoA/repositories/Loa_repository.dart';
 
-class GetAllReceiptIcicytaUsecase extends Usecase<Either, ReceiptEntity> {
+class GetAllReceiptIcodsaUsecase extends Usecase<Either, ReceiptEntity> {
   @override
   Future<Either> call({ReceiptEntity? params}) async {
     // TODO: implement call
-    return await sl<ReceiptRepository>().getAllReceiptsIcicyta();
+    return await sl<ReceiptRepository>().getAllReceiptsIcodsa();
   }
 }

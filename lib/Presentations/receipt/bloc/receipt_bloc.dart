@@ -1,4 +1,5 @@
 import 'package:SummitDocs/Domain/receipt/usecase/get_all_receipt_icicyta_usecase.dart';
+import 'package:SummitDocs/Domain/receipt/usecase/get_all_receipt_icodsa_usecase.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
@@ -16,6 +17,17 @@ class ReceiptBloc extends Bloc<ReceiptEvent, ReceiptState> {
     on<GetAllReceiptIcicytaEvent>((event, emit) async {
       emit(LoadingState(true));
       final response = await sl<GetAllReceiptIcicytaUsecase>().call();
+      response.fold((error) {
+        emit(LoadingState(false));
+        emit(FailedTable(error));
+      }, (data) {
+        emit(LoadingState(false));
+        emit(SuccessTable(data));
+      });
+    });
+    on<GetAllReceiptIcodsaEvent>((event, emit) async {
+      emit(LoadingState(true));
+      final response = await sl<GetAllReceiptIcodsaUsecase>().call();
       response.fold((error) {
         emit(LoadingState(false));
         emit(FailedTable(error));

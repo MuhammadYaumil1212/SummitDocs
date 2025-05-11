@@ -8,9 +8,23 @@ import '../models/receipt_model.dart';
 
 class ReceiptRepositoryImpl extends ReceiptRepository {
   @override
-  Future<Either> getAllReceipts() async {
+  Future<Either> getAllReceiptsIcicyta() async {
     // TODO: implement getAllReceipts
-    final response = await sl<ReceiptServices>().getAllReceipts();
+    final response = await sl<ReceiptServices>().getAllReceiptsIcicyta();
+    return response.fold((error) {
+      return Left(error['errors']);
+    }, (data) {
+      final dataMapper = List.from(data).map((entity) {
+        return ReceiptMapper.toEntity(ReceiptModel.fromJson(entity));
+      }).toList();
+      return Right(dataMapper);
+    });
+  }
+
+  @override
+  Future<Either> getAllReceiptsIcodsa() async {
+    // TODO: implement getAllReceiptsIcodsa
+    final response = await sl<ReceiptServices>().getAllReceiptsIcodsa();
     return response.fold((error) {
       return Left(error['errors']);
     }, (data) {

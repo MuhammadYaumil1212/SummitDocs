@@ -43,7 +43,9 @@ class _FilesReceiptScreenState extends State<FilesReceiptScreen> {
     setState(() {
       conferences.clear();
     });
-    _bloc.add(GetAllReceiptIcicytaEvent());
+    widget.roleId == 3
+        ? _bloc.add(GetAllReceiptIcicytaEvent())
+        : _bloc.add(GetAllReceiptIcodsaEvent());
   }
 
   Future<void> _handleRefresh() async {
@@ -55,7 +57,9 @@ class _FilesReceiptScreenState extends State<FilesReceiptScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _bloc.add(GetAllReceiptIcicytaEvent());
+    widget.roleId == 3
+        ? _bloc.add(GetAllReceiptIcicytaEvent())
+        : _bloc.add(GetAllReceiptIcodsaEvent());
   }
 
   @override
@@ -151,10 +155,7 @@ class _FilesReceiptScreenState extends State<FilesReceiptScreen> {
                 _buildDetailRow("Conference Title", detail.paperTitle ?? "-"),
                 _buildDetailRow("Amount", detail.amount ?? "-"),
                 _buildDetailRow("In Payment Of", detail.inPaymentOf ?? "-"),
-                _buildDetailRow(
-                  "Tanggal Pembayaran",
-                  detail.paymentDate ?? "-",
-                ),
+                _buildDetailRow("Tanggal Pembayaran", detail.paymentDate ?? ""),
                 const SizedBox(height: 20),
                 SizedBox(
                   width: double.infinity,

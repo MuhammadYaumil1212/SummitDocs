@@ -47,6 +47,7 @@ import 'Data/signin/sources/signin_service.dart';
 import 'Domain/LoA/usecase/create_loa_icodsa_usecase.dart';
 import 'Domain/LoA/usecase/get_all_loa_icodsa_usecase.dart';
 import 'Domain/invoice/usecase/get_all_invoice_icodsa_usecase.dart';
+import 'Domain/receipt/usecase/get_all_receipt_icodsa_usecase.dart';
 import 'Domain/signin/repositories/signin_repository.dart';
 import 'Domain/transfer_virtual/usecase/detail_bank_transfer_usecase.dart';
 import 'core/network/dio_client.dart';
@@ -113,4 +114,6 @@ void setupServiceLocator() {
       GetAllInvoiceIcodsaUsecase());
   sl.registerSingleton<UpdateInvoiceIcodsaUsecase>(
       UpdateInvoiceIcodsaUsecase());
+  sl.registerSingleton<GetAllReceiptIcodsaUsecase>(
+      GetAllReceiptIcodsaUsecase());
 }
