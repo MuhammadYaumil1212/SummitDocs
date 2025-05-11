@@ -38,7 +38,6 @@ class LoaRepositoryImpl extends LoaRepository {
   Future<Either> createIcodsaLOA(UpdateLoaParams params) async {
     final response = await sl<LoaServices>().createIcodsaLOA(params);
     return response.fold((error) {
-      print("error create icodsa : $error");
       final errors = error['errors'];
       String errorMessage;
       if (errors is List) {
