@@ -38,7 +38,7 @@ class ApiUrl {
 
   //icodsa
   static const getIcodsaInvoice = "${apiV}icodsa/invoices";
-  static const updateDataIcodsa = "${apiV}icodsa/invoices/update/";
+  static const updateIcodsaInvoice = "${apiV}icodsa/invoices/update/";
 
   //docs LOA
 

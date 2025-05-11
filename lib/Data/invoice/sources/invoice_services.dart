@@ -9,6 +9,9 @@ import '../../../service_locator.dart';
 abstract class InvoiceServices {
   Future<Either> getAllListInvoiceIcicyta();
   Future<Either> updateInvoiceIcicyta(UpdateInvoiceParams params);
+
+  Future<Either> getInvoiceIcodsaList();
+  Future<Either> updateInvoiceIcodsa(UpdateInvoiceParams params);
 }
 
 class InvoiceServicesImpl extends InvoiceServices {
@@ -31,10 +34,33 @@ class InvoiceServicesImpl extends InvoiceServices {
         "${ApiUrl.updateIcicytaInvoice}${params.id}",
         data: params.toMap(),
       );
-      print("Response update : ${response.data}");
       return Right(response.data);
     } on DioException catch (e) {
-      print("error response : ${e.response?.data}");
+      return Left(e.response?.data ?? "Something Gone Wrong!");
+    }
+  }
+
+  @override
+  Future<Either> getInvoiceIcodsaList() async {
+    // TODO: implement getInvoiceIcodsaList
+    try {
+      var response = await sl<DioClient>().get(ApiUrl.getIcodsaInvoice);
+      return Right(response.data);
+    } on DioException catch (e) {
+      return Left(e.response?.data ?? "Something Gone Wrong!");
+    }
+  }
+
+  @override
+  Future<Either> updateInvoiceIcodsa(UpdateInvoiceParams params) async {
+    // TODO: implement updateInvoiceIcodsa
+    try {
+      var response = await sl<DioClient>().put(
+        "${ApiUrl.updateIcodsaInvoice}${params.id}",
+        data: params.toMap(),
+      );
+      return Right(response.data);
+    } on DioException catch (e) {
       return Left(e.response?.data ?? "Something Gone Wrong!");
     }
   }

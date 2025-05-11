@@ -82,7 +82,9 @@ class _FilesInvoiceScreenState extends State<FilesInvoiceScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _bloc.add(GetInvoiceIcicytaListEvent());
+    widget.roleId == 3
+        ? _bloc.add(GetInvoiceIcicytaListEvent())
+        : _bloc.add(GetInvoiceIcodsaListEvent());
   }
 
   void reloadAll() {
@@ -92,7 +94,10 @@ class _FilesInvoiceScreenState extends State<FilesInvoiceScreen> {
         textfieldValueEdit(element);
       });
     });
-    _bloc.add(GetInvoiceIcicytaListEvent());
+    widget.roleId == 3
+        ? _bloc.add(GetInvoiceIcicytaListEvent())
+        : _bloc.add(GetInvoiceIcodsaListEvent());
+    ;
   }
 
   Future<void> _handleRefresh() async {
@@ -126,8 +131,23 @@ class _FilesInvoiceScreenState extends State<FilesInvoiceScreen> {
 
         if (state is SuccessUpdateInvoiceIcicyta) {
           Navigator.of(context).pop();
+          reloadAll();
           return DisplayMessage.successMessage(state.message, context);
         }
+
+        if (state is SuccessUpdateInvoiceIcodsa) {
+          Navigator.of(context).pop();
+          reloadAll();
+          return DisplayMessage.successMessage(state.message, context);
+        }
+
+        if (state is FailedUpdateInvoiceIcodsa) {
+          Navigator.of(context).pop();
+          state.message.map((item) {
+            return DisplayMessage.errorMessage(item, context);
+          }).toList();
+        }
+
         if (state is UpdateInvoiceIcicytaState) {
           Navigator.of(context).pop();
           reloadAll();
@@ -331,8 +351,8 @@ class _FilesInvoiceScreenState extends State<FilesInvoiceScreen> {
         return BlocBuilder<InvoiceBloc, InvoiceState>(
           bloc: _bloc,
           builder: (context, state) {
-            final bool isLoading =
-                state is UpdateInvoiceIcicytaLoadingState && state.isLoading;
+            final bool isLoading = state is UpdateInvoiceIcicytaLoadingState ||
+                state is UpdateInvoiceIcodsaLoadingState && state.isLoading;
             textfieldValueEdit(invoice);
             return AlertDialog(
               shape: RoundedRectangleBorder(
@@ -506,7 +526,21 @@ class _FilesInvoiceScreenState extends State<FilesInvoiceScreen> {
                                         status.text,
                                       ),
                                     )
-                                  : null;
+                                  : _bloc.add(
+                                      SubmitUpdateInvoiceIcodsa(
+                                        invoice.id ?? -1,
+                                        institution.text,
+                                        email.text,
+                                        presentationType.text,
+                                        memberType.text,
+                                        authorType.text,
+                                        amount.text,
+                                        dateOfIssue.text,
+                                        int.tryParse(virtualAccID.text),
+                                        int.tryParse(bankTransferID.text),
+                                        status.text,
+                                      ),
+                                    );
                             },
                           ),
                         ),

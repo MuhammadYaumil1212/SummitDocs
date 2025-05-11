@@ -23,6 +23,7 @@ import 'package:SummitDocs/Domain/home/usecases/get_loa_icodsa_usecase.dart';
 import 'package:SummitDocs/Domain/invoice/repository/invoice_repository.dart';
 import 'package:SummitDocs/Domain/invoice/usecase/get_all_invoice_icicyta_usecase.dart';
 import 'package:SummitDocs/Domain/invoice/usecase/update_invoice_icicyta_usecase.dart';
+import 'package:SummitDocs/Domain/invoice/usecase/update_invoice_icodsa_usecase.dart';
 import 'package:SummitDocs/Domain/manage_account/repositories/manage_account_repository.dart';
 import 'package:SummitDocs/Domain/manage_account/usecase/create_account_usecase.dart';
 import 'package:SummitDocs/Domain/manage_account/usecase/delete_account_usecase.dart';
@@ -45,6 +46,7 @@ import 'Data/signin/repositories/signin_repository.dart';
 import 'Data/signin/sources/signin_service.dart';
 import 'Domain/LoA/usecase/create_loa_icodsa_usecase.dart';
 import 'Domain/LoA/usecase/get_all_loa_icodsa_usecase.dart';
+import 'Domain/invoice/usecase/get_all_invoice_icodsa_usecase.dart';
 import 'Domain/signin/repositories/signin_repository.dart';
 import 'Domain/transfer_virtual/usecase/detail_bank_transfer_usecase.dart';
 import 'core/network/dio_client.dart';
@@ -107,4 +109,8 @@ void setupServiceLocator() {
   sl.registerSingleton<GetInvoiceIcicytaUsecase>(GetInvoiceIcicytaUsecase());
   sl.registerSingleton<GetLoaIcodsaUsecase>(GetLoaIcodsaUsecase());
   sl.registerSingleton<CreateLoaIcodsaUsecase>(CreateLoaIcodsaUsecase());
+  sl.registerSingleton<GetAllInvoiceIcodsaUsecase>(
+      GetAllInvoiceIcodsaUsecase());
+  sl.registerSingleton<UpdateInvoiceIcodsaUsecase>(
+      UpdateInvoiceIcodsaUsecase());
 }
