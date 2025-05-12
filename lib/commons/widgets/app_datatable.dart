@@ -1,3 +1,4 @@
+import 'package:SummitDocs/commons/widgets/app_text.dart';
 import 'package:SummitDocs/core/config/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
@@ -20,7 +21,7 @@ class AppDataTable<T> extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         if (data.isEmpty) {
-          return Center(child: Text('Tidak ada data'));
+          return Center(child: AppText(text: 'Tidak ada data', fontSize: 18));
         }
 
         const double rowHeight = 56.0;
@@ -31,9 +32,6 @@ class AppDataTable<T> extends StatelessWidget {
             ? constraints.maxHeight - headerHeight - footerHeight
             : 0;
 
-        // Rule sesuai permintaan kamu:
-        // - data.length <= 5 ➔ rowsPerPage = data.length
-        // - data.length > 5 ➔ rowsPerPage = 5
         final int rowsPerPage = data.length <= 5 ? data.length : 5;
 
         return SingleChildScrollView(

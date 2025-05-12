@@ -46,4 +46,6 @@ class AppString {
   static const editIcon = "${appIcons}edit_icon.svg";
 
   static const pendingIcon = "${appIcons}pending_icon.svg";
+
+  static const signatureIcon = "${appIcons}signature_icon.svg";
 }

@@ -52,9 +52,10 @@ class ApiUrl {
   static const getDocsIcodsaLoa = "${apiV}icodsa/loas";
 
   //docs signature
-  static const getSignature = "${apiV}signature";
+  static const getSignature = "${apiV}signatures";
   static const getSignatureWithId = "${apiV}signatures/";
   static const createSignature = "${apiV}signatures/create";
+  static const deleteSignature = "${apiV}signatures/delete/";
 
   //receipt
 

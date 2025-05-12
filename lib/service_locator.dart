@@ -10,6 +10,8 @@ import 'package:SummitDocs/Data/receipt/repository/receipt_repository.dart';
 import 'package:SummitDocs/Data/receipt/sources/receipt_services.dart';
 import 'package:SummitDocs/Data/settings/repositories/settings_repository.dart';
 import 'package:SummitDocs/Data/settings/source/settings_services.dart';
+import 'package:SummitDocs/Data/signature/repository/signature_repository.dart';
+import 'package:SummitDocs/Data/signature/services/signature_services.dart';
 import 'package:SummitDocs/Data/transfer_virtual/repositories/transfer_virtual_repository_impl.dart';
 import 'package:SummitDocs/Data/transfer_virtual/sources/transfer_virtual_services.dart';
 import 'package:SummitDocs/Domain/LoA/repositories/Loa_repository.dart';
@@ -33,6 +35,9 @@ import 'package:SummitDocs/Domain/receipt/usecase/get_all_receipt_icicyta_usecas
 import 'package:SummitDocs/Domain/settings/repositories/settings_repository.dart';
 import 'package:SummitDocs/Domain/settings/usecases/create_signature_usecase.dart';
 import 'package:SummitDocs/Domain/settings/usecases/update_password_usecase.dart';
+import 'package:SummitDocs/Domain/signature/repository/signature_repository.dart';
+import 'package:SummitDocs/Domain/signature/usecase/delete_signature_usecase.dart';
+import 'package:SummitDocs/Domain/signature/usecase/get_all_signature_usecase.dart';
 import 'package:SummitDocs/Domain/signin/usecases/signin_usecase.dart';
 import 'package:SummitDocs/Domain/transfer_virtual/repositories/transfer_virtual_repository.dart';
 import 'package:SummitDocs/Domain/transfer_virtual/usecase/delete_bank_transfer.dart';
@@ -65,6 +70,7 @@ void setupServiceLocator() {
   sl.registerSingleton<LoaServices>(LoaServicesImpl());
   sl.registerSingleton<InvoiceServices>(InvoiceServicesImpl());
   sl.registerSingleton<ReceiptServices>(ReceiptServicesImpl());
+  sl.registerSingleton<SignatureServices>(SignatureServicesImpl());
 
   //repositories
   sl.registerSingleton<SigninRepository>(SigninRepositoryImpl());
@@ -77,6 +83,7 @@ void setupServiceLocator() {
   sl.registerSingleton<LoaRepository>(LoaRepositoryImpl());
   sl.registerSingleton<InvoiceRepository>(InvoiceRepositoryImpl());
   sl.registerSingleton<ReceiptRepository>(ReceiptRepositoryImpl());
+  sl.registerSingleton<SignatureRepository>(SignatureRepositoryImpl());
 
   //usecases
   sl.registerSingleton<SigninUsecase>(SigninUsecase());
@@ -116,4 +123,6 @@ void setupServiceLocator() {
       UpdateInvoiceIcodsaUsecase());
   sl.registerSingleton<GetAllReceiptIcodsaUsecase>(
       GetAllReceiptIcodsaUsecase());
+  sl.registerSingleton<GetAllSignatureUsecase>(GetAllSignatureUsecase());
+  sl.registerSingleton<DeleteSignatureUsecase>(DeleteSignatureUsecase());
 }

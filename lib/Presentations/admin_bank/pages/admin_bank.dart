@@ -1,4 +1,5 @@
 import 'package:SummitDocs/Presentations/manage_account/pages/manage_account.dart';
+import 'package:SummitDocs/Presentations/signature/pages/signature_screen.dart';
 import 'package:SummitDocs/Presentations/transfer_virtual/pages/transfer_virtual.dart';
 import 'package:flutter/material.dart';
 
@@ -8,7 +9,6 @@ import '../../../core/helper/message/message.dart';
 import '../../../core/helper/navigation/app_navigation.dart';
 import '../../files/pages/FeatureItem.dart';
 import '../../files/widgets/feature_card.dart';
-import '../../invoice/pages/files_invoice_screen.dart';
 
 class AdminBank extends StatelessWidget {
   final int roleId;
@@ -27,6 +27,11 @@ class AdminBank extends StatelessWidget {
         icon: AppString.plusIcon,
         text: "Transfer / Virtual Account",
       ),
+      FeatureItem(
+        id: 3,
+        icon: AppString.signatureIcon,
+        text: "Signature",
+      ),
     ];
     void _navigateToFeature(BuildContext context, int id, String title) {
       switch (id) {
@@ -42,6 +47,11 @@ class AdminBank extends StatelessWidget {
             TransferVirtual(),
           );
           break;
+        case 3:
+          AppNavigator.push(
+            context,
+            SignatureScreen(),
+          );
         default:
           DisplayMessage.errorMessage("No Features", context);
       }
@@ -49,13 +59,17 @@ class AdminBank extends StatelessWidget {
 
     Widget _buildFeatureList(BuildContext context, String title) {
       return SizedBox(
-        height: 100,
         width: double.infinity,
-        child: ListView.separated(
+        child: GridView.builder(
           itemCount: features.length,
           shrinkWrap: true,
           physics: const BouncingScrollPhysics(),
-          scrollDirection: Axis.horizontal,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2, // Ini bikin 2 kolom
+            mainAxisSpacing: 20, // Jarak vertikal antar item
+            crossAxisSpacing: 20, // Jarak horizontal antar item
+            childAspectRatio: 1.5, // Atur rasio lebar:tinggi
+          ),
           itemBuilder: (context, index) {
             final feature = features[index];
             return Featurecard(
@@ -66,12 +80,10 @@ class AdminBank extends StatelessWidget {
               text: feature.text,
             );
           },
-          separatorBuilder: (_, __) => const SizedBox(width: 35),
         ),
       );
     }
 
-    final isRole1 = roleId == 1;
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -79,10 +91,7 @@ class AdminBank extends StatelessWidget {
         children: [
           const HomeTitle(title: "Admin", description: "Pilih Salah Satu"),
           const SizedBox(height: 20),
-          if (isRole1) ...[
-            const SizedBox(height: 10),
-            _buildFeatureList(context, "Admin"),
-          ]
+          _buildFeatureList(context, "Admin"),
         ],
       ),
     );
