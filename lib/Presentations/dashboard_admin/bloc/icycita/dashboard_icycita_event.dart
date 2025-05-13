@@ -18,3 +18,8 @@ final class GetHistoryLoAIcicyta extends DashboardIcycitaEvent {
   @override
   List<Object?> get props => [];
 }
+
+final class GetHistoryReceiptIcicyta extends DashboardIcycitaEvent {
+  @override
+  List<Object?> get props => [];
+}

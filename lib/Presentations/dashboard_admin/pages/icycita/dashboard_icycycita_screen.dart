@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:SummitDocs/Domain/home/entities/LoaEntity.dart';
 import 'package:SummitDocs/Domain/home/entities/invoice_entity.dart';
+import 'package:SummitDocs/Domain/home/entities/receipt_entity_home.dart';
+import 'package:SummitDocs/Domain/receipt/entity/receipt_entity.dart';
 import 'package:SummitDocs/Presentations/dashboard_super_admin/widgets/dashboard_card.dart';
 import 'package:SummitDocs/Presentations/dashboard_admin/bloc/icycita/dashboard_icycita_bloc.dart';
 import 'package:SummitDocs/commons/widgets/app_scaffold.dart';
@@ -28,6 +30,7 @@ class _DashboardIcycitaScreenState extends State<DashboardIcycitaScreen> {
   Completer<void>? _refreshCompleter;
   final List<InvoiceEntity> conferences = [];
   final List<LoaEntityHome> conferenceLoa = [];
+  final List<ReceiptEntity> conferenceReceipt = [];
 
   @override
   void initState() {
@@ -36,6 +39,7 @@ class _DashboardIcycitaScreenState extends State<DashboardIcycitaScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _bloc.add(GetHistoryInvoiceIcicyta());
       _bloc.add(GetHistoryLOAIcicyta());
+      _bloc.add(GetHistoryReceiptIcicyta());
       _refreshKey.currentState?.show();
     });
   }
@@ -46,12 +50,14 @@ class _DashboardIcycitaScreenState extends State<DashboardIcycitaScreen> {
     });
     _bloc.add(GetHistoryInvoiceIcicyta());
     _bloc.add(GetHistoryLOAIcicyta());
+    _bloc.add(GetHistoryReceiptIcicyta());
   }
 
   Future<void> _handleRefresh() {
     _refreshCompleter = Completer<void>();
     _bloc.add(GetHistoryInvoiceIcicyta());
     _bloc.add(GetHistoryLOAIcicyta());
+    _bloc.add(GetHistoryReceiptIcicyta());
     return _refreshCompleter!.future;
   }
 
@@ -75,7 +81,6 @@ class _DashboardIcycitaScreenState extends State<DashboardIcycitaScreen> {
 
         if (state is SuccessTableLoa) {
           setState(() {
-            print("data table loa : ${state.data.length}");
             final sortedEntity = List<LoaEntityHome>.from(state.data)
               ..sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
 
@@ -83,6 +88,26 @@ class _DashboardIcycitaScreenState extends State<DashboardIcycitaScreen> {
               ..clear()
               ..addAll(sortedEntity);
           });
+          if (!(_refreshCompleter?.isCompleted ?? true)) {
+            _refreshCompleter?.complete();
+          }
+        }
+        if (state is SuccessTableReceipt) {
+          setState(() {
+            final sortedEntity = List<ReceiptEntity>.from(state.data)
+              ..sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
+
+            conferenceReceipt
+              ..clear()
+              ..addAll(sortedEntity);
+          });
+          if (!(_refreshCompleter?.isCompleted ?? true)) {
+            _refreshCompleter?.complete();
+          }
+        }
+
+        if (state is FailedTableReceipt) {
+          DisplayMessage.errorMessage(state.message, context);
           if (!(_refreshCompleter?.isCompleted ?? true)) {
             _refreshCompleter?.complete();
           }
@@ -163,6 +188,11 @@ class _DashboardIcycitaScreenState extends State<DashboardIcycitaScreen> {
                 title: "History LoA",
                 historyItems: _mapHistoryLoaItems(),
               ),
+              const SizedBox(height: 10),
+              DashboardCard(
+                title: "History Receipt",
+                historyItems: _mapHistoryReceiptItems(),
+              ),
             ],
           ),
         );
@@ -223,6 +253,35 @@ class _DashboardIcycitaScreenState extends State<DashboardIcycitaScreen> {
         statusText: _mapStatusText(e.status),
         status: e.status != 'Pending',
         isPending: e.status == 'Pending',
+      );
+    }).toList();
+  }
+
+  List<HistoryItem> _mapHistoryReceiptItems() {
+    if (conferenceReceipt.isEmpty) {
+      return [
+        HistoryItem(
+          text: "Belum ada data Receipt",
+          statusText: "-",
+          status: false,
+        ),
+      ];
+    }
+
+    final sortedConferences = conferenceReceipt
+      ..sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
+
+    return sortedConferences.map((e) {
+      final formattedDate = e.createdAt != null
+          ? DateFormat('dd/MM/yyyy').format(e.createdAt!)
+          : 'Unknown Date';
+
+      return HistoryItem(
+        text:
+            "${e.paperId ?? 'No ID'} - ${e.paperTitle ?? 'Tidak ada Paper'} - $formattedDate",
+        statusText: "",
+        status: "" != '',
+        isPending: true,
       );
     }).toList();
   }

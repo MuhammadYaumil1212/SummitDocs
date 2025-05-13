@@ -1,6 +1,9 @@
 import 'package:SummitDocs/Domain/home/entities/LoaEntity.dart';
 import 'package:SummitDocs/Domain/home/entities/invoice_entity.dart';
+import 'package:SummitDocs/Domain/home/entities/receipt_entity_home.dart';
 import 'package:SummitDocs/Domain/home/usecases/get_invoice_icicyta.dart';
+import 'package:SummitDocs/Domain/receipt/entity/receipt_entity.dart';
+import 'package:SummitDocs/Domain/receipt/usecase/get_all_receipt_icicyta_usecase.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
@@ -36,6 +39,18 @@ class DashboardIcycitaBloc
       }, (data) {
         emit(LoadingTable(isLoading: false));
         emit(SuccessTableLoa(data: data.toList()));
+      });
+    });
+
+    on<GetHistoryReceiptIcicyta>((event, emit) async {
+      emit(LoadingTableReceipt(isLoading: true));
+      final response = await sl<GetAllReceiptIcicytaUsecase>().call();
+      response.fold((error) {
+        emit(LoadingTable(isLoading: false));
+        emit(FailedTableReceipt(message: error));
+      }, (data) {
+        emit(LoadingTable(isLoading: false));
+        emit(SuccessTableReceipt(data: data.toList()));
       });
     });
   }

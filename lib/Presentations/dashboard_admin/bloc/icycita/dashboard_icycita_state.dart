@@ -9,6 +9,7 @@ final class DashboardIcycitaInitial extends DashboardIcycitaState {
   List<Object> get props => [];
 }
 
+//invoice
 final class LoadingTable extends DashboardIcycitaState {
   final isLoading;
   LoadingTable({this.isLoading = false});
@@ -30,6 +31,7 @@ final class FailedTable extends DashboardIcycitaState {
   List<Object> get props => [message];
 }
 
+//LOA
 final class LoadingTableLoa extends DashboardIcycitaState {
   final isLoading;
   LoadingTableLoa({this.isLoading = false});
@@ -47,6 +49,28 @@ final class SuccessTableLoa extends DashboardIcycitaState {
 final class FailedTableLoa extends DashboardIcycitaState {
   final String message;
   FailedTableLoa({required this.message});
+  @override
+  List<Object> get props => [message];
+}
+
+//receipt
+final class LoadingTableReceipt extends DashboardIcycitaState {
+  final isLoading;
+  LoadingTableReceipt({this.isLoading = false});
+  @override
+  List<Object> get props => [isLoading];
+}
+
+final class SuccessTableReceipt extends DashboardIcycitaState {
+  final List<ReceiptEntity> data;
+  SuccessTableReceipt({required this.data});
+  @override
+  List<Object> get props => [data];
+}
+
+final class FailedTableReceipt extends DashboardIcycitaState {
+  final String message;
+  FailedTableReceipt({required this.message});
   @override
   List<Object> get props => [message];
 }
