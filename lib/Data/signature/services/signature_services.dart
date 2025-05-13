@@ -1,3 +1,5 @@
+import 'package:SummitDocs/Data/settings/models/signature_params.dart';
+import 'package:SummitDocs/Data/signature/models/signature_params_admin.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 
@@ -8,6 +10,7 @@ import '../../../service_locator.dart';
 abstract class SignatureServices {
   Future<Either> getSignatureList();
   Future<Either> deleteSignature(int id);
+  Future<Either> updateSignature(SignatureParamsAdmin params);
 }
 
 class SignatureServicesImpl extends SignatureServices {
@@ -31,6 +34,19 @@ class SignatureServicesImpl extends SignatureServices {
       var response = await sl<DioClient>().delete(
         ApiUrl.deleteSignature + "$id",
       );
+      return Right(response);
+    } on DioException catch (e) {
+      return Left(e.response?.data ?? "Something Gone Wrong!");
+    }
+  }
+
+  @override
+  Future<Either> updateSignature(SignatureParamsAdmin params) async {
+    // TODO: implement updateSignature
+    try {
+      var response = await sl<DioClient>().uploadFormDataPut(
+          url: ApiUrl.getSignatureWithId + "${params.id}",
+          formFields: params.toMap());
       return Right(response);
     } on DioException catch (e) {
       return Left(e.response?.data ?? "Something Gone Wrong!");

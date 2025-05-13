@@ -102,6 +102,41 @@ class DioClient {
     }
   }
 
+// UPLOAD IMAGE (PUT METHOD)
+  Future<Response> uploadFormDataPut({
+    required String url,
+    required Map<String, dynamic> formFields,
+    ProgressCallback? onSendProgress,
+  }) async {
+    try {
+      final formDataMap = <String, dynamic>{};
+
+      for (final entry in formFields.entries) {
+        final key = entry.key;
+        final value = entry.value;
+
+        if (value is File) {
+          final fileName = value.path.split('/').last;
+          formDataMap[key] =
+              await MultipartFile.fromFile(value.path, filename: fileName);
+        } else {
+          formDataMap[key] = value;
+        }
+      }
+
+      final formData = FormData.fromMap(formDataMap);
+
+      return await _dio.put(
+        url,
+        data: formData,
+        options: Options(contentType: 'multipart/form-data'),
+        onSendProgress: onSendProgress,
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   // PUT METHOD
   Future<Response> put(
     String url, {

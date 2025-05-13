@@ -113,6 +113,20 @@ class _SignatureScreenState extends State<SignatureScreen> {
             DisplayMessage.errorMessage(item, context);
           }
         }
+
+        if (state is SuccessUpdateSignature) {
+          Navigator.of(context).pop();
+          clearField();
+          reload();
+          DisplayMessage.successMessage(state.message, context);
+        }
+
+        if (state is FailedUpdateSignature) {
+          Navigator.of(context).pop();
+          for (var item in state.message) {
+            DisplayMessage.errorMessage(item, context);
+          }
+        }
       },
       appWidget: RefreshIndicator(
         onRefresh: _handleRefresh,
@@ -151,6 +165,12 @@ class _SignatureScreenState extends State<SignatureScreen> {
         )
       ],
     );
+  }
+
+  void editTextfieldValue(SignatureEntity signature) {
+    namaPenandatangan.text = signature.namaPenandatangan ?? "";
+    jabatanPenandatangan.text = signature.jabatanPenandatangan ?? "";
+    tanggalDibuat.text = signature.tanggalDibuat ?? "";
   }
 
   void _showUploadSignature(BuildContext context) {
@@ -252,6 +272,102 @@ class _SignatureScreenState extends State<SignatureScreen> {
     );
   }
 
+  void _showEditSignature(BuildContext context, SignatureEntity signature) {
+    editTextfieldValue(signature);
+    showDialog(
+      context: context,
+      builder: (context) {
+        return BlocBuilder<SignatureBloc, SignatureState>(
+          bloc: _bloc,
+          builder: (context, state) {
+            final isLoading = state is LoadingSignatureState && state.isLoading;
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
+              backgroundColor: Colors.white,
+              title: const AppText(
+                text: "Update Signature",
+                fontSize: 21,
+                fontWeight: FontWeight.w700,
+              ),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(height: 10),
+                    AppTextfield(
+                      prefixIcon: Icon(Icons.person_outline),
+                      hint: "Nama Penandatangan",
+                      controller: namaPenandatangan,
+                    ),
+                    AppTextfield(
+                      prefixIcon: Icon(Icons.work_outline),
+                      hint: "Jabatan Penandatangan",
+                      controller: jabatanPenandatangan,
+                    ),
+                    AppDatePicker(
+                      hint: "Tanggal Dibuat",
+                      readOnly: true,
+                      value: (value) {
+                        tanggalDibuat.text = value;
+                      },
+                      dateController: tanggalDibuat,
+                    ),
+                    AppUploadTextfield(
+                      hint: "Upload Signature",
+                      onFileSelected: (platformFile) {
+                        setState(() {
+                          selectedSignatureFile = File(platformFile.path ?? "");
+                        });
+                      },
+                    ),
+                    const SizedBox(height: 10),
+                    AppButton(
+                      text: "Update Signature",
+                      isLoading: isLoading,
+                      action: () {
+                        if (selectedSignatureFile == null ||
+                            namaPenandatangan.text.isEmpty ||
+                            jabatanPenandatangan.text.isEmpty ||
+                            tanggalDibuat.text.isEmpty) {
+                          Navigator.of(context).pop();
+                          DisplayMessage.errorMessage(
+                            "Semua field wajib diisi",
+                            context,
+                          );
+                          return;
+                        }
+                        _bloc.add(
+                          SignatureUpdateEvent(
+                            id: signature.id ?? -1,
+                            signatureName: namaPenandatangan.text,
+                            signaturePosition: jabatanPenandatangan.text,
+                            signatureFile: selectedSignatureFile!,
+                            createdDate: DateFormatter.parseFromString(
+                              tanggalDibuat.text,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 10),
+                    AppButton(
+                      text: "Batalkan",
+                      action: () => Navigator.of(context).pop(),
+                      borderColor: AppColors.grayBackground2,
+                      backgroundColor: AppColors.secondaryBackground,
+                      fontColor: Colors.red,
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
   Widget _buildTable(String title, List<dynamic> dataList) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -306,7 +422,10 @@ class _SignatureScreenState extends State<SignatureScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                ActionButton(icon: AppString.editIcon, action: () {}),
+                // ActionButton(
+                //   icon: AppString.editIcon,
+                //   action: () => _showEditSignature(context, signature),
+                // ),
                 const SizedBox(width: 10),
                 ActionButton(
                   icon: AppString.trashIcon,

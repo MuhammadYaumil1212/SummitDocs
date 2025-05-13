@@ -1,9 +1,11 @@
+import 'package:SummitDocs/Data/settings/models/signature_params.dart';
 import 'package:SummitDocs/Domain/signature/repository/signature_repository.dart';
 import 'package:SummitDocs/core/helper/mapper/signature_mapper.dart';
 import 'package:dartz/dartz.dart';
 
 import '../../../service_locator.dart';
 import '../models/signature_model.dart';
+import '../models/signature_params_admin.dart';
 import '../services/signature_services.dart';
 
 class SignatureRepositoryImpl extends SignatureRepository {
@@ -35,9 +37,18 @@ class SignatureRepositoryImpl extends SignatureRepository {
   }
 
   @override
-  Future<Either> updateSignatureList() {
+  Future<Either> updateSignatureList(SignatureParamsAdmin params) async {
     // TODO: implement updateSignatureList
-    throw UnimplementedError();
+    final response = await sl<SignatureServices>().updateSignature(params);
+    return response.fold(
+      (error) {
+        print("error update signature: ${error}");
+        return Left(error['errors']);
+      },
+      (data) {
+        return Right(data['message']);
+      },
+    );
   }
 
   @override

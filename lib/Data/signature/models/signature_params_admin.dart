@@ -1,13 +1,13 @@
 import 'dart:io';
 
-class SignatureParams {
-  final String? id;
+class SignatureParamsAdmin {
+  final int? id;
   final String signatureName;
   final String signaturePosition;
   final String createdDate;
   final File signatureFile;
 
-  SignatureParams({
+  SignatureParamsAdmin({
     this.id,
     required this.signatureName,
     required this.signaturePosition,
@@ -15,14 +15,14 @@ class SignatureParams {
     required this.signatureFile,
   });
 
-  SignatureParams copyWith({
-    String? id,
+  SignatureParamsAdmin copyWith({
+    int? id,
     String? signatureName,
     String? signaturePosition,
     String? createdDate,
     File? signatureFile,
   }) {
-    return SignatureParams(
+    return SignatureParamsAdmin(
         id: id ?? this.id,
         signatureName: signatureName ?? this.signatureName,
         signaturePosition: signaturePosition ?? this.signaturePosition,

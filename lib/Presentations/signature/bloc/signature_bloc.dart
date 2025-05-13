@@ -2,10 +2,12 @@ import 'dart:io';
 
 import 'package:SummitDocs/Domain/signature/entity/signature_entity.dart';
 import 'package:SummitDocs/Domain/signature/usecase/get_all_signature_usecase.dart';
+import 'package:SummitDocs/Domain/signature/usecase/update_signature_usecase.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
 import '../../../Data/settings/models/signature_params.dart';
+import '../../../Data/signature/models/signature_params_admin.dart';
 import '../../../Domain/settings/usecases/create_signature_usecase.dart';
 import '../../../Domain/signature/usecase/delete_signature_usecase.dart';
 import '../../../core/helper/formatter/date_formatter.dart';
@@ -87,6 +89,43 @@ class SignatureBloc extends Bloc<SignatureEvent, SignatureState> {
         (data) {
           emit(LoadingSignatureState(isLoading: false));
           emit(SuccessSubmitSignature(message: data));
+        },
+      );
+    });
+
+    on<SignatureUpdateEvent>((event, emit) async {
+      emit(LoadingSignatureState(isLoading: true));
+      final result = await sl<UpdateSignatureUsecase>().call(
+        params: SignatureParamsAdmin(
+          id: event.id,
+          signatureName: event.signatureName,
+          signaturePosition: event.signaturePosition,
+          createdDate: DateFormatter.parseFromString(event.createdDate),
+          signatureFile: event.signatureFile,
+        ),
+      );
+      result.fold(
+        (error) {
+          final List<String> errorMessages = [];
+          if (error != null && error is Map<String, dynamic>) {
+            error.forEach((key, value) {
+              if (value is List) {
+                for (var msg in value) {
+                  if (msg is String) {
+                    errorMessages.add(msg);
+                  }
+                }
+              }
+            });
+          } else if (error != null && error is String) {
+            errorMessages.add(error);
+          } else {
+            errorMessages.add("Terjadi kesalahan yang tidak diketahui.");
+          }
+        },
+        (data) {
+          emit(LoadingSignatureState(isLoading: false));
+          emit(SuccessUpdateSignature(message: data));
         },
       );
     });

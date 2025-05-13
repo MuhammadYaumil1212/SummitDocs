@@ -23,12 +23,14 @@ final class SignatureAddEvent extends SignatureEvent {
 }
 
 final class SignatureUpdateEvent extends SignatureEvent {
+  final int id;
   final String signatureName;
   final String signaturePosition;
   final String createdDate;
   final File signatureFile;
 
   const SignatureUpdateEvent({
+    required this.id,
     required this.signatureName,
     required this.signaturePosition,
     required this.signatureFile,
@@ -36,8 +38,13 @@ final class SignatureUpdateEvent extends SignatureEvent {
   });
 
   @override
-  List<Object?> get props =>
-      [signatureName, signaturePosition, createdDate, signatureFile];
+  List<Object?> get props => [
+        id,
+        signatureName,
+        signaturePosition,
+        createdDate,
+        signatureFile,
+      ];
 }
 
 final class ShowSignatureEvent extends SignatureEvent {
