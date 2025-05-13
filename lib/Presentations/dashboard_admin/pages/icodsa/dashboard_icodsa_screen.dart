@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:SummitDocs/Domain/receipt/entity/receipt_entity.dart';
 import 'package:SummitDocs/Presentations/dashboard_super_admin/widgets/dashboard_card.dart';
 import 'package:SummitDocs/commons/widgets/app_scaffold.dart';
 import 'package:SummitDocs/commons/widgets/app_text.dart';
@@ -10,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
-import '../../../../Domain/LoA/entity/loa_entity.dart';
 import '../../../../Domain/home/entities/LoaEntity.dart';
 import '../../../../Domain/home/entities/invoice_entity.dart';
 import '../../bloc/icodsa/dashboard_icodsa_bloc.dart';
@@ -30,6 +30,7 @@ class _DashboardIcodsaScreenState extends State<DashboardIcodsaScreen> {
   Completer<void>? _refreshCompleter;
   final List<InvoiceEntity> conferences = [];
   final List<LoaEntityHome> conferenceLoa = [];
+  final List<ReceiptEntity> conferenceReceipt = [];
 
   @override
   void initState() {
@@ -38,6 +39,7 @@ class _DashboardIcodsaScreenState extends State<DashboardIcodsaScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _bloc.add(GetHistoryLoAIcodsa());
       _bloc.add(GetHistoryInvoiceIcodsa());
+      _bloc.add(GetHistoryReceiptIcodsa());
       _refreshKey.currentState?.show();
     });
   }
@@ -45,15 +47,19 @@ class _DashboardIcodsaScreenState extends State<DashboardIcodsaScreen> {
   void reloadAll() {
     setState(() {
       conferences.clear();
+      conferenceReceipt.clear();
+      conferenceLoa.clear();
     });
     _bloc.add(GetHistoryLoAIcodsa());
     _bloc.add(GetHistoryInvoiceIcodsa());
+    _bloc.add(GetHistoryReceiptIcodsa());
   }
 
   Future<void> _handleRefresh() {
     _refreshCompleter = Completer<void>();
     _bloc.add(GetHistoryLoAIcodsa());
     _bloc.add(GetHistoryInvoiceIcodsa());
+    _bloc.add(GetHistoryReceiptIcodsa());
     return _refreshCompleter!.future;
   }
 
@@ -76,6 +82,26 @@ class _DashboardIcodsaScreenState extends State<DashboardIcodsaScreen> {
         }
 
         if (state is FailedTableInvoice) {
+          if (!(_refreshCompleter?.isCompleted ?? true)) {
+            _refreshCompleter?.complete();
+          }
+          return DisplayMessage.errorMessage(state.message, context);
+        }
+
+        if (state is SuccessTableReceipt) {
+          setState(() {
+            final sortedEntity = List<ReceiptEntity>.from(state.data)
+              ..sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
+            conferenceReceipt
+              ..clear()
+              ..addAll(sortedEntity);
+          });
+          if (!(_refreshCompleter?.isCompleted ?? true)) {
+            _refreshCompleter?.complete();
+          }
+        }
+
+        if (state is FailedTableReceipt) {
           if (!(_refreshCompleter?.isCompleted ?? true)) {
             _refreshCompleter?.complete();
           }
@@ -164,6 +190,11 @@ class _DashboardIcodsaScreenState extends State<DashboardIcodsaScreen> {
                 title: "History LoA",
                 historyItems: _mapHistoryLoaItems(),
               ),
+              const SizedBox(height: 10),
+              DashboardCard(
+                title: "History Receipt",
+                historyItems: _mapHistoryReceiptItems(),
+              ),
             ],
           ),
         );
@@ -198,11 +229,39 @@ class _DashboardIcodsaScreenState extends State<DashboardIcodsaScreen> {
     }).toList();
   }
 
+  List<HistoryItem> _mapHistoryReceiptItems() {
+    if (conferenceReceipt.isEmpty) {
+      return [
+        HistoryItem(
+          text: "Belum ada data receipt",
+          statusText: "-",
+          status: false,
+        ),
+      ];
+    }
+
+    final sortedConferences = conferenceReceipt
+      ..sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
+    return sortedConferences.map((e) {
+      final formattedDate = e.createdAt != null
+          ? DateFormat('dd/MM/yyyy').format(e.createdAt!)
+          : 'Unknown Date';
+
+      return HistoryItem(
+        text:
+            "${e.paperId ?? 'No ID'} - ${e.paperTitle ?? 'Tidak ada judul'} - $formattedDate",
+        statusText: "",
+        status: "" != '',
+        hideStatus: true,
+      );
+    }).toList();
+  }
+
   List<HistoryItem> _mapHistoryInvoiceItems() {
     if (conferences.isEmpty) {
       return [
         HistoryItem(
-          text: "Belum ada data invoice",
+          text: "Belum ada invoice",
           statusText: "-",
           status: false,
         ),

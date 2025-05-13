@@ -47,6 +47,8 @@ class _DashboardIcycitaScreenState extends State<DashboardIcycitaScreen> {
   void reloadAll() {
     setState(() {
       conferences.clear();
+      conferenceReceipt.clear();
+      conferenceLoa.clear();
     });
     _bloc.add(GetHistoryInvoiceIcicyta());
     _bloc.add(GetHistoryLOAIcicyta());

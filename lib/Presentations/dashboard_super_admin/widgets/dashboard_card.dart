@@ -86,11 +86,13 @@ class HistoryItem {
   final String statusText;
   final bool status;
   final bool? isPending;
+  final bool? hideStatus;
 
   const HistoryItem(
       {required this.text,
       required this.statusText,
       required this.status,
+      this.hideStatus,
       this.isPending});
 }
 
@@ -108,6 +110,7 @@ class HistoryItemTile extends StatelessWidget {
         statusText: item.statusText,
         status: item.status,
         isPending: item.isPending,
+        hideStatus: item.hideStatus,
       ),
     );
   }

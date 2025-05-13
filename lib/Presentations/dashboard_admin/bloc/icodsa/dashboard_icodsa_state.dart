@@ -9,6 +9,7 @@ final class DashboardIcodsaInitial extends DashboardIcodsaState {
   List<Object> get props => [];
 }
 
+//loa
 final class LoadingTableLoa extends DashboardIcodsaState {
   final isLoading;
   LoadingTableLoa({this.isLoading = false});
@@ -30,6 +31,7 @@ final class FailedTableLoa extends DashboardIcodsaState {
   List<Object> get props => [message];
 }
 
+//invoice
 final class LoadingTableInvoice extends DashboardIcodsaState {
   final isLoading;
   LoadingTableInvoice({this.isLoading = false});
@@ -47,6 +49,28 @@ final class SuccessTableInvoice extends DashboardIcodsaState {
 final class FailedTableInvoice extends DashboardIcodsaState {
   final String message;
   FailedTableInvoice({required this.message});
+  @override
+  List<Object> get props => [message];
+}
+
+//receipt
+final class LoadingTableReceipt extends DashboardIcodsaState {
+  final isLoading;
+  LoadingTableReceipt({this.isLoading = false});
+  @override
+  List<Object> get props => [isLoading];
+}
+
+final class SuccessTableReceipt extends DashboardIcodsaState {
+  final List<ReceiptEntity> data;
+  SuccessTableReceipt({required this.data});
+  @override
+  List<Object> get props => [data];
+}
+
+final class FailedTableReceipt extends DashboardIcodsaState {
+  final String message;
+  FailedTableReceipt({required this.message});
   @override
   List<Object> get props => [message];
 }

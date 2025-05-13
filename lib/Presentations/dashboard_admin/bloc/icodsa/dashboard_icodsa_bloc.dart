@@ -1,3 +1,6 @@
+import 'package:SummitDocs/Domain/receipt/entity/receipt_entity.dart';
+import 'package:SummitDocs/Domain/receipt/repositories/receipt_repository.dart';
+import 'package:SummitDocs/Domain/receipt/usecase/get_all_receipt_icodsa_usecase.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
@@ -37,6 +40,18 @@ class DashboardIcodsaBloc
       }, (data) {
         emit(LoadingTableLoa(isLoading: false));
         emit(SuccessTableLoa(data: data));
+      });
+    });
+
+    on<GetHistoryReceiptIcodsa>((event, emit) async {
+      emit(LoadingTableReceipt(isLoading: true));
+      final response = await sl<ReceiptRepository>().getAllReceiptsIcodsa();
+      response.fold((error) {
+        emit(LoadingTableReceipt(isLoading: false));
+        emit(FailedTableReceipt(message: error));
+      }, (data) {
+        emit(LoadingTableReceipt(isLoading: false));
+        emit(SuccessTableReceipt(data: data));
       });
     });
   }

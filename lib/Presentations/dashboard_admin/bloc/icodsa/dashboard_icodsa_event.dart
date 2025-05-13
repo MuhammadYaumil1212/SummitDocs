@@ -13,3 +13,8 @@ final class GetHistoryLoAIcodsa extends DashboardIcodsaEvent {
   @override
   List<Object?> get props => [];
 }
+
+final class GetHistoryReceiptIcodsa extends DashboardIcodsaEvent {
+  @override
+  List<Object?> get props => [];
+}
