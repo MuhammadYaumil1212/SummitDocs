@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:SummitDocs/Presentations/invoice/bloc/invoice_bloc.dart';
 import 'package:SummitDocs/core/helper/message/message.dart';
 import 'package:flutter/material.dart';
@@ -39,6 +41,10 @@ class _FilesInvoiceScreenState extends State<FilesInvoiceScreen> {
   TextEditingController presentationType = TextEditingController();
   TextEditingController memberType = TextEditingController();
   TextEditingController authorType = TextEditingController();
+
+  final GlobalKey<RefreshIndicatorState> _refreshKey =
+      GlobalKey<RefreshIndicatorState>();
+  Completer<void>? _refreshCompleter;
 
   final List<InvoiceEntity> conferences = [];
 
@@ -82,9 +88,12 @@ class _FilesInvoiceScreenState extends State<FilesInvoiceScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    widget.roleId == 3
-        ? _bloc.add(GetInvoiceIcicytaListEvent())
-        : _bloc.add(GetInvoiceIcodsaListEvent());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      widget.roleId == 3
+          ? _bloc.add(GetInvoiceIcicytaListEvent())
+          : _bloc.add(GetInvoiceIcodsaListEvent());
+      _refreshKey.currentState?.show();
+    });
   }
 
   void reloadAll() {
@@ -101,8 +110,10 @@ class _FilesInvoiceScreenState extends State<FilesInvoiceScreen> {
   }
 
   Future<void> _handleRefresh() async {
+    _refreshCompleter = Completer<void>();
     await Future.delayed(Duration(seconds: 2));
     reloadAll();
+    return _refreshCompleter!.future;
   }
 
   @override
@@ -111,6 +122,7 @@ class _FilesInvoiceScreenState extends State<FilesInvoiceScreen> {
       bloc: _bloc,
       listener: (context, state) {
         if (state is SuccessState) {
+          _refreshCompleter?.complete();
           setState(() {
             conferences
               ..clear()
@@ -120,6 +132,8 @@ class _FilesInvoiceScreenState extends State<FilesInvoiceScreen> {
             textfieldValueEdit(element);
           });
         } else if (state is FailedState) {
+          _refreshCompleter?.complete();
+
           return DisplayMessage.errorMessage(state.message, context);
         }
         if (state is FailedUpdateInvoiceIcicyta) {
@@ -127,17 +141,20 @@ class _FilesInvoiceScreenState extends State<FilesInvoiceScreen> {
           state.message.map((item) {
             return DisplayMessage.errorMessage(item, context);
           }).toList();
+          _refreshCompleter?.complete();
         }
 
         if (state is SuccessUpdateInvoiceIcicyta) {
           Navigator.of(context).pop();
           reloadAll();
+          _refreshCompleter?.complete();
           return DisplayMessage.successMessage(state.message, context);
         }
 
         if (state is SuccessUpdateInvoiceIcodsa) {
           Navigator.of(context).pop();
           reloadAll();
+          _refreshCompleter?.complete();
           return DisplayMessage.successMessage(state.message, context);
         }
 
@@ -146,11 +163,13 @@ class _FilesInvoiceScreenState extends State<FilesInvoiceScreen> {
           state.message.map((item) {
             return DisplayMessage.errorMessage(item, context);
           }).toList();
+          _refreshCompleter?.complete();
         }
 
         if (state is UpdateInvoiceIcicytaState) {
           Navigator.of(context).pop();
           reloadAll();
+          _refreshCompleter?.complete();
           return DisplayMessage.successMessage(state.message, context);
         }
       },
@@ -169,6 +188,7 @@ class _FilesInvoiceScreenState extends State<FilesInvoiceScreen> {
         ),
       ),
       appWidget: RefreshIndicator(
+          key: _refreshKey,
           onRefresh: _handleRefresh,
           color: AppColors.primary,
           child: SingleChildScrollView(
@@ -335,7 +355,16 @@ class _FilesInvoiceScreenState extends State<FilesInvoiceScreen> {
                       _showEditInvoice(context, conference);
                     }),
                 const SizedBox(width: 10),
-                ActionButton(icon: AppString.downloadIcon, action: () {}),
+                ActionButton(
+                  icon: AppString.downloadIcon,
+                  action: () {
+                    DisplayMessage.errorMessage(
+                      "Sedang dalam pengembangan",
+                      context,
+                    );
+                  },
+                  backgroundColor: Colors.grey,
+                ),
               ],
             ),
           ),

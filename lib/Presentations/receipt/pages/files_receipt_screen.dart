@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:SummitDocs/Presentations/receipt/bloc/receipt_bloc.dart';
 import 'package:SummitDocs/core/helper/message/message.dart';
 import 'package:flutter/material.dart';
@@ -39,6 +41,11 @@ class _FilesReceiptScreenState extends State<FilesReceiptScreen> {
 
   final List<ReceiptEntity> conferences = [];
 
+  final GlobalKey<RefreshIndicatorState> _refreshKey =
+      GlobalKey<RefreshIndicatorState>();
+
+  Completer<void>? _refreshCompleter;
+
   void reloadAll() {
     setState(() {
       conferences.clear();
@@ -49,17 +56,22 @@ class _FilesReceiptScreenState extends State<FilesReceiptScreen> {
   }
 
   Future<void> _handleRefresh() async {
+    _refreshCompleter = Completer<void>();
     await Future.delayed(Duration(seconds: 2));
     reloadAll();
+    return _refreshCompleter!.future;
   }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    widget.roleId == 3
-        ? _bloc.add(GetAllReceiptIcicytaEvent())
-        : _bloc.add(GetAllReceiptIcodsaEvent());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      widget.roleId == 3
+          ? _bloc.add(GetAllReceiptIcicytaEvent())
+          : _bloc.add(GetAllReceiptIcodsaEvent());
+      _refreshKey.currentState?.show();
+    });
   }
 
   @override
@@ -72,12 +84,14 @@ class _FilesReceiptScreenState extends State<FilesReceiptScreen> {
             conferences.clear();
             final sortedInvoices = List<ReceiptEntity>.from(state.data)
               ..sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
-
             for (var invoice in sortedInvoices) {
               conferences.add(invoice);
             }
+            _refreshCompleter?.complete();
           });
         } else if (state is FailedTable) {
+          _refreshCompleter?.complete();
+
           return DisplayMessage.errorMessage(state.message, context);
         }
       },
@@ -98,6 +112,7 @@ class _FilesReceiptScreenState extends State<FilesReceiptScreen> {
       appWidget: BlocBuilder<ReceiptBloc, ReceiptState>(
         builder: (context, state) {
           return RefreshIndicator(
+            key: _refreshKey,
             onRefresh: _handleRefresh,
             color: AppColors.primary,
             child: ListView(

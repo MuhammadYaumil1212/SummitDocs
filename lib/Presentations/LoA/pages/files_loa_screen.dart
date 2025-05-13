@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:SummitDocs/Domain/LoA/entity/loa_entity.dart';
 import 'package:SummitDocs/Presentations/manage_account/bloc/manage_account_bloc.dart';
 import 'package:SummitDocs/commons/widgets/app_textfield.dart';
@@ -35,6 +37,9 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
   TextEditingController datePlaceController = TextEditingController();
   List<TextEditingController> authorControllers = [TextEditingController()];
   TextEditingController statusController = TextEditingController();
+  final GlobalKey<RefreshIndicatorState> _refreshKey =
+      GlobalKey<RefreshIndicatorState>();
+  Completer<void>? _refreshCompleter;
   final List<LoaEntity> conferences = [];
 
   void reloadAll() {
@@ -45,8 +50,10 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
   }
 
   Future<void> _handleRefresh() async {
+    _refreshCompleter = Completer<void>();
     await Future.delayed(Duration(seconds: 2));
     reloadAll();
+    return _refreshCompleter!.future;
   }
 
   void clearAll() {
@@ -66,9 +73,12 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    widget.roleId == 3
-        ? _bloc.add(GetAllLoaEvent())
-        : _bloc.add(GetAllIcodsaLoaEvent());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      widget.roleId == 3
+          ? _bloc.add(GetAllLoaEvent())
+          : _bloc.add(GetAllIcodsaLoaEvent());
+      _refreshKey.currentState?.show();
+    });
   }
 
   @override
@@ -80,11 +90,13 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
           clearAll();
           reloadAll();
           Navigator.of(context).pop();
+          _refreshCompleter?.complete();
           return DisplayMessage.successMessage(state.message, context);
         }
 
         if (state is FailedState) {
           Navigator.of(context).pop();
+          _refreshCompleter?.complete();
           state.message.map((item) {
             return DisplayMessage.errorMessage(item, context);
           }).toList();
@@ -98,6 +110,7 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
             for (var user in sortedUsers) {
               conferences.add(user);
             }
+            _refreshCompleter?.complete();
           });
         }
       },
@@ -118,6 +131,7 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
       appWidget: BlocBuilder<LoaBloc, LoaState>(
         builder: (context, state) {
           return RefreshIndicator(
+            key: _refreshKey,
             onRefresh: _handleRefresh,
             color: AppColors.primary,
             child: ListView(
@@ -214,7 +228,16 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
                     _showDetailLoaIcicyta(conference);
                   }),
               const SizedBox(width: 10),
-              ActionButton(icon: AppString.downloadIcon, action: () {}),
+              ActionButton(
+                icon: AppString.downloadIcon,
+                action: () {
+                  DisplayMessage.errorMessage(
+                    "Sedang dalam pengembangan",
+                    context,
+                  );
+                },
+                backgroundColor: Colors.grey,
+              ),
             ],
           ),
         ),
