@@ -170,16 +170,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     : "ICICYTA",
           ),
           const SizedBox(height: 20),
-          getRole == 1
-              ? AppButton(
-                  action: () => _showUploadSignature(context),
-                  text: "Upload file signature",
-                  borderColor: AppColors.grayBackground2,
-                  backgroundColor: AppColors.secondaryBackground,
-                  fontColor: Colors.black,
-                  fontWeight: FontWeight.w400,
-                )
-              : Container(),
+          // getRole == 1
+          //     ? AppButton(
+          //         action: () => _showUploadSignature(context),
+          //         text: "Upload file signature",
+          //         borderColor: AppColors.grayBackground2,
+          //         backgroundColor: AppColors.secondaryBackground,
+          //         fontColor: Colors.black,
+          //         fontWeight: FontWeight.w400,
+          //       )
+          //     : Container(),
           const SizedBox(height: 10),
           AppButton(
             action: () => _showChangePasswordDialog(context),
