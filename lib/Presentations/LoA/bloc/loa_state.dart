@@ -25,6 +25,15 @@ final class SuccessState extends LoaState {
   List<Object> get props => [data];
 }
 
+final class SuccessSignatureState extends LoaState {
+  final List<SignatureEntity> data;
+
+  const SuccessSignatureState(this.data);
+
+  @override
+  List<Object> get props => [data];
+}
+
 final class FailedState extends LoaState {
   final List<String> message;
 
@@ -41,4 +50,13 @@ final class SuccessLoaCreate extends LoaState {
 
   @override
   List<Object> get props => [message];
+}
+
+final class LoadingSignatureId extends LoaState {
+  final bool isLoading;
+
+  const LoadingSignatureId({required this.isLoading});
+
+  @override
+  List<Object> get props => [isLoading];
 }

@@ -82,3 +82,8 @@ final class CreateLoaIcodsa extends LoaEvent {
         this.signatureId,
       ];
 }
+
+final class GetSignatureId extends LoaEvent {
+  @override
+  List<Object?> get props => [];
+}

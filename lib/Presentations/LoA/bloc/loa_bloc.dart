@@ -2,11 +2,13 @@ import 'package:SummitDocs/Domain/LoA/entity/loa_entity.dart';
 import 'package:SummitDocs/Domain/LoA/usecase/create_loa_icodsa_usecase.dart';
 import 'package:SummitDocs/Domain/LoA/usecase/get_all_loa_icodsa_usecase.dart';
 import 'package:SummitDocs/Domain/LoA/usecase/get_all_loa_usecase.dart';
+import 'package:SummitDocs/Domain/signature/usecase/get_all_signature_usecase.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
 import '../../../Data/LoA/models/update_loa_params.dart';
 import '../../../Domain/LoA/usecase/create_loa_usecase.dart';
+import '../../../Domain/signature/entity/signature_entity.dart';
 import '../../../service_locator.dart';
 
 part 'loa_event.dart';
@@ -116,6 +118,17 @@ class LoaBloc extends Bloc<LoaEvent, LoaState> {
       }, (data) {
         emit(LoadingState(isLoading: false));
         emit(SuccessLoaCreate(data));
+      });
+    });
+    on<GetSignatureId>((event, emit) async {
+      emit(LoadingSignatureId(isLoading: true));
+      final response = await sl<GetAllSignatureUsecase>().call();
+      response.fold((error) {
+        emit(LoadingSignatureId(isLoading: false));
+        emit(FailedState(error));
+      }, (data) {
+        emit(LoadingSignatureId(isLoading: false));
+        emit(SuccessSignatureState(data));
       });
     });
   }
