@@ -393,7 +393,6 @@ class _SignatureScreenState extends State<SignatureScreen> {
 
   List<DataColumn> _buildColumns() {
     return [
-      _centeredColumn("Lihat Tanda Tangan"),
       _centeredColumn("Nama Penandatangan"),
       _centeredColumn("Jabatan Penandatangan"),
       _centeredColumn("Tanggal Dibuat"),
@@ -410,10 +409,6 @@ class _SignatureScreenState extends State<SignatureScreen> {
   DataRow _buildRow(SignatureEntity signature) {
     return DataRow(
       cells: [
-        DataCell(GestureDetector(
-          onTap: () => _showImageSignature(signature),
-          child: AppText(text: "Lihat Gambar", fontColor: AppColors.primary),
-        )),
         DataCell(AppText(text: signature.namaPenandatangan ?? "-")),
         DataCell(AppText(text: signature.jabatanPenandatangan ?? "-")),
         DataCell(AppText(text: signature.tanggalDibuat ?? "-")),
