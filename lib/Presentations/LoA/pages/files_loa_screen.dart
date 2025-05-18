@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:SummitDocs/Domain/LoA/entity/loa_entity.dart';
+import 'package:SummitDocs/Domain/signature/entity/signature_entity.dart';
 import 'package:SummitDocs/Presentations/manage_account/bloc/manage_account_bloc.dart';
 import 'package:SummitDocs/commons/widgets/app_textfield.dart';
 import 'package:flutter/material.dart';
@@ -34,16 +35,19 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
   TextEditingController writerController = TextEditingController();
   TextEditingController timeController = TextEditingController();
   TextEditingController signatureController = TextEditingController();
-  TextEditingController datePlaceController = TextEditingController();
+  TextEditingController dateController = TextEditingController();
+  TextEditingController placeController = TextEditingController();
   List<TextEditingController> authorControllers = [TextEditingController()];
   TextEditingController statusController = TextEditingController();
   final GlobalKey<RefreshIndicatorState> _refreshKey =
       GlobalKey<RefreshIndicatorState>();
   Completer<void>? _refreshCompleter;
   final List<LoaEntity> conferences = [];
+  final List<String> signatures = [];
 
   void reloadAll() {
     conferences.clear();
+    _bloc.add(GetSignatureId());
     widget.roleId == 3
         ? _bloc.add(GetAllLoaEvent())
         : _bloc.add(GetAllIcodsaLoaEvent());
@@ -61,9 +65,11 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
     titleController.clear();
     conferenceTitleController.clear();
     timeController.clear();
-    datePlaceController.clear();
+    dateController.clear();
+    placeController.clear();
     statusController.clear();
     signatureController.clear();
+    signatures.clear();
     for (var controller in authorControllers) {
       controller.clear();
     }
@@ -74,6 +80,7 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
     // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      _bloc.add(GetSignatureId());
       widget.roleId == 3
           ? _bloc.add(GetAllLoaEvent())
           : _bloc.add(GetAllIcodsaLoaEvent());
@@ -101,6 +108,12 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
             return DisplayMessage.errorMessage(item, context);
           }).toList();
         }
+        if (state is SuccessSignatureState) {
+          signatures.clear();
+          for (var signature in state.data) {
+            signatures.add(signature.id.toString());
+          }
+        }
         if (state is SuccessState) {
           setState(() {
             conferences.clear();
@@ -110,6 +123,7 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
             for (var user in sortedUsers) {
               conferences.add(user);
             }
+
             _refreshCompleter?.complete();
           });
         }
@@ -212,7 +226,7 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
         DataCell(Center(
           child: AppText(
             text: conference.createdAt != null
-                ? DateFormat('HH:mm').format(conference.createdAt!)
+                ? DateFormat('HH:mm').format(conference.createdAt!.toLocal())
                 : "",
           ),
         )),
@@ -341,8 +355,15 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
                             Icons.calendar_today_outlined,
                             color: AppColors.grayBackground3,
                           ),
-                          hint: "Tanggal dan Tempat",
-                          controller: datePlaceController,
+                          hint: "Tempat",
+                          controller: placeController,
+                        ),
+                        AppDatePicker(
+                          dateController: dateController,
+                          hint: "Tanggal",
+                          value: (value) {
+                            dateController.text = value;
+                          },
                         ),
                         AppDropdown(
                           label: "Accepted/Rejected",
@@ -352,14 +373,25 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
                             print("Selected: $value");
                           },
                         ),
-                        AppTextfield(
-                          prefixIcon: Icon(
-                            Icons.access_time_outlined,
-                            color: AppColors.grayBackground3,
-                          ),
-                          hint: "Signature ID",
-                          controller: signatureController,
-                        ),
+                        state is LoadingSignatureId && state.isLoading
+                            ? Center(
+                                child: CircularProgressIndicator(
+                                  color: AppColors.primary,
+                                ),
+                              )
+                            : AppDropdown(
+                                label: "Signature",
+                                items: signatures,
+                                onChanged: (value) {
+                                  signatureController.text = value ?? "";
+                                  print("Selected Signature ID: $value");
+                                },
+                              ),
+                        // AppTextfield(
+                        //   prefixIcon: Icon(Icons.fingerprint_outlined),
+                        //   hint: "Signature ID",
+                        //   controller: signatureController,
+                        // ),
                         const SizedBox(height: 10),
                         SizedBox(
                           width: MediaQuery.of(context).size.width,
@@ -387,7 +419,7 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
                                         titleController.text,
                                         authorNames,
                                         statusController.text,
-                                        datePlaceController.text,
+                                        "${placeController.text},${dateController.text}",
                                         int.parse(signatureController.text),
                                       ),
                                     )
@@ -397,7 +429,7 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
                                         titleController.text,
                                         authorNames,
                                         statusController.text,
-                                        datePlaceController.text,
+                                        "${placeController.text},${dateController.text}",
                                         int.parse(signatureController.text),
                                       ),
                                     );
@@ -455,7 +487,9 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
                         ? DateFormat('HH:mm').format(detail.createdAt!)
                         : ""),
                 _buildDetailRow(
-                    "Tanggal & tempat", detail.tempatTanggal ?? "-"),
+                    "Tempat & Tanggal", detail.tempatTanggal ?? "-"),
+                _buildDetailRow("Signature Id", detail.signatureId.toString()),
+                _buildDetailRow("Status", detail.status ?? "-"),
                 const SizedBox(height: 20),
                 SizedBox(
                   width: double.infinity,

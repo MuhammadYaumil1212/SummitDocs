@@ -122,12 +122,12 @@ class _FilesInvoiceScreenState extends State<FilesInvoiceScreen> {
       bloc: _bloc,
       listener: (context, state) {
         if (state is SuccessState) {
-          _refreshCompleter?.complete();
           setState(() {
             conferences
               ..clear()
               ..addAll(state.data);
           });
+          _refreshCompleter?.complete();
           conferences.map((element) {
             textfieldValueEdit(element);
           });
@@ -483,9 +483,9 @@ class _FilesInvoiceScreenState extends State<FilesInvoiceScreen> {
                                   ? Colors.grey
                                   : Colors.black,
                           items: status.text == "Pending"
-                              ? ["Pending", "Paid", "Unpaid"]
+                              ? ["Pending", "Paid"]
                               : status.text == "Paid"
-                                  ? ["Paid", "Pending", "Unpaid"]
+                                  ? ["Paid", "Pending"]
                                   : status.text == "Unpaid"
                                       ? ["Unpaid", "Pending", "Paid"]
                                       : ["Pending", "Paid", "Unpaid"],
