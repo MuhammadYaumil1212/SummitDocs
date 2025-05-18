@@ -43,7 +43,7 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
       GlobalKey<RefreshIndicatorState>();
   Completer<void>? _refreshCompleter;
   final List<LoaEntity> conferences = [];
-  final List<String> signatures = [];
+  final List<SignatureEntity> signatures = [];
 
   void reloadAll() {
     conferences.clear();
@@ -110,9 +110,7 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
         }
         if (state is SuccessSignatureState) {
           signatures.clear();
-          for (var signature in state.data) {
-            signatures.add(signature.id.toString());
-          }
+          signatures.addAll(state.data);
         }
         if (state is SuccessState) {
           setState(() {
@@ -382,16 +380,20 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
                             : AppDropdown(
                                 label: "Signature",
                                 items: signatures,
-                                onChanged: (value) {
-                                  signatureController.text = value ?? "";
-                                  print("Selected Signature ID: $value");
+                                itemAsString: (signature) =>
+                                    signature.namaPenandatangan ?? "",
+                                onChanged: (selectedSignature) {
+                                  if (selectedSignature is SignatureEntity) {
+                                    for (var selected in signatures) {
+                                      signatureController.text =
+                                          selected.id.toString();
+                                      print(
+                                        "Selected Signature ID: ${selected.id}",
+                                      );
+                                    }
+                                  }
                                 },
                               ),
-                        // AppTextfield(
-                        //   prefixIcon: Icon(Icons.fingerprint_outlined),
-                        //   hint: "Signature ID",
-                        //   controller: signatureController,
-                        // ),
                         const SizedBox(height: 10),
                         SizedBox(
                           width: MediaQuery.of(context).size.width,
