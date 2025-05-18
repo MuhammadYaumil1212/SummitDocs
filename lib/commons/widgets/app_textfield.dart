@@ -137,12 +137,13 @@ class _AppTextfieldState extends State<AppTextfield> {
   }
 }
 
-class AppDropdown extends StatefulWidget {
+class AppDropdown<T> extends StatefulWidget {
   final String label;
   final Color? labelColor;
-  final List<String> items;
-  final String? initialValue;
-  final ValueChanged<String?> onChanged;
+  final List<T> items;
+  final T? initialValue;
+  final ValueChanged<T?> onChanged;
+  final String Function(T)? itemAsString;
 
   const AppDropdown({
     Key? key,
@@ -151,19 +152,20 @@ class AppDropdown extends StatefulWidget {
     this.initialValue,
     required this.onChanged,
     this.labelColor,
+    this.itemAsString,
   }) : super(key: key);
 
   @override
-  _AppDropdownState createState() => _AppDropdownState();
+  _AppDropdownState<T> createState() => _AppDropdownState<T>();
 }
 
-class _AppDropdownState extends State<AppDropdown> {
-  String? selectedValue;
+class _AppDropdownState<T> extends State<AppDropdown<T>> {
+  T? _selectedValue;
 
   @override
   void initState() {
     super.initState();
-    selectedValue = widget.initialValue;
+    _selectedValue = widget.initialValue;
   }
 
   @override
@@ -172,11 +174,12 @@ class _AppDropdownState extends State<AppDropdown> {
       width: MediaQuery.of(context).size.width,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 5),
-        child: DropdownButtonFormField<String>(
+        child: DropdownButtonFormField<T>(
           decoration: InputDecoration(
+            labelStyle: TextStyle(color: widget.labelColor),
+            hintStyle: const TextStyle(color: Colors.grey),
             filled: true,
             fillColor: Colors.white,
-            hintStyle: const TextStyle(color: Colors.grey),
             border: const OutlineInputBorder(
               borderSide: BorderSide(color: Colors.grey),
               borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -208,21 +211,16 @@ class _AppDropdownState extends State<AppDropdown> {
             fontColor:
                 widget.labelColor != null ? widget.labelColor : Colors.grey,
           ),
-          value: selectedValue,
-          items: widget.items
-              .map(
-                (value) => DropdownMenuItem(
-                  value: value,
-                  child: Text(value),
-                ),
-              )
-              .toList(),
-          onChanged: (newValue) {
-            setState(() {
-              selectedValue = newValue;
-            });
-            widget.onChanged(newValue);
-          },
+          value: _selectedValue,
+          items: widget.items.map((item) {
+            return DropdownMenuItem<T>(
+              value: item,
+              child: Text(widget.itemAsString != null
+                  ? widget.itemAsString!(item)
+                  : item.toString()),
+            );
+          }).toList(),
+          onChanged: widget.onChanged,
         ),
       ),
     );
