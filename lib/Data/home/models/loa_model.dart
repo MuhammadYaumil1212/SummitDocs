@@ -29,8 +29,8 @@ class LoaModel {
     authorNames = json['author_names'].cast<String>();
     status = json['status'];
     tempatTanggal = json['tempat_tanggal'];
-    signatureId = json['signature_id'];
-    createdBy = json['created_by'];
+    signatureId = int.tryParse(json['signature_id']);
+    createdBy = int.tryParse(json['created_by']);
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
   }

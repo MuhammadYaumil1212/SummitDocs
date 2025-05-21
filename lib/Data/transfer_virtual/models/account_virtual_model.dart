@@ -27,7 +27,7 @@ class AccountVirtualModel {
     bankName = json['bank_name'];
     bankBranch = json['bank_branch'];
     token = json['token'];
-    createdBy = json['created_by'];
+    createdBy = int.tryParse(json['created_by']);
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
   }

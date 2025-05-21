@@ -37,7 +37,7 @@ class InvoiceModel {
   InvoiceModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     invoiceNo = json['invoice_no'];
-    loaId = json['loa_id'];
+    loaId = int.tryParse(json['loa_id']);
     institution = json['institution'];
     email = json['email'];
     presentationType = json['presentation_type'];
@@ -45,10 +45,10 @@ class InvoiceModel {
     authorType = json['author_type'];
     amount = json['amount'];
     dateOfIssue = json['date_of_issue'];
-    signatureId = json['signature_id'];
+    signatureId = int.tryParse(json['signature_id']);
     virtualAccountId = json['virtual_account_id'];
     bankTransferId = json['bank_transfer_id'];
-    createdBy = json['created_by'];
+    createdBy = int.tryParse(json['created_by']);
     status = json['status'];
     createdAt = json['created_at'];
   }

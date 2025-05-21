@@ -26,7 +26,7 @@ class UserModel {
     username = json['username'];
     email = json['email'];
     emailVerifiedAt = json['email_verified_at'];
-    roleId = json['role_id'];
+    roleId = int.tryParse(json['role_id']);
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
   }

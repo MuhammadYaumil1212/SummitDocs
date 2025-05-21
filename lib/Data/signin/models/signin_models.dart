@@ -41,7 +41,7 @@ class User {
     id = json['id'];
     name = json['name'];
     username = json['username'];
-    role = json['role'];
+    role = int.tryParse(json['role']);
   }
 
   Map<String, dynamic> toJson() {

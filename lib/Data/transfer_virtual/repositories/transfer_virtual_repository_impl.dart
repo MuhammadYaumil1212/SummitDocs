@@ -103,6 +103,7 @@ class TransferVirtualRepositoryImpl extends TransferVirtualRepository {
         await sl<TransferVirtualServices>().sendVirtualAccountData(params);
     return result.fold(
       (error) {
+        print("error manage account : ${error}");
         return Left(error['errors']);
       },
       (data) {

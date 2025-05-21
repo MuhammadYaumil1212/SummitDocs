@@ -490,7 +490,6 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
                         : ""),
                 _buildDetailRow(
                     "Tempat & Tanggal", detail.tempatTanggal ?? "-"),
-                _buildDetailRow("Signature Id", detail.signatureId.toString()),
                 _buildDetailRow("Status", detail.status ?? "-"),
                 const SizedBox(height: 20),
                 SizedBox(
