@@ -12,6 +12,9 @@ class AppString {
   static const appIcons = "assets/icons/";
   static const logoApp = "${appImages}logo_1.svg";
   static const logoTextApp = "${appImages}logo_2.svg";
+  static const logoTelyu = "${appImages}Telyu_vertical.png";
+  static const logoUb = "${appImages}ub.png";
+  static const logoUtm = "${appImages}utm.png";
 
   static const icFilesOutlined = "${appIcons}file_outlined.svg";
   static const icFilesSolid = "${appIcons}file_solid.svg";
