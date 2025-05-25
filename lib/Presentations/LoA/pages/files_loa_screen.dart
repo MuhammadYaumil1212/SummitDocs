@@ -649,10 +649,14 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
     final ByteData teluLogoBytes = await rootBundle.load(AppString.logoTelyu);
     final ByteData unbiLogoBytes = await rootBundle.load(AppString.logoUb);
     final ByteData utmLogoBytes = await rootBundle.load(AppString.logoUtm);
+    final ByteData icodsaLogoBytes = await rootBundle.load(
+      AppString.icodsaLogo,
+    );
 
     final teluLogo = pw.MemoryImage(teluLogoBytes.buffer.asUint8List());
     final unbiLogo = pw.MemoryImage(unbiLogoBytes.buffer.asUint8List());
     final utmLogo = pw.MemoryImage(utmLogoBytes.buffer.asUint8List());
+    final icodsaLogo = pw.MemoryImage(icodsaLogoBytes.buffer.asUint8List());
 
     final currentDate = DateTime.now();
     final currentYear = currentDate.year;
@@ -661,41 +665,286 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
 
     final String displayPlaceDate = conference.tempatTanggal ??
         DateFormat('MMMM dd, yyyy').format(currentDate);
-    widget.roleId == 3
-        ? pdf.addPage(
-            pw.Page(
-              pageFormat: PdfPageFormat.a4,
-              margin: pw.EdgeInsets.zero,
-              build: (pw.Context context) {
-                return pw.Column(children: [
-                  pw.Column(
-                    crossAxisAlignment: pw.CrossAxisAlignment.start,
-                    children: [
-                      // Header
-                      pw.Align(
-                        alignment: pw.Alignment.bottomCenter,
-                        child: pw.Container(
-                            width: double.infinity,
-                            color: pdfColorFromFlutterColor(
-                                const Color(0xFF9461AF)),
-                            padding: const pw.EdgeInsets.symmetric(
-                              vertical: 12,
-                              horizontal: 12,
+
+    String formatAuthorNames(List<String>? names) {
+      if (names == null || names.isEmpty) return '';
+      final filtered =
+          names.where((n) => n.trim().isNotEmpty).map((n) => n.trim()).toList();
+
+      if (filtered.isEmpty) return '';
+      if (filtered.length == 1) return filtered[0];
+      if (filtered.length == 2) return '${filtered[0]} and ${filtered[1]}';
+
+      final allExceptLast = filtered.sublist(0, filtered.length - 1).join(', ');
+      final last = filtered.last;
+
+      return '$allExceptLast and $last';
+    }
+
+    final authorName = conference.authorNames;
+    final formattedAuthorNames = formatAuthorNames(authorName);
+
+    pdf.addPage(widget.roleId == 3
+        ? pw.Page(
+            pageFormat: PdfPageFormat.a4,
+            margin: pw.EdgeInsets.zero,
+            build: (pw.Context context) {
+              return pw.Column(children: [
+                pw.Column(
+                  crossAxisAlignment: pw.CrossAxisAlignment.start,
+                  children: [
+                    // Header
+                    pw.Align(
+                      alignment: pw.Alignment.bottomCenter,
+                      child: pw.Container(
+                          width: double.infinity,
+                          color:
+                              pdfColorFromFlutterColor(const Color(0xFF9461AF)),
+                          padding: const pw.EdgeInsets.symmetric(
+                            vertical: 12,
+                            horizontal: 12,
+                          ),
+                          child: pw.Column(
+                              crossAxisAlignment: pw.CrossAxisAlignment.start,
+                              children: [
+                                pw.Text(
+                                  'ICICYTA $currentYear',
+                                  style: pw.TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: pw.FontWeight.bold,
+                                    color:
+                                        pdfColorFromFlutterColor(Colors.white),
+                                  ),
+                                ),
+                                pw.Text(
+                                  'The ${getOrdinal(editionNumber)} International Conference on Data Science and Its Applications $currentYear',
+                                  style: pw.TextStyle(
+                                    fontSize: 9,
+                                    fontWeight: pw.FontWeight.bold,
+                                    color:
+                                        pdfColorFromFlutterColor(Colors.white),
+                                  ),
+                                ),
+                              ])),
+                    ),
+                    // Content Wrapper
+                    pw.Center(
+                      child: pw.Container(
+                        margin: const pw.EdgeInsets.symmetric(horizontal: 20),
+                        padding: const pw.EdgeInsets.only(top: 20),
+                        constraints: const pw.BoxConstraints(maxWidth: 650),
+                        child: pw.Column(
+                          crossAxisAlignment: pw.CrossAxisAlignment.start,
+                          children: [
+                            // Letter of Acceptance Title & Subtitle
+                            pw.Column(
+                              crossAxisAlignment: pw.CrossAxisAlignment.start,
+                              children: [
+                                pw.Text(
+                                  'LETTER OF ACCEPTANCE',
+                                  style: pw.TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: pw.FontWeight.bold,
+                                  ),
+                                ),
+                                pw.SizedBox(height: 20),
+                                pw.Text(
+                                  'The ${getOrdinal(editionNumber)} International Conference on Intelligent Cybernetics Technology & Application $currentYear (ICIyTA)',
+                                  style: pw.TextStyle(
+                                    fontSize: 10,
+                                    color: pdfColorFromFlutterColor(
+                                        const Color(0xFF000000)),
+                                  ),
+                                ),
+                              ],
                             ),
-                            child: pw.Column(
-                                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                            pw.SizedBox(height: 20),
+
+                            // Dear Author(s)
+                            pw.Text(
+                              'Dear ${formattedAuthorNames},',
+                              style: pw.TextStyle(
+                                fontSize: 10,
+                                fontWeight: pw.FontWeight.bold,
+                              ),
+                            ),
+                            pw.SizedBox(height: 10),
+                            // Paper Details
+                            pw.Text(
+                              'Organizing & Program Committee is pleased to announce that your paper:',
+                              style: pw.TextStyle(
+                                fontSize: 10,
+                              ),
+                            ),
+                            pw.SizedBox(height: 3),
+                            pw.Text(
+                              '${conference.paperTitle}',
+                              style: pw.TextStyle(
+                                fontSize: 10,
+                                fontWeight: pw.FontWeight.bold,
+                              ),
+                            ),
+                            pw.SizedBox(height: 10),
+
+                            // Was Accepted/Rejected
+                            pw.Row(children: [
+                              pw.Text(
+                                'Was',
+                                style: pw.TextStyle(
+                                  fontSize: 10,
+                                ),
+                              ),
+                              pw.SizedBox(width: 5),
+                              pw.Text(
+                                conference.status ?? "",
+                                style: pw.TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: pw.FontWeight.bold,
+                                ),
+                              ),
+                            ]),
+                            pw.SizedBox(height: 10),
+
+                            // Additional Information
+                            pw.Text(
+                              'For The ${getOrdinal(editionNumber)} International Conference on Data Science and Its Applications $currentYear (ICICyTA $currentYear). For finishing your registration please follow the instruction, which has been already send by e-mail to all authors of accepted papers.',
+                              style: pw.TextStyle(
+                                fontSize: 10,
+                              ),
+                            ),
+                            pw.SizedBox(height: 10),
+                            pw.Text(
+                              'The ${getOrdinal(editionNumber)} International Conference on Data Science and Its Applications $currentYear (ICICyTA $currentYear) with theme "Data for Good: Leveraging Data Science for Social Impact" will be held on July 10-11, $currentYear at Aston Kuta Hotel & Residence, Bali, Indonesia.',
+                              style: pw.TextStyle(
+                                fontSize: 10,
+                              ),
+                            ),
+                            pw.SizedBox(height: 50),
+                            // Signature Section
+                            pw.Align(
+                              alignment: pw.Alignment.centerRight,
+                              child: pw.Column(
+                                crossAxisAlignment:
+                                    pw.CrossAxisAlignment.center,
                                 children: [
                                   pw.Text(
-                                    'ICICYTA $currentYear',
+                                    displayPlaceDate,
                                     style: pw.TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: pw.FontWeight.bold,
-                                      color: pdfColorFromFlutterColor(
-                                          Colors.white),
+                                      fontSize: 9,
                                     ),
                                   ),
+                                  pw.Container(
+                                    width: 120,
+                                    height: 50,
+                                    decoration: pw.BoxDecoration(
+                                      border: pw.Border(
+                                        bottom: pw.BorderSide(
+                                          color: pdfColorFromFlutterColor(
+                                              Colors.black),
+                                          width: 1,
+                                        ),
+                                      ),
+                                    ),
+                                    child: pw.Center(
+                                      child: pw.Padding(
+                                        padding: pw.EdgeInsets.symmetric(
+                                          vertical: 10,
+                                        ),
+                                        child: pw.Transform.rotate(
+                                          angle: 0.2,
+                                          child: pw.Text(
+                                            'ICIyTA',
+                                            style: pw.TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: pw.FontWeight.bold,
+                                              color: pdfColorFromFlutterColor(
+                                                  const Color(0xFF9461AF)),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  pw.SizedBox(height: 10),
                                   pw.Text(
-                                    'The ${getOrdinal(editionNumber)} International Conference on Data Science and Its Applications $currentYear',
+                                    'Dr. Putu Harry Gunawan',
+                                    style: pw.TextStyle(
+                                      fontWeight: pw.FontWeight.bold,
+                                      fontSize: 10,
+                                    ),
+                                  ),
+                                  pw.SizedBox(height: 5),
+                                  pw.Text(
+                                    'General Chair ICICyTA $currentYear',
+                                    style: pw.TextStyle(
+                                      fontSize: 9,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                pw.Spacer(),
+                // Footer
+                pw.Container(
+                  color: pdfColorFromFlutterColor(const Color(0xFF9461AF)),
+                  child: pw.Padding(
+                    padding: pw.EdgeInsets.all(20),
+                    child: pw.Row(
+                      mainAxisAlignment: pw.MainAxisAlignment.end,
+                      children: [
+                        pw.Text(
+                          "",
+                          style: pw.TextStyle(fontSize: 20),
+                        ),
+                        pw.Image(teluLogo, height: 75),
+                        pw.SizedBox(width: 8),
+                        pw.Image(unbiLogo, height: 75),
+                        pw.SizedBox(width: 8),
+                        pw.Image(utmLogo, height: 30),
+                      ],
+                    ),
+                  ),
+                ),
+              ]);
+            },
+          )
+        : pw.Page(
+            pageFormat: PdfPageFormat.a4,
+            margin: pw.EdgeInsets.zero,
+            build: (pw.Context context) {
+              return pw.Column(children: [
+                pw.Column(
+                  crossAxisAlignment: pw.CrossAxisAlignment.start,
+                  children: [
+                    // Header
+                    pw.Align(
+                      alignment: pw.Alignment.centerLeft,
+                      child: pw.Container(
+                        width: double.infinity,
+                        color: pdfColorFromFlutterColor(
+                          const Color(0xff84D2DB),
+                        ),
+                        padding: const pw.EdgeInsets.symmetric(
+                          vertical: 12,
+                          horizontal: 12,
+                        ),
+                        child: pw.Row(
+                          mainAxisAlignment: pw.MainAxisAlignment.center,
+                          children: [
+                            pw.Column(
+                                mainAxisAlignment: pw.MainAxisAlignment.start,
+                                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                                children: [
+                                  pw.Image(icodsaLogo, height: 35),
+                                  pw.SizedBox(height: 15),
+                                  pw.Text(
+                                    'The ${getOrdinal(editionNumber)} International Conference on Data Science and Its Applications \n$currentYear (ICoDSA $currentYear)',
                                     style: pw.TextStyle(
                                       fontSize: 9,
                                       fontWeight: pw.FontWeight.bold,
@@ -703,192 +952,213 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
                                           Colors.white),
                                     ),
                                   ),
-                                ])),
+                                ]),
+                            pw.SizedBox(width: 50),
+                            pw.Image(teluLogo, height: 75),
+                            pw.SizedBox(width: 8),
+                            pw.Image(unbiLogo, height: 35),
+                            pw.SizedBox(width: 8),
+                            pw.Image(utmLogo, height: 20),
+                          ],
+                        ),
                       ),
-                      // Content Wrapper
-                      pw.Center(
-                        child: pw.Container(
-                          margin: const pw.EdgeInsets.symmetric(horizontal: 20),
-                          padding: const pw.EdgeInsets.only(top: 20),
-                          constraints: const pw.BoxConstraints(maxWidth: 650),
-                          child: pw.Column(
-                            crossAxisAlignment: pw.CrossAxisAlignment.start,
-                            children: [
-                              // Letter of Acceptance Title & Subtitle
-                              pw.Column(
-                                crossAxisAlignment: pw.CrossAxisAlignment.start,
-                                children: [
-                                  pw.Text(
-                                    'LETTER OF ACCEPTANCE',
-                                    style: pw.TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: pw.FontWeight.bold,
-                                    ),
-                                  ),
-                                  pw.SizedBox(height: 20),
-                                  pw.Text(
-                                    'The ${getOrdinal(editionNumber)} International Conference on Intelligent Cybernetics Technology & Application $currentYear (ICIyTA)',
-                                    style: pw.TextStyle(
-                                      fontSize: 10,
-                                      color: pdfColorFromFlutterColor(
-                                          const Color(0xFF000000)),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              pw.SizedBox(height: 20),
-
-                              // Dear Author(s)
-                              pw.Text(
-                                'Dear ${conference.authorNames?.join(',')},',
-                                style: pw.TextStyle(
-                                  fontSize: 10,
-                                  fontWeight: pw.FontWeight.bold,
-                                ),
-                              ),
-                              pw.SizedBox(height: 10),
-                              // Paper Details
-                              pw.Text(
-                                'Organizing & Program Committee is pleased to announce that your paper:',
-                                style: pw.TextStyle(
-                                  fontSize: 10,
-                                ),
-                              ),
-                              pw.SizedBox(height: 3),
-                              pw.Text(
-                                '${conference.paperTitle}',
-                                style: pw.TextStyle(
-                                  fontSize: 10,
-                                  fontWeight: pw.FontWeight.bold,
-                                ),
-                              ),
-                              pw.SizedBox(height: 10),
-
-                              // Was Accepted/Rejected
-                              pw.Row(children: [
+                    ),
+                    pw.SizedBox(height: 30),
+                    // Content Wrapper
+                    pw.Center(
+                      child: pw.Container(
+                        margin: const pw.EdgeInsets.symmetric(horizontal: 20),
+                        padding: const pw.EdgeInsets.only(top: 20),
+                        constraints: const pw.BoxConstraints(maxWidth: 650),
+                        child: pw.Column(
+                          crossAxisAlignment: pw.CrossAxisAlignment.start,
+                          children: [
+                            // Letter of Acceptance Title & Subtitle
+                            pw.Column(
+                              crossAxisAlignment: pw.CrossAxisAlignment.start,
+                              children: [
                                 pw.Text(
-                                  'Was',
+                                  'LETTER OF ACCEPTANCE',
                                   style: pw.TextStyle(
-                                    fontSize: 10,
-                                  ),
-                                ),
-                                pw.SizedBox(width: 5),
-                                pw.Text(
-                                  conference.status ?? "",
-                                  style: pw.TextStyle(
-                                    fontSize: 10,
+                                    fontSize: 12,
                                     fontWeight: pw.FontWeight.bold,
                                   ),
                                 ),
-                              ]),
-                              pw.SizedBox(height: 10),
+                                pw.SizedBox(height: 20),
+                                pw.Text(
+                                  'The ${getOrdinal(editionNumber)} International Conference on Data Science and Its Applications $currentYear (ICoDSA $currentYear)',
+                                  style: pw.TextStyle(
+                                    fontSize: 10,
+                                    color: pdfColorFromFlutterColor(
+                                        const Color(0xFF000000)),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            pw.SizedBox(height: 20),
 
-                              // Additional Information
+                            // Dear Author(s)
+                            pw.Text(
+                              conference.authorNames!.length > 1
+                                  ? 'Dear, \n${formattedAuthorNames}'
+                                  : 'Dear,  $formattedAuthorNames',
+                              style: pw.TextStyle(
+                                fontSize: 10,
+                              ),
+                            ),
+                            pw.SizedBox(height: 10),
+                            // Paper Details
+                            pw.Text(
+                              'Organizing & Program Committee is pleased to announce that your paper:',
+                              style: pw.TextStyle(
+                                fontSize: 10,
+                              ),
+                            ),
+                            pw.SizedBox(height: 3),
+                            pw.Text(
+                              '${conference.paperTitle}',
+                              style: pw.TextStyle(
+                                fontSize: 10,
+                                fontWeight: pw.FontWeight.bold,
+                              ),
+                            ),
+                            pw.SizedBox(height: 10),
+
+                            // Was Accepted/Rejected
+                            pw.Row(children: [
                               pw.Text(
-                                'For The ${getOrdinal(editionNumber)} International Conference on Data Science and Its Applications $currentYear (ICICyTA $currentYear). For finishing your registration please follow the instruction, which has been already send by e-mail to all authors of accepted papers.',
+                                'Was',
                                 style: pw.TextStyle(
                                   fontSize: 10,
                                 ),
                               ),
-                              pw.SizedBox(height: 10),
+                              pw.SizedBox(width: 5),
                               pw.Text(
-                                'The ${getOrdinal(editionNumber)} International Conference on Data Science and Its Applications $currentYear (ICICyTA $currentYear) with theme "Data for Good: Leveraging Data Science for Social Impact" will be held on July 10-11, $currentYear at Aston Kuta Hotel & Residence, Bali, Indonesia.',
+                                conference.status ?? "",
                                 style: pw.TextStyle(
                                   fontSize: 10,
+                                  fontWeight: pw.FontWeight.bold,
                                 ),
                               ),
-                              pw.SizedBox(height: 50),
-                              // Signature Section
-                              pw.Align(
-                                alignment: pw.Alignment.centerRight,
-                                child: pw.Column(
-                                  crossAxisAlignment:
-                                      pw.CrossAxisAlignment.center,
-                                  children: [
-                                    pw.Text(
-                                      displayPlaceDate,
-                                      style: pw.TextStyle(
-                                        fontSize: 9,
+                            ]),
+                            pw.SizedBox(height: 50),
+
+                            // Additional Information
+                            pw.Text(
+                              'For The ${getOrdinal(editionNumber)} International Conference on Data Science and Its Applications $currentYear (ICoDSA $currentYear). For finishing your registration please follow the instruction, which has been already send by e-mail to all authors of accepted papers.',
+                              style: pw.TextStyle(
+                                fontSize: 10,
+                              ),
+                            ),
+                            pw.SizedBox(height: 10),
+                            pw.Text(
+                              'The ${getOrdinal(editionNumber)} International Conference on Data Science and Its Applications $currentYear (ICoDSA $currentYear) with theme "${conference.paperTitle}" will be held on ${conference.tempatTanggal!.split(',').last}, $currentYear at ${conference.tempatTanggal!.split(',').first}, Indonesia.',
+                              style: pw.TextStyle(
+                                fontSize: 10,
+                              ),
+                            ),
+                            pw.SizedBox(height: 50),
+                            // Signature Section
+                            pw.Align(
+                              alignment: pw.Alignment.centerRight,
+                              child: pw.Stack(
+                                alignment: pw.Alignment.bottomCenter,
+                                children: [
+                                  // Konten tanda tangan
+                                  pw.Column(
+                                    crossAxisAlignment:
+                                        pw.CrossAxisAlignment.center,
+                                    children: [
+                                      pw.Text(
+                                        displayPlaceDate,
+                                        style: pw.TextStyle(
+                                          fontSize: 9,
+                                        ),
                                       ),
-                                    ),
-                                    pw.Container(
-                                      width: 120,
-                                      height: 40,
-                                      decoration: pw.BoxDecoration(
-                                        border: pw.Border(
-                                          bottom: pw.BorderSide(
-                                            color: pdfColorFromFlutterColor(
-                                                Colors.black),
-                                            width: 1,
+                                      pw.SizedBox(height: 30),
+                                      pw.Container(
+                                        width: 120,
+                                        height: 50,
+                                        decoration: pw.BoxDecoration(
+                                          border: pw.Border(
+                                            bottom: pw.BorderSide(
+                                              color: pdfColorFromFlutterColor(
+                                                  Colors.black),
+                                              width: 1,
+                                            ),
+                                          ),
+                                        ),
+                                        child: pw.Center(
+                                          child: pw.Transform.rotate(
+                                            angle: 0.2,
+                                            child: pw.Text(
+                                              'ICoDSA',
+                                              style: pw.TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: pw.FontWeight.bold,
+                                                color: pdfColorFromFlutterColor(
+                                                  const Color(0xFF003366),
+                                                ),
+                                              ),
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                    pw.SizedBox(height: 5),
-                                    pw.Text(
-                                      'ICIyTA',
-                                      style: pw.TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: pw.FontWeight.bold,
-                                        color: pdfColorFromFlutterColor(
-                                            const Color(0xFF9461AF)),
+                                      pw.SizedBox(height: 10),
+                                      pw.Text(
+                                        'Dr. Putu Harry Gunawan',
+                                        style: pw.TextStyle(
+                                          fontWeight: pw.FontWeight.bold,
+                                          fontSize: 10,
+                                        ),
                                       ),
-                                    ),
-                                    pw.SizedBox(height: 3),
-                                    pw.Text(
-                                      'Dr. Putu Harry Gunawan',
-                                      style: pw.TextStyle(
-                                        fontWeight: pw.FontWeight.bold,
-                                        fontSize: 10,
+                                      pw.SizedBox(height: 5),
+                                      pw.Text(
+                                        'General Chair ICoDSA $currentYear',
+                                        style: pw.TextStyle(
+                                          fontSize: 9,
+                                        ),
                                       ),
-                                    ),
-                                    pw.Text(
-                                      'General Chair ICICyTA $currentYear',
-                                      style: pw.TextStyle(
-                                        fontSize: 9,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                    ],
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
-                    ],
-                  ),
-                  pw.Spacer(),
-                  // Footer
-                  pw.Container(
-                    color: pdfColorFromFlutterColor(const Color(0xFF9461AF)),
-                    child: pw.Padding(
-                      padding: pw.EdgeInsets.all(20),
-                      child: pw.Row(
-                        mainAxisAlignment: pw.MainAxisAlignment.end,
-                        children: [
-                          pw.Text(
-                            "",
-                            style: pw.TextStyle(fontSize: 20),
-                          ),
-                          pw.Image(teluLogo, height: 75),
-                          pw.SizedBox(width: 8),
-                          pw.Image(unbiLogo, height: 75),
-                          pw.SizedBox(width: 8),
-                          pw.Image(utmLogo, height: 30),
-                        ],
-                      ),
                     ),
+                  ],
+                ),
+                pw.Spacer(),
+                // Footer
+                pw.Container(
+                  width: double.infinity,
+                  color: pdfColorFromFlutterColor(
+                    const Color(0xff84D2DB),
                   ),
-                ]);
-              },
-            ),
-          )
-        : pw.Container();
+                  child: pw.Padding(
+                      padding: pw.EdgeInsets.all(20),
+                      child: pw.Column(
+                          mainAxisAlignment: pw.MainAxisAlignment.center,
+                          children: [
+                            pw.Text(
+                              'The ${getOrdinal(editionNumber)} International Conference on Data Science and Its Applications $currentYear',
+                              style: pw.TextStyle(
+                                fontSize: 9,
+                                fontWeight: pw.FontWeight.bold,
+                                color: pdfColorFromFlutterColor(Colors.white),
+                              ),
+                            ),
+                          ])),
+                ),
+              ]);
+            }));
 
     // Save the PDF
     final directory = await getApplicationDocumentsDirectory();
-    final file =
-        File('${directory.path}/LoA_ICICyTA_${conference.paperId}.pdf');
+    final file = File(
+        '${directory.path}/LoA_${widget.roleId == 3 ? "ICICYTA" : "ICODSA"}_${conference.paperId}.pdf');
     await file.writeAsBytes(await pdf.save());
 
     // Open the PDF
