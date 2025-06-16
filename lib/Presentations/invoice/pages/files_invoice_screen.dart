@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:SummitDocs/Presentations/invoice/bloc/invoice_bloc.dart';
 import 'package:SummitDocs/core/helper/message/message.dart';
@@ -7,6 +8,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:pdf/pdf.dart';
+import 'package:open_file/open_file.dart';
+import 'package:pdf/widgets.dart' as pw;
 
 import '../../../Domain/home/entities/invoice_entity.dart';
 import '../../../commons/constants/string.dart';
@@ -82,6 +87,20 @@ class _FilesInvoiceScreenState extends State<FilesInvoiceScreen> {
     presentationType.clear();
     memberType.clear();
     authorType.clear();
+  }
+
+  String getOrdinal(int n) {
+    if (n % 100 >= 11 && n % 100 <= 13) return "${n}th";
+    switch (n % 10) {
+      case 1:
+        return "${n}st";
+      case 2:
+        return "${n}nd";
+      case 3:
+        return "${n}rd";
+      default:
+        return "${n}th";
+    }
   }
 
   @override
@@ -302,6 +321,10 @@ class _FilesInvoiceScreenState extends State<FilesInvoiceScreen> {
         );
       },
     );
+  }
+
+  PdfColor pdfColorFromFlutterColor(Color color) {
+    return PdfColor.fromInt(color.value);
   }
 
   Widget _buildDetailRow(String label, String value) {
@@ -596,5 +619,71 @@ class _FilesInvoiceScreenState extends State<FilesInvoiceScreen> {
         );
       },
     );
+  }
+
+  Future<void> generateLoAICICYTADocument(
+      {required InvoiceEntity conference}) async {
+    final pdf = pw.Document();
+    // Load images
+    final ByteData teluLogoBytes = await rootBundle.load(AppString.logoTelyu);
+    final ByteData unbiLogoBytes = await rootBundle.load(AppString.logoUb);
+    final ByteData utmLogoBytes = await rootBundle.load(AppString.logoUtm);
+    final ByteData icodsaLogoBytes = await rootBundle.load(
+      AppString.icodsaLogo,
+    );
+
+    final teluLogo = pw.MemoryImage(teluLogoBytes.buffer.asUint8List());
+    final unbiLogo = pw.MemoryImage(unbiLogoBytes.buffer.asUint8List());
+    final utmLogo = pw.MemoryImage(utmLogoBytes.buffer.asUint8List());
+    final icodsaLogo = pw.MemoryImage(icodsaLogoBytes.buffer.asUint8List());
+
+    final currentDate = DateTime.now();
+    final currentYear = currentDate.year;
+    const startYear = 2018;
+    final editionNumber = currentYear - startYear + 1;
+
+    final String displayPlaceDate = DateFormat('MMMM dd, yyyy').format(
+      conference.createdAt!,
+    );
+
+    String formatAuthorNames(List<String>? names) {
+      if (names == null || names.isEmpty) return '';
+      final filtered =
+          names.where((n) => n.trim().isNotEmpty).map((n) => n.trim()).toList();
+
+      if (filtered.isEmpty) return '';
+      if (filtered.length == 1) return filtered[0];
+      if (filtered.length == 2) return '${filtered[0]} and ${filtered[1]}';
+
+      final allExceptLast = filtered.sublist(0, filtered.length - 1).join(', ');
+      final last = filtered.last;
+
+      return '$allExceptLast and $last';
+    }
+
+    pdf.addPage(
+      widget.roleId == 3
+          ? pw.Page(
+              pageFormat: PdfPageFormat.a4,
+              margin: pw.EdgeInsets.zero,
+              build: (pw.Context context) {
+                return pw.Column(children: []);
+              },
+            )
+          : pw.Page(
+              pageFormat: PdfPageFormat.a4,
+              margin: pw.EdgeInsets.zero,
+              build: (pw.Context context) {
+                return pw.Column(children: []);
+              }),
+    );
+
+    // Save the PDF
+    final directory = await getApplicationDocumentsDirectory();
+    final file = File(
+        '${directory.path}/Invoice_${widget.roleId == 3 ? "ICICYTA" : "ICODSA"}_${conference.invoiceNo}.pdf');
+    await file.writeAsBytes(await pdf.save());
+    // Open the PDF
+    OpenFile.open(file.path);
   }
 }
