@@ -5,6 +5,7 @@ class LoaModel {
   List<String>? authorNames;
   String? status;
   String? tempatTanggal;
+  String? themeConference;
   int? signatureId;
   int? createdBy;
   String? createdAt;
@@ -16,6 +17,7 @@ class LoaModel {
       this.paperTitle,
       this.authorNames,
       this.status,
+      this.themeConference,
       this.tempatTanggal,
       this.signatureId,
       this.createdBy,
@@ -28,7 +30,8 @@ class LoaModel {
     paperTitle = json['paper_title'];
     authorNames = json['author_names'].cast<String>();
     status = json['status'];
-    tempatTanggal = json['tempat_tanggal'];
+    tempatTanggal = json['place_date_conference'];
+    themeConference = json['theme_conference'];
     signatureId = int.tryParse(json['signature_id']);
     createdBy = int.tryParse(json['created_by']);
     createdAt = json['created_at'];
@@ -43,6 +46,7 @@ class LoaModel {
     data['author_names'] = this.authorNames;
     data['status'] = this.status;
     data['tempat_tanggal'] = this.tempatTanggal;
+    data['theme_conference'] = this.themeConference;
     data['signature_id'] = this.signatureId;
     data['created_by'] = this.createdBy;
     data['created_at'] = this.createdAt;

@@ -44,6 +44,7 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
   TextEditingController placeController = TextEditingController();
   List<TextEditingController> authorControllers = [TextEditingController()];
   TextEditingController statusController = TextEditingController();
+  TextEditingController themeConferenceController = TextEditingController();
   final GlobalKey<RefreshIndicatorState> _refreshKey =
       GlobalKey<RefreshIndicatorState>();
   Completer<void>? _refreshCompleter;
@@ -485,6 +486,14 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
                           hint: "Judul Conference",
                           controller: conferenceTitleController,
                         ),
+                        AppTextfield(
+                          prefixIcon: Icon(
+                            Icons.title,
+                            color: AppColors.grayBackground3,
+                          ),
+                          hint: "Tema Conference",
+                          controller: themeConferenceController,
+                        ),
                         ...authorControllers.asMap().entries.map((entry) {
                           int index = entry.key;
                           TextEditingController controller = entry.value;
@@ -599,6 +608,7 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
                                       CreateLoaEvent(
                                         paperIdController.text,
                                         titleController.text,
+                                        themeConferenceController.text,
                                         authorNames,
                                         statusController.text,
                                         "${placeController.text},${dateController.text}",
@@ -609,6 +619,7 @@ class _FilesLoaScreenState extends State<FilesLoaScreen> {
                                       CreateLoaIcodsa(
                                         paperIdController.text,
                                         titleController.text,
+                                        themeConferenceController.text,
                                         authorNames,
                                         statusController.text,
                                         "${placeController.text},${dateController.text}",

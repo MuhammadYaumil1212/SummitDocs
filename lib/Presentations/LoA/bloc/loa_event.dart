@@ -31,6 +31,7 @@ final class CreateLoaEvent extends LoaEvent {
   final String paperId;
   final String paperTitle;
   final List<String> paperAuthors;
+  final String themeConference;
   final String status;
   final String tempatTanggal;
   final int signatureId;
@@ -38,6 +39,7 @@ final class CreateLoaEvent extends LoaEvent {
   const CreateLoaEvent(
     this.paperId,
     this.paperTitle,
+    this.themeConference,
     this.paperAuthors,
     this.status,
     this.tempatTanggal,
@@ -50,6 +52,7 @@ final class CreateLoaEvent extends LoaEvent {
         this.paperTitle,
         this.paperAuthors,
         this.status,
+        this.themeConference,
         this.tempatTanggal,
         this.signatureId,
       ];
@@ -59,6 +62,7 @@ final class CreateLoaIcodsa extends LoaEvent {
   final String paperId;
   final String paperTitle;
   final List<String> paperAuthors;
+  final String themeConference;
   final String status;
   final String tempatTanggal;
   final int signatureId;
@@ -66,6 +70,7 @@ final class CreateLoaIcodsa extends LoaEvent {
   const CreateLoaIcodsa(
     this.paperId,
     this.paperTitle,
+    this.themeConference,
     this.paperAuthors,
     this.status,
     this.tempatTanggal,
@@ -77,6 +82,7 @@ final class CreateLoaIcodsa extends LoaEvent {
         this.paperId,
         this.paperTitle,
         this.paperAuthors,
+        this.themeConference,
         this.status,
         this.tempatTanggal,
         this.signatureId,

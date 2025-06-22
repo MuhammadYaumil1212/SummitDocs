@@ -36,8 +36,8 @@ class ReceiptModel {
     paymentDate = json['payment_date'];
     paperId = json['paper_id'];
     paperTitle = json['paper_title'];
-    signatureId = json['signature_id'];
-    createdBy = json['created_by'];
+    signatureId = int.tryParse(json['signature_id']);
+    createdBy = int.tryParse(json['created_by']);
     createdAt =
         json['created_at'] != null ? DateTime.parse(json['created_at']) : null;
     updatedAt =

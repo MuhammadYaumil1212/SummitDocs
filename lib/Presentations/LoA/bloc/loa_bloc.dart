@@ -59,6 +59,7 @@ class LoaBloc extends Bloc<LoaEvent, LoaState> {
       final response = await sl<CreateLoaUsecase>().call(
         params: UpdateLoaParams(
           paperId: event.paperId,
+          themeConference: event.themeConference,
           paperTitle: event.paperTitle,
           paperAuthors: event.paperAuthors,
           status: event.status,
@@ -92,6 +93,7 @@ class LoaBloc extends Bloc<LoaEvent, LoaState> {
       final response = await sl<CreateLoaIcodsaUsecase>().call(
         params: UpdateLoaParams(
           paperId: event.paperId,
+          themeConference: event.themeConference,
           paperTitle: event.paperTitle,
           paperAuthors: event.paperAuthors,
           status: event.status,
@@ -99,6 +101,7 @@ class LoaBloc extends Bloc<LoaEvent, LoaState> {
           signatureId: event.signatureId,
         ),
       );
+      print("response loa bloc  : ${response}");
       response.fold((error) {
         emit(LoadingState(isLoading: false));
         final List<String> errorMessages = [];
