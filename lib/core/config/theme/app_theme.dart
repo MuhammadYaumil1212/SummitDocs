@@ -9,7 +9,7 @@ class AppTheme {
     brightness: Brightness.light,
     canvasColor: AppColors.background,
     cardColor: Colors.white,
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
       color: Colors.white,
       elevation: 0,
     ),
