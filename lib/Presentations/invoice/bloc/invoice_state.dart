@@ -26,6 +26,22 @@ final class SuccessState extends InvoiceState {
   List<Object> get props => [data];
 }
 
+final class SuccessTransfer extends InvoiceState {
+  final List<TransferVirtualEntity> transferVirtual;
+  const SuccessTransfer({required this.transferVirtual});
+
+  @override
+  List<Object> get props => [transferVirtual];
+}
+
+final class SuccessVirtualAccount extends InvoiceState {
+  final List<AccountVirtualEntity> accountVirtual;
+  const SuccessVirtualAccount({required this.accountVirtual});
+
+  @override
+  List<Object> get props => [accountVirtual];
+}
+
 final class FailedState extends InvoiceState {
   final String message;
 

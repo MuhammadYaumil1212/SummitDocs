@@ -101,3 +101,15 @@ final class SubmitUpdateInvoiceIcodsa extends InvoiceEvent {
         this.status
       ];
 }
+
+final class LoadVirtualAccount extends InvoiceEvent {
+  @override
+  // TODO: implement props
+  List<Object?> get props => [];
+}
+
+final class LoadTransferBankVirtual extends InvoiceEvent {
+  @override
+  // TODO: implement props
+  List<Object?> get props => [];
+}

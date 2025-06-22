@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:SummitDocs/Domain/transfer_virtual/entity/account_virtual_entity.dart';
+import 'package:SummitDocs/Domain/transfer_virtual/entity/transfer_virtual_entity.dart';
 import 'package:SummitDocs/Presentations/invoice/bloc/invoice_bloc.dart';
 import 'package:SummitDocs/core/helper/message/message.dart';
 import 'package:flutter/material.dart';
@@ -52,6 +54,8 @@ class _FilesInvoiceScreenState extends State<FilesInvoiceScreen> {
   Completer<void>? _refreshCompleter;
 
   final List<InvoiceEntity> conferences = [];
+  final List<AccountVirtualEntity> virtualAccount = [];
+  final List<TransferVirtualEntity> banks = [];
 
   void textfieldValueEdit(InvoiceEntity entity) {
     invoiceNumber.text = entity.invoiceNo ?? "";
@@ -108,6 +112,8 @@ class _FilesInvoiceScreenState extends State<FilesInvoiceScreen> {
     // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      _bloc.add(LoadVirtualAccount());
+      _bloc.add(LoadTransferBankVirtual());
       widget.roleId == 3
           ? _bloc.add(GetInvoiceIcicytaListEvent())
           : _bloc.add(GetInvoiceIcodsaListEvent());
@@ -118,14 +124,17 @@ class _FilesInvoiceScreenState extends State<FilesInvoiceScreen> {
   void reloadAll() {
     setState(() {
       conferences.clear();
+      virtualAccount.clear();
+      banks.clear();
       conferences.map((element) {
         textfieldValueEdit(element);
       });
     });
+    _bloc.add(LoadVirtualAccount());
+    _bloc.add(LoadTransferBankVirtual());
     widget.roleId == 3
         ? _bloc.add(GetInvoiceIcicytaListEvent())
         : _bloc.add(GetInvoiceIcodsaListEvent());
-    ;
   }
 
   Future<void> _handleRefresh() async {
@@ -140,6 +149,23 @@ class _FilesInvoiceScreenState extends State<FilesInvoiceScreen> {
     return AppScaffold(
       bloc: _bloc,
       listener: (context, state) {
+        if (state is SuccessVirtualAccount) {
+          setState(() {
+            virtualAccount
+              ..clear()
+              ..addAll(state.accountVirtual);
+          });
+
+          _refreshCompleter?.complete();
+        }
+        if (state is SuccessTransfer) {
+          setState(() {
+            banks
+              ..clear()
+              ..addAll(state.transferVirtual);
+          });
+          _refreshCompleter?.complete();
+        }
         if (state is SuccessState) {
           setState(() {
             conferences
@@ -397,6 +423,7 @@ class _FilesInvoiceScreenState extends State<FilesInvoiceScreen> {
   }
 
   void _showEditInvoice(BuildContext context, InvoiceEntity invoice) {
+    print("bank data : ${banks.length}");
     showDialog(
       context: context,
       builder: (context) {
@@ -422,23 +449,57 @@ class _FilesInvoiceScreenState extends State<FilesInvoiceScreen> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        AppTextfield(
-                          prefixIcon: Icon(
-                            Icons.numbers_outlined,
-                            color: AppColors.grayBackground3,
-                          ),
-                          keyboardType: TextInputType.number,
-                          hint: "Virtual Account ID",
-                          controller: virtualAccID,
+                        // AppTextfield(
+                        //   prefixIcon: Icon(
+                        //     Icons.numbers_outlined,
+                        //     color: AppColors.grayBackground3,
+                        //   ),
+                        //   keyboardType: TextInputType.number,
+                        //   hint: "Virtual Account ID",
+                        //   controller: virtualAccID,
+                        // ),
+                        // AppTextfield(
+                        //   prefixIcon: Icon(
+                        //     Icons.numbers_outlined,
+                        //     color: AppColors.grayBackground3,
+                        //   ),
+                        //   keyboardType: TextInputType.number,
+                        //   hint: "Bank Transfer ID",
+                        //   controller: bankTransferID,
+                        // ),
+                        AppDropdown(
+                          label: virtualAccID.text.isEmpty
+                              ? "Virtual Account"
+                              : virtualAccID.text,
+                          labelColor: virtualAccID.text.isEmpty
+                              ? Colors.grey
+                              : Colors.black,
+                          items: virtualAccount
+                              .map((e) => "${e.id} - ${e.nomorVirtualAkun}")
+                              .toList(),
+                          onChanged: (value) {
+                            final selectedId = value?.split(" - ").first;
+                            virtualAccID.text = selectedId ?? "";
+                            print("Selected Virtual Account ID: $selectedId");
+                          },
                         ),
-                        AppTextfield(
-                          prefixIcon: Icon(
-                            Icons.numbers_outlined,
-                            color: AppColors.grayBackground3,
-                          ),
-                          keyboardType: TextInputType.number,
-                          hint: "Bank Transfer ID",
-                          controller: bankTransferID,
+
+                        AppDropdown(
+                          label: bankTransferID.text.isEmpty
+                              ? "Bank Transfer"
+                              : bankTransferID.text,
+                          labelColor: bankTransferID.text.isEmpty
+                              ? Colors.grey
+                              : Colors.black,
+                          items: banks
+                              .map((e) =>
+                                  "${e.id} - ${e.beneficiaryBankAccountNo}")
+                              .toList(),
+                          onChanged: (value) {
+                            final selectedId = value?.split(" - ").first;
+                            bankTransferID.text = selectedId ?? "";
+                            print("Selected Bank Transfer ID: $selectedId");
+                          },
                         ),
                         AppTextfield(
                           prefixIcon: Icon(

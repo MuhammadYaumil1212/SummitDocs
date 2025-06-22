@@ -4,10 +4,15 @@ import 'package:SummitDocs/Domain/invoice/usecase/get_all_invoice_icicyta_usecas
 import 'package:SummitDocs/Domain/invoice/usecase/get_all_invoice_icodsa_usecase.dart';
 import 'package:SummitDocs/Domain/invoice/usecase/update_invoice_icicyta_usecase.dart';
 import 'package:SummitDocs/Domain/invoice/usecase/update_invoice_icodsa_usecase.dart';
+import 'package:SummitDocs/Domain/transfer_virtual/usecase/get_transfer_virtual_account_usecase.dart';
+import 'package:SummitDocs/Presentations/transfer_virtual/bloc/transfer_virtual_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
 import '../../../Domain/home/entities/invoice_entity.dart';
+import '../../../Domain/transfer_virtual/entity/account_virtual_entity.dart';
+import '../../../Domain/transfer_virtual/entity/transfer_virtual_entity.dart';
+import '../../../Domain/transfer_virtual/usecase/transfer_virtual_usecase.dart';
 import '../../../service_locator.dart';
 
 part 'invoice_event.dart';
@@ -125,6 +130,30 @@ class InvoiceBloc extends Bloc<InvoiceEvent, InvoiceState> {
           emit(SuccessUpdateInvoiceIcodsa(data));
         },
       );
+    });
+
+    on<LoadVirtualAccount>((event, emit) async {
+      emit(LoadingState(isLoading: true));
+      final virtualAccount =
+          await sl<GetTransferVirtualAccountUsecase>().call();
+
+      virtualAccount.fold((error) {
+        emit(LoadingState(isLoading: false));
+      }, (data) {
+        emit(LoadingState(isLoading: false));
+        emit(SuccessVirtualAccount(accountVirtual: data));
+      });
+    });
+
+    on<LoadTransferBankVirtual>((event, emit) async {
+      emit(LoadingState(isLoading: true));
+      var transferVirtual = await sl<TransferVirtualUsecase>().call();
+      transferVirtual.fold((error) {
+        emit(LoadingState(isLoading: false));
+      }, (data) {
+        emit(LoadingState(isLoading: false));
+        emit(SuccessTransfer(transferVirtual: data));
+      });
     });
   }
 }
