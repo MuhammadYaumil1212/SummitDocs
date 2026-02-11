@@ -95,10 +95,3 @@ Halaman ini menampilkan data peserta dan paper untuk event terkait. Tampilan das
 
 * **Penyebab:** Muncul ketika tidak ada sinyal atau sinyal lemah .
 * **Pemulihan:** Halaman otomatis kembali normal jika sinyal membaik .
-
----
-
-## BAB VII: SOURCE CODE
-
-* **Github:** `bit.ly/summit_docs` (Butuh akses developer) .
-* **Build App:** `bit.ly/Aplikasi-summit-docs` .
