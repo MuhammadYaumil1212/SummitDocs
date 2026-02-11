@@ -1,5 +1,3 @@
-Berikut adalah terjemahan isi dokumen **User Manual Mobile SummitDocs** yang disusun ulang ke dalam format Markdown agar lebih mudah dibaca dan terstruktur:
-
 ## SummitDocs
 ---
 
